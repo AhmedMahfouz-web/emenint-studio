@@ -1,0 +1,171 @@
+.latest .grid-width {
+  padding: 0;
+}
+.latest .sticky {
+  position: sticky;
+  min-width: 50vw;
+  top: 0;
+  bottom: 0;
+}
+@media (max-width: 980px) {
+  .latest .sticky {
+    position: relative;
+    min-width: 100%;
+    width: 100%;
+    top: unset;
+  }
+}
+.latest .latest--big-one {
+  display: block;
+  width: 55vw;
+  position: relative;
+  overflow: hidden;
+  transition: width 0.3s ease;
+}
+@media (max-width: 1366px) {
+  .latest .latest--big-one {
+    height: 105vh !important;
+  }
+}
+@media (max-width: 980px) {
+  .latest .latest--big-one {
+    width: 100vw;
+    height: 380px !important;
+  }
+}
+.latest .latest--big-one.is-100 {
+  width: 100vw;
+}
+.latest .latest--big-one::before, .latest .latest--big-one::after {
+  display: none;
+}
+.latest .latest--big-one--image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 0;
+  transition: transform 0.5s ease;
+}
+.latest .latest--big-one--text {
+  position: absolute;
+  bottom: 60px;
+  left: 50px;
+}
+@media (max-width: 1366px) {
+  .latest .latest--big-one--text {
+    bottom: 100px;
+  }
+}
+@media (max-width: 980px) {
+  .latest .latest--big-one--text {
+    bottom: 30px;
+    left: 40px;
+  }
+}
+.latest .latest--big-one--text .h2 {
+  margin-bottom: 20px;
+  max-width: 60%;
+}
+@media (max-width: 1800px) {
+  .latest .latest--big-one--text .h2 {
+    max-width: 80%;
+  }
+}
+@media (max-width: 1439px) {
+  .latest .latest--big-one--text .h2 {
+    font-size: 5vw;
+    line-height: 1.1em;
+    max-width: 90%;
+  }
+}
+@media (max-width: 980px) {
+  .latest .latest--big-one--text .h2 {
+    font-size: 40px;
+    line-height: 48px;
+    max-width: unset;
+  }
+}
+.latest .latest--big-one:hover .latest--big-one--image {
+  transform: scale(1.1);
+}
+.latest .latest--items {
+  min-width: 45vw;
+  margin-top: 105vh;
+  margin-bottom: 105vh;
+}
+@media (max-width: 980px) {
+  .latest .latest--items {
+    min-width: 100vw;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
+.latest .latest--items--heading {
+  margin-top: 60px;
+  margin-bottom: 66px;
+}
+@media (max-width: 980px) {
+  .latest .latest--items--heading {
+    padding: 0 40px;
+    margin-bottom: 33px;
+  }
+}
+.latest .latest--items--heading .subline {
+  margin-bottom: 25px;
+}
+.latest .latest--items--inner {
+  width: 30vw;
+}
+@media (max-width: 980px) {
+  .latest .latest--items--inner {
+    min-width: 100vw;
+  }
+}
+.latest .latest--items--inner a {
+  width: 100%;
+  margin-bottom: 80px;
+}
+@media (max-width: 980px) {
+  .latest .latest--items--inner a {
+    margin-bottom: 50px;
+  }
+  .latest .latest--items--inner a:first-child {
+    margin-left: 40px;
+  }
+  .latest .latest--items--inner a:last-child {
+    margin-right: 40px;
+  }
+}
+.latest .latest--items--inner a::before, .latest .latest--items--inner a::after {
+  display: none;
+}
+.latest .latest--items--inner a .subline {
+  margin-top: 30px;
+  margin-bottom: 6px;
+}
+.latest .latest--items--inner a .headline {
+  margin-bottom: 12px;
+}
+.latest .latest--items--inner a .parallax-section {
+  overflow: hidden;
+  transition: transform 0.5s ease;
+}
+.latest .latest--items--inner a:hover .parallax-section {
+  transform: scale(1.1);
+}
+@media (max-width: 980px) {
+  .latest .latest--items--mobile-scroll {
+    display: flex;
+    overflow-y: scroll;
+  }
+  .latest .latest--items--mobile-scroll a {
+    min-width: 210px;
+    margin-right: 20px;
+    display: block;
+  }
+}
+.latest .link-box a {
+  margin: 0 5px;
+}/*# sourceMappingURL=latest.css.map */

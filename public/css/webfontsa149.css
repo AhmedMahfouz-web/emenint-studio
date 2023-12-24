@@ -1,0 +1,33 @@
+/* AntoniaH3 */
+
+@font-face {
+    font-family: "AntoniaH3-Light";
+    src: url('../fonts/ClashDisplayVariable-Bold.ttf')
+}
+
+/* swisstypefaces */
+
+@font-face {
+    font-family: "IBMPlexSans-Regular";
+    src:  url('../fonts/ClashDisplayVariable-Bold.ttf')
+}
+
+@font-face {
+    font-family: "SuisseIntl-Book";
+    src: url('../fonts/ClashDisplayVariable-Bold.ttf')
+}
+
+@font-face {
+    font-family: "SuisseIntl-Medium";
+    src: url('../fonts/ClashDisplayVariable-Bold.ttf')
+}
+
+@font-face {
+    font-family: "SuisseIntl-SemiBold";
+    src: url('../fonts/ClashDisplayVariable-Bold.ttf')
+}
+
+@font-face {
+    font-family: "SuisseIntlMono-Regular";
+    src: url('../fonts/ClashDisplayVariable-Bold.ttf')
+}

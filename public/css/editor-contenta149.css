@@ -1,0 +1,16 @@
+.editor-content p {
+  margin: 0 0 35px 0;
+}
+.editor-content em {
+  font-style: normal;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0) 55%, rgba(224, 111, 114, 0.2) 70%);
+}
+.editor-content ul {
+  margin: 0;
+}
+.editor-content ul li {
+  list-style-type: none;
+  background: url(https://solidbold.at/wp-content/themes/solidbold/img/li-bullet.svg) 0 13px no-repeat;
+  padding-left: 15px;
+  margin-bottom: 15px;
+}/*# sourceMappingURL=editor-content.css.map */

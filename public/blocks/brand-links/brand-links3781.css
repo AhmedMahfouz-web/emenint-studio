@@ -1,0 +1,49 @@
+.brand-links .grid-width {
+  padding: 10px 0 0 0;
+  overflow: hidden;
+}
+.brand-links .grid-width .subline {
+  margin-bottom: 60px;
+}
+@media (max-width: 999px) {
+  .brand-links .grid-width .subline {
+    margin-bottom: 30px;
+  }
+}
+.brand-links .grid-width .brandslider .brandslid {
+  transition: transform 1s cubic-bezier(0.2, 0.6, 0.35, 1);
+}
+@media (max-width: 768px) {
+  .brand-links .grid-width .brandslider .brandslid {
+    padding-left: 100px;
+  }
+}
+.brand-links .grid-width .brandslider .brandslid a {
+  display: block;
+  white-space: nowrap;
+  font-size: 55px;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  margin: 0 25px;
+  padding-right: 20px;
+  position: relative;
+}
+@media (max-width: 768px) {
+  .brand-links .grid-width .brandslider .brandslid a {
+    font-size: 35px;
+  }
+}
+.brand-links .grid-width .brandslider .brandslid a span {
+  position: absolute;
+  top: -10px;
+  right: 0;
+  font-size: 14px;
+  line-height: 1;
+  letter-spacing: 0.1em;
+}
+
+body.is-device .brandslid {
+  padding-top: 10px;
+  padding-bottom: 20px;
+  overflow-y: scroll;
+}/*# sourceMappingURL=brand-links.css.map */

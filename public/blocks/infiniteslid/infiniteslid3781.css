@@ -1,0 +1,51 @@
+.infiniteslid {
+  margin: 0 20px;
+}
+.infiniteslid h1 {
+  position: absolute;
+  width: 100%;
+  text-align: center;
+}
+.infiniteslid .infiniteslid-wrapper {
+  overflow: hidden;
+  padding-top: 50vh;
+}
+.infiniteslid .infiniteslid-wrapper li {
+  margin-bottom: 100px;
+  position: relative;
+}
+@media (max-width: 999px) {
+  .infiniteslid .infiniteslid-wrapper li {
+    margin-bottom: 50px;
+  }
+}
+.infiniteslid .infiniteslid-wrapper li.pos-links {
+  align-self: flex-start;
+}
+.infiniteslid .infiniteslid-wrapper li.pos-zentriert {
+  align-self: center;
+}
+.infiniteslid .infiniteslid-wrapper li .image-stop img {
+  width: auto;
+  max-height: 65vh;
+}
+@media (max-width: 999px) {
+  .infiniteslid .infiniteslid-wrapper li .image-stop img {
+    width: 100%;
+    height: auto;
+    max-height: 100%;
+  }
+}
+.infiniteslid .infiniteslid-wrapper li .image-stop .img-desc-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  color: #fff;
+  opacity: 0;
+  transition: opacity 0.25s ease-out;
+}
+.infiniteslid .infiniteslid-wrapper li .image-stop:hover .img-desc-wrapper {
+  opacity: 0.85;
+}/*# sourceMappingURL=infiniteslid.css.map */

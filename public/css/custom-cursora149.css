@@ -1,0 +1,51 @@
+.cursor {
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.1;
+  position: fixed;
+  bottom: -100px;
+  width: 20px;
+  height: 20px;
+  background-color: #fff;
+  border-radius: 50%;
+  background-color: #312F2F;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+  /*
+  &.hover2 {
+  	transform: scale(1);
+  	z-index: 1;
+  	width: 100px;
+     	height: 100px;
+  	opacity: 0.8;
+  	background-color: #fef560;
+  	&::after{
+  		content:'DRAG';
+  		font-size:14px;
+  		position:absolute;
+  		top:35px;
+  		left:28px;
+  	}
+  }
+  */
+}
+@media (max-width: 1080px) {
+  .cursor {
+    display: none;
+  }
+}
+.cursor.hover {
+  transform: scale(2);
+  opacity: 0.2;
+}
+.cursor.hidde {
+  transform: scale(0);
+  opacity: 0;
+}
+
+html.dark-bg .cursor {
+  color: #000;
+}
+
+body.is-device .cursor {
+  display: none;
+}/*# sourceMappingURL=custom-cursor.css.map */

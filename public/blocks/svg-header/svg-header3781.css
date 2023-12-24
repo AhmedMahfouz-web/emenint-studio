@@ -1,0 +1,47 @@
+@media (max-width: 768px) {
+  .svg-header #svg-animaiotn {
+    text-align: center;
+  }
+}
+@media (max-width: 768px) {
+  .svg-header #svg-animaiotn svg {
+    margin: 0 auto;
+  }
+}
+.svg-header #svg-animaiotn svg.studio {
+  width: 148px;
+  height: auto;
+}
+.svg-header #svg-animaiotn svg.studio .cls-1{
+  fill: none;
+}
+.svg-header #svg-animaiotn svg.kultur {
+  width: 670px;
+  height: auto;
+  transform: translateY(130px) translateX(10px);
+}
+@media (max-width: 768px) {
+  .svg-header #svg-animaiotn svg.kultur {
+    transform: translateY(30px) translateX(0);
+  }
+}
+.svg-header #svg-animaiotn svg.kontakt {
+  width: 120%;
+  margin-left: -10%;
+  height: auto;
+}
+@media (max-width: 768px) {
+  .svg-header #svg-animaiotn svg.kontakt {
+    margin-left: auto;
+  }
+}
+.svg-header #svg-animaiotn svg.karriere {
+  width: 800px;
+  height: auto;
+  transform: translateY(45px) translateX(-50px);
+}
+@media (max-width: 768px) {
+  .svg-header #svg-animaiotn svg.karriere {
+    transform: translateY(35px) translateX(-10px);
+  }
+}/*# sourceMappingURL=svg-header.css.map */

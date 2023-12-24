@@ -1,0 +1,91 @@
+.compare {
+  margin-left: 115px;
+  margin-right: 115px;
+}
+@media (max-width: 1090px) {
+  .compare {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
+.cndkbeforeafter {
+  overflow: hidden;
+  position: relative;
+  transition: 0.5s;
+}
+
+.cndkbeforeafter-container {
+  background: none;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+}
+
+.cndkbeforeafter-item {
+  overflow: hidden;
+  position: relative;
+}
+
+.cndkbeforeafter-item > div {
+  height: 100%;
+  position: absolute;
+}
+
+.cndkbeforeafter-item img {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: auto;
+  height: 100%;
+}
+
+.cndkbeforeafter-item-before {
+  z-index: 5;
+}
+
+.cndkbeforeafter-item-after {
+  z-index: 10;
+}
+
+.cndkbeforeafter-seperator {
+  width: 1px;
+  position: absolute;
+  height: 100%;
+  z-index: 15;
+  left: 0;
+  top: 0;
+  background-color: #fff;
+  cursor: ew-resize;
+}
+.cndkbeforeafter-seperator div span {
+  transition: 0.25s;
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  cursor: ew-resize;
+  background: white;
+  top: 50%;
+  left: 50%;
+  margin-top: -30px;
+  margin-left: -30px;
+  border-radius: 30px;
+  background-image: url(https://solidbold.at/wp-content/themes/solidbold/img/switch.svg);
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-color: #a4a09b;
+}
+
+.cndkbeforeafter-drag-transition {
+  transition: 0.5s;
+}
+
+/* For Mobile Devices */
+@media only screen and (max-width: 600px) {
+  .cndkbeforeafter {
+    width: 100% !important;
+  }
+}/*# sourceMappingURL=image-compare.css.map */

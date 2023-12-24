@@ -1,0 +1,147 @@
+.speech-bubbles .grid-width .sticky {
+  position: sticky;
+  top: 50px;
+}
+@media (max-width: 999px) {
+  .speech-bubbles .grid-width .sticky {
+    position: relative;
+    top: unset;
+    margin-bottom: 30px;
+  }
+}
+.speech-bubbles .grid-width .speech-bubbles--text {
+  margin-top: 220px;
+}
+@media (max-width: 999px) {
+  .speech-bubbles .grid-width .speech-bubbles--text {
+    margin-top: 50px;
+  }
+}
+.speech-bubbles .grid-width .speech-bubbles--text--inner {
+  width: 80%;
+  max-width: 650px;
+}
+@media (max-width: 999px) {
+  .speech-bubbles .grid-width .speech-bubbles--text--inner {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+.speech-bubbles .grid-width .speech-bubbles--text--inner .speech-bubbles-warpper {
+  transform: rotate3d(0);
+}
+.speech-bubbles .grid-width .speech-bubbles--text--inner .speech-bubbles-warpper .bubble {
+  position: relative;
+  width: 300px;
+  height: 250px;
+  margin-bottom: -70px;
+}
+.speech-bubbles .grid-width .speech-bubbles--text--inner .speech-bubbles-warpper .bubble label {
+  perspective: 1000px;
+  transform-style: preserve-3d;
+  display: block;
+  width: 100%;
+  cursor: pointer;
+}
+.speech-bubbles .grid-width .speech-bubbles--text--inner .speech-bubbles-warpper .bubble label .card {
+  position: relative;
+  transform-style: preserve-3d;
+  transition: all 600ms;
+  z-index: 20;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+}
+.speech-bubbles .grid-width .speech-bubbles--text--inner .speech-bubbles-warpper .bubble label .card .front,
+.speech-bubbles .grid-width .speech-bubbles--text--inner .speech-bubbles-warpper .bubble label .card .back {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  padding: 40px 20px;
+  margin-top: -10px;
+  backface-visibility: hidden;
+  z-index: 21;
+  transition: opacity 300ms;
+  border-radius: 25px;
+}
+.speech-bubbles .grid-width .speech-bubbles--text--inner .speech-bubbles-warpper .bubble label .card .front::after,
+.speech-bubbles .grid-width .speech-bubbles--text--inner .speech-bubbles-warpper .bubble label .card .back::after {
+  content: "";
+  position: absolute;
+  left: 25px;
+  bottom: -7px;
+  transform: rotate(45deg);
+  width: 14px;
+  height: 14px;
+  background-color: #d6d4d2;
+}
+.speech-bubbles .grid-width .speech-bubbles--text--inner .speech-bubbles-warpper .bubble label .card .front {
+  background-color: #d6d4d2;
+}
+.speech-bubbles .grid-width .speech-bubbles--text--inner .speech-bubbles-warpper .bubble label .card .front::after {
+  background-color: #d6d4d2;
+}
+.speech-bubbles .grid-width .speech-bubbles--text--inner .speech-bubbles-warpper .bubble label .card .back {
+  opacity: 0;
+  z-index: 22;
+  transform: rotateY(180deg);
+  background-color: #fef560;
+}
+.speech-bubbles .grid-width .speech-bubbles--text--inner .speech-bubbles-warpper .bubble label .card .back::after {
+  background-color: #fef560;
+}
+@media (max-width: 999px) {
+  .speech-bubbles .grid-width .speech-bubbles--text--inner .speech-bubbles-warpper .bubble {
+    margin-bottom: 0;
+  }
+}
+.speech-bubbles .grid-width .speech-bubbles--text--inner .speech-bubbles-warpper .bubble--01, .speech-bubbles .grid-width .speech-bubbles--text--inner .speech-bubbles-warpper .bubble--07 {
+  transform: translateX(-200px);
+}
+@media (max-width: 999px) {
+  .speech-bubbles .grid-width .speech-bubbles--text--inner .speech-bubbles-warpper .bubble--01, .speech-bubbles .grid-width .speech-bubbles--text--inner .speech-bubbles-warpper .bubble--07 {
+    transform: translateX(0);
+  }
+}
+.speech-bubbles .grid-width .speech-bubbles--text--inner .speech-bubbles-warpper .bubble--02, .speech-bubbles .grid-width .speech-bubbles--text--inner .speech-bubbles-warpper .bubble--06, .speech-bubbles .grid-width .speech-bubbles--text--inner .speech-bubbles-warpper .bubble--08 {
+  transform: translateX(20px);
+}
+@media (max-width: 999px) {
+  .speech-bubbles .grid-width .speech-bubbles--text--inner .speech-bubbles-warpper .bubble--02, .speech-bubbles .grid-width .speech-bubbles--text--inner .speech-bubbles-warpper .bubble--06, .speech-bubbles .grid-width .speech-bubbles--text--inner .speech-bubbles-warpper .bubble--08 {
+    transform: translateX(0);
+  }
+}
+.speech-bubbles .grid-width .speech-bubbles--text--inner .speech-bubbles-warpper .bubble--09, .speech-bubbles .grid-width .speech-bubbles--text--inner .speech-bubbles-warpper .bubble--03 {
+  transform: translateX(-320px);
+}
+@media (max-width: 999px) {
+  .speech-bubbles .grid-width .speech-bubbles--text--inner .speech-bubbles-warpper .bubble--09, .speech-bubbles .grid-width .speech-bubbles--text--inner .speech-bubbles-warpper .bubble--03 {
+    transform: translateX(0);
+  }
+}
+.speech-bubbles .grid-width .speech-bubbles--text--inner .speech-bubbles-warpper .bubble--04, .speech-bubbles .grid-width .speech-bubbles--text--inner .speech-bubbles-warpper .bubble--10 {
+  transform: translateX(-50px);
+}
+@media (max-width: 999px) {
+  .speech-bubbles .grid-width .speech-bubbles--text--inner .speech-bubbles-warpper .bubble--04, .speech-bubbles .grid-width .speech-bubbles--text--inner .speech-bubbles-warpper .bubble--10 {
+    transform: translateX(0);
+  }
+}
+.speech-bubbles .grid-width .speech-bubbles--text--inner .speech-bubbles-warpper .bubble--05 {
+  transform: translateX(-320px);
+}
+@media (max-width: 999px) {
+  .speech-bubbles .grid-width .speech-bubbles--text--inner .speech-bubbles-warpper .bubble--05 {
+    transform: translateX(0);
+  }
+}
+.speech-bubbles .grid-width .speech-bubbles--text--inner .speech-bubbles-warpper .bubble.active .card {
+  transform: rotateY(180deg);
+}
+.speech-bubbles .grid-width .speech-bubbles--text--inner .speech-bubbles-warpper .bubble.active .card .front {
+  opacity: 0;
+}
+.speech-bubbles .grid-width .speech-bubbles--text--inner .speech-bubbles-warpper .bubble.active .card .back {
+  opacity: 1;
+}/*# sourceMappingURL=speech-bubbles.css.map */

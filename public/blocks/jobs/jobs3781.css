@@ -1,0 +1,13 @@
+.jobs {
+  visibility: visible;
+}
+.jobs a {
+  margin-bottom: 60px;
+  display: inline-block;
+}
+.jobs a::after, .jobs a::before {
+  display: none;
+}
+.jobs a .h3 {
+  margin-bottom: 10px;
+}/*# sourceMappingURL=jobs.css.map */

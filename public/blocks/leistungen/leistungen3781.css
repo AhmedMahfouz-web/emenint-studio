@@ -1,0 +1,45 @@
+.leistungen .grid-width .sticky {
+  position: sticky;
+  top: 50px;
+}
+@media (max-width: 999px) {
+  .leistungen .grid-width .sticky {
+    position: relative;
+    top: unset;
+    margin-bottom: 30px;
+  }
+}
+.leistungen .grid-width .leistungen--text {
+  margin-top: 220px;
+}
+@media (max-width: 999px) {
+  .leistungen .grid-width .leistungen--text {
+    margin-top: 0;
+  }
+}
+.leistungen .grid-width .leistungen--text--inner {
+  width: 80%;
+  max-width: 800px;
+}
+@media (max-width: 999px) {
+  .leistungen .grid-width .leistungen--text--inner {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+.leistungen .grid-width .leistungen--text--inner .editor-content {
+  margin-bottom: 90px;
+}
+.leistungen .grid-width .leistungen--text--inner .leistungsbausteine {
+  margin-top: 30px;
+}
+.leistungen .grid-width .leistungen--text--inner .leistungsbausteine .inview {
+  display: inline-block;
+}
+.leistungen .grid-width .leistungen--text--inner .leistungsbausteine .inview a {
+  margin: 0 13px 13px 0;
+}
+
+body.markenerlebnis .leistungen .grid-width .leistungen--text {
+  margin-top: 0;
+}/*# sourceMappingURL=leistungen.css.map */

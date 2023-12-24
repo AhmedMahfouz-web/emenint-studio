@@ -1,0 +1,31 @@
+/* custom cookiebot */
+.CybotCookiebotDialogContentWrapper {
+  transform: scale(0.8);
+}
+
+#CybotCookiebotDialogNav .CybotCookiebotDialogNavItemLink.CybotCookiebotDialogActive {
+  border-color: #000 !important;
+  color: #000 !important;
+}
+
+#CybotCookiebotDialogFooter #CybotCookiebotDialogBodyButtonAccept,
+#CybotCookiebotDialogFooter #CybotCookiebotDialogBodyLevelButtonAccept,
+#CybotCookiebotDialogFooter #CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll,
+#CybotCookiebotDialogFooter .CybotCookiebotDialogBodyButton,
+#CybotCookiebotDialogFooter #CybotCookiebotDialogBodyLevelButtonCustomize,
+#CybotCookiebotDialogFooter #CybotCookiebotDialogBodyLevelButtonLevelOptinAllowallSelection {
+  border-color: #000 !important;
+}
+
+#CybotCookiebotDialogFooter #CybotCookiebotDialogBodyButtonAccept, #CybotCookiebotDialogFooter #CybotCookiebotDialogBodyLevelButtonAccept, #CybotCookiebotDialogFooter #CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll {
+  background-color: #000 !important;
+}
+
+#CybotCookiebotDialogTabContent input:checked + .CybotCookiebotDialogBodyLevelButtonSlider {
+  background-color: #fef560 !important;
+}
+
+#CybotCookiebotDialogHeader,
+#CybotCookiebotDialogHeaderLogosWrapper {
+  display: none !important;
+}/*# sourceMappingURL=cookiebot.css.map */

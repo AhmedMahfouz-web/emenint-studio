@@ -1,0 +1,33 @@
+.introtext .grid-width {
+  max-width: 1110px;
+}
+.introtext .grid-width .subline {
+  margin-bottom: 20px;
+}
+@media (max-width: 768px) {
+  .introtext .grid-width .subline {
+    margin-bottom: 10px;
+  }
+}
+.introtext .grid-width .content-sml {
+  max-width: 880px;
+  margin: 0 auto;
+}
+.introtext .grid-width h1,
+.introtext .grid-width h2 {
+  margin-top: 35px;
+  margin-bottom: 60px;
+}
+.introtext .grid-width h3 {
+  margin-top: 25px;
+  margin-bottom: 40px;
+}
+.introtext .grid-width.text-left .content-sml {
+  margin-left: 0;
+}
+.introtext .grid-width .quicklinks {
+  margin-top: 70px;
+}
+.introtext .grid-width .quicklinks a {
+  margin: 0 10px;
+}/*# sourceMappingURL=introtext.css.map */

@@ -1,0 +1,54 @@
+.keynotes .grid-width {
+  max-width: 880px;
+  overflow: hidden;
+  margin-bottom: 0;
+}
+@media (max-width: 980px) {
+  .keynotes .grid-width .col {
+    margin: 0 10px;
+  }
+}
+@media (max-width: 768px) {
+  .keynotes .grid-width .col {
+    margin: 0;
+  }
+}
+.keynotes .grid-width .col:first-child {
+  margin-top: 180px;
+}
+@media (max-width: 768px) {
+  .keynotes .grid-width .col:first-child {
+    margin-top: 0;
+  }
+}
+.keynotes .kynote {
+  overflow: hidden;
+  width: 380px;
+  position: relative;
+  margin-bottom: 120px;
+  display: block;
+  margin-right: 40px;
+  margin-left: 40px;
+}
+@media (max-width: 980px) {
+  .keynotes .kynote {
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+@media (max-width: 768px) {
+  .keynotes .kynote {
+    margin-bottom: 60px;
+  }
+}
+.keynotes .kynote .h2 {
+  margin-top: 10px;
+  margin-bottom: 30px;
+}
+.keynotes .kynote .inview--line {
+  position: absolute;
+  top: 0;
+  height: 1px;
+  left: 0;
+}/*# sourceMappingURL=keynote.css.map */

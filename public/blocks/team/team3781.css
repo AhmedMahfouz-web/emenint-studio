@@ -1,0 +1,67 @@
+.team .team-wrapper {
+  margin: 0 -20px;
+  font-size: 0;
+  display: flex;
+  justify-content: center;
+}
+@media (max-width: 768px) {
+  .team .team-wrapper {
+    margin: 0 -10px;
+  }
+}
+.team .team-wrapper .profile {
+  width: 30%;
+  margin: 0 20px 50px 20px;
+  position: relative;
+  display: inline-block;
+  vertical-align: top;
+}
+@media (max-width: 1090px) {
+  .team .team-wrapper .profile {
+    width: 25%;
+  }
+}
+@media (max-width: 768px) {
+  .team .team-wrapper .profile {
+    width: 30%;
+    margin: 0 10px 25px 10px;
+  }
+}
+.team .team-wrapper .profile::before, .team .team-wrapper .profile::after {
+  display: none;
+}
+.team .team-wrapper .profile .memberimg {
+  position: relative;
+  margin-bottom: 20px;
+}
+.team .team-wrapper .profile .memberimg .cover-image {
+  background-position: top center;
+}
+.team .team-wrapper .profile .memberimg .parallax-section {
+  padding-bottom: 128%;
+}
+.team .team-wrapper .profile .membervid {
+  z-index: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  -o-object-fit: cover;
+     object-fit: cover;
+  width: 100%;
+  height: 100%;
+}
+.team .team-wrapper .profile .scale {
+  transition: transform 0.5s ease;
+}
+.team .team-wrapper .profile .marg {
+  margin-bottom: 10px;
+}
+.team .team-wrapper .profile:hover .scale {
+  transform: scale(1.1);
+}
+.team .team-wrapper .profile:hover .membervid {
+  z-index: 1;
+  opacity: 1;
+}/*# sourceMappingURL=team.css.map */

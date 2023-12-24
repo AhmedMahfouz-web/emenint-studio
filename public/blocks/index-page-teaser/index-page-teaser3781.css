@@ -1,0 +1,106 @@
+.index-page-teaser .grid-width {
+  margin-top: 0;
+}
+@media (max-width: 768px) {
+  .index-page-teaser .grid-width {
+    padding: 0;
+    margin-bottom: 0;
+  }
+}
+.index-page-teaser .grid-width .page-teaser {
+  display: block;
+  position: relative;
+  margin-bottom: 20px;
+  padding-bottom: 0;
+}
+@media (max-width: 768px) {
+  .index-page-teaser .grid-width .page-teaser {
+    margin-bottom: 13px;
+  }
+}
+.index-page-teaser .grid-width .page-teaser::before, .index-page-teaser .grid-width .page-teaser::after {
+  display: none;
+}
+.index-page-teaser .grid-width .page-teaser:hover .page-teaser--image .inner {
+  transform: scale(1.1);
+}
+.index-page-teaser .grid-width .page-teaser--image {
+  position: relative;
+  padding-bottom: 55.5%;
+  z-index: 1;
+  overflow: hidden;
+}
+.index-page-teaser .grid-width .page-teaser--image .inner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  transition: transform 0.5s ease;
+}
+.index-page-teaser .grid-width .page-teaser--text {
+  position: absolute;
+  bottom: 50px;
+  left: 50px;
+  z-index: 2;
+  transform: translate3d(0, 0, 0);
+  opacity: 1;
+}
+@media (max-width: 768px) {
+  .index-page-teaser .grid-width .page-teaser--text {
+    left: 40px;
+    bottom: 30px;
+  }
+}
+.index-page-teaser .grid-width .page-teaser--text .subline {
+  margin-bottom: 20px;
+}
+.index-page-teaser .grid-width .page-teaser--text .h2 {
+  margin-bottom: 20px;
+}
+@media (max-width: 1439px) {
+  .index-page-teaser .grid-width .page-teaser--text .h2 {
+    font-size: 5vw;
+    line-height: 1.1em;
+  }
+}
+@media (max-width: 768px) {
+  .index-page-teaser .grid-width .page-teaser--text .h2 {
+    font-size: 40px;
+    line-height: 48px;
+  }
+}
+.index-page-teaser .grid-width .page-teaser--video {
+  overflow: hidden;
+}
+.index-page-teaser .grid-width .page-teaser--video video {
+  -o-object-fit: cover;
+     object-fit: cover;
+  width: 100vw;
+  min-height: 360px;
+}
+.index-page-teaser .grid-width .copy-s {
+  text-transform: uppercase;
+  line-height: 17px;
+}
+@media (max-width: 768px) {
+  .index-page-teaser .grid-width .copy-s {
+    padding: 0 20px;
+    font-size: 8px;
+    line-height: 12px;
+  }
+}
+.index-page-teaser .grid-width .globe {
+  margin-left: 10px;
+  animation: globe 10s linear infinite;
+  transform-origin: center center;
+}
+
+@keyframes globe {
+  0% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}/*# sourceMappingURL=index-page-teaser.css.map */

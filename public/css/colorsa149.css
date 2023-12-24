@@ -1,0 +1,527 @@
+/*hover color mega menu a*/
+.color-white {
+  color: #fff;
+}
+
+.btn {
+  border-color: #003BF3;
+}
+.btn:focus, .btn:active, .btn:hover {
+  color: #fff;
+  border-color: #003BF3;
+  background-color: #003BF3;
+}
+.btn.color-white {
+  border-color: #fff;
+  background-color: transparent;
+}
+.btn.color-white:hover {
+  color: #000;
+  border-color: #fff;
+  background-color: #fff;
+}
+.btn--icon:focus svg, .btn--icon:active svg, .btn--icon:hover svg {
+  fill: #fff;
+}
+
+body.studio a.icon-social {
+  border-color: #212121;
+}
+body.about a.icon-social {
+  border-color: #f1f1f1;
+}
+a.icon-social svg {
+  fill: #f1f1f1;
+}
+a.icon-social:hover {
+  border-color: #003BF3;
+  background-color: #003BF3;
+}
+a.icon-social:hover svg {
+  fill: #fff;
+}
+
+video,
+.parallax-section,
+.cover-image {
+  background-color: #d1d1d1;
+}
+
+@keyframes loading {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+/*
+.parallax-section,
+.page-teaser--video,
+.cover-image{
+    animation: 2s linear infinite loading;
+    opacity: 1;
+}
+*/
+.comparison-control {
+  background-color: #a4a09b;
+}
+
+/*
+.latest{
+    a{
+        &:hover{
+            .copy-m{
+                color:$black;
+            }
+        }
+    }
+}
+*/
+/* light page -------------------------------------------------------- */
+body {
+  background-color: #fff;
+  color: #000;
+}
+
+*::-moz-selection {
+  background: #003BF3;
+  color: #f1f1f1;
+}
+
+*::selection {
+  background: #003BF3;
+  color: #f1f1f1;
+}
+
+.afaker,
+a {
+  color: #000;
+}
+.afaker:focus, .afaker:active, .afaker:hover,
+a:focus,
+a:active,
+a:hover {
+  color: #003BF3;
+}
+.afaker:focus::after, .afaker:active::after, .afaker:hover::after,
+a:focus::after,
+a:active::after,
+a:hover::after {
+  background-color: #003BF3;
+}
+.afaker:focus .afaker, .afaker:active .afaker, .afaker:hover .afaker,
+a:focus .afaker,
+a:active .afaker,
+a:hover .afaker {
+  color: #003BF3;
+}
+.afaker:focus .afaker::after, .afaker:active .afaker::after, .afaker:hover .afaker::after,
+a:focus .afaker::after,
+a:active .afaker::after,
+a:hover .afaker::after {
+  background-color: #003BF3;
+}
+.afaker:focus .underline, .afaker:active .underline, .afaker:hover .underline,
+a:focus .underline,
+a:active .underline,
+a:hover .underline {
+  border-bottom: 1px solid #003BF3;
+}
+.afaker::before,
+a::before {
+  background-color: #f1f1f1;
+}
+.afaker.hover-white:focus, .afaker.hover-white:active, .afaker.hover-white:hover,
+a.hover-white:focus,
+a.hover-white:active,
+a.hover-white:hover {
+  color: #fff;
+}
+.afaker.hover-white:focus::after, .afaker.hover-white:active::after, .afaker.hover-white:hover::after,
+a.hover-white:focus::after,
+a.hover-white:active::after,
+a.hover-white:hover::after {
+  background-color: #fff;
+}
+.afaker .underline,
+a .underline {
+  border-bottom: 1px solid #000;
+}
+
+#header #header-inner #logo svg {
+  fill: #000;
+}
+#header #header-inner .main-menu ul li.current-menu-item a {
+  color: #a4a09b;
+}
+#header #header-inner .brand-login {
+  border-color: #000;
+}
+#header #header-inner .brand-login svg {
+  fill: #000;
+}
+#header #header-inner .brand-login:hover {
+  background-color: #000;
+  border-color: #000;
+}
+#header #header-inner .brand-login:hover svg {
+  fill: #fff;
+}
+#header #header-inner #burger .burger-inner span {
+  background-color: #000;
+}
+#header #mega-menu .menu li.current_page_parent a,
+#header #mega-menu .menu li.current-menu-item a {
+  color: #212121;
+  color: #212121;
+}
+#header #mega-menu .menu li.current_page_parent a::before,
+#header #mega-menu .menu li.current-menu-item a::before {
+  background-color: #212121;
+  background-color: #212121;
+}
+
+#mega-menu {
+  background-color: #003BF3;
+}
+#mega-menu a:hover {
+  color: #f1f1f1;
+}
+#mega-menu a:hover::after {
+  background-color: #212121;
+  background-color: #212121;
+}
+
+#header.isontop a.back-link:hover {
+  color: #fff;
+}
+#header.isontop a.back-link:hover::after {
+  background-color: #fff;
+}
+#header.isontop .main-menu ul li.current-menu-item a {
+  color: #a4a09b;
+}
+
+.page-teaser-wrapper--link:first-child::before {
+  background-color: #000;
+}
+
+.separator--line {
+  background-color: #000;
+}
+
+.cat-nav #menu-cats li.current-menu-item a {
+  background-color: #000;
+  border-color: #000;
+  color: #fff;
+}
+
+.tags-wrapper--btn svg {
+  fill: #000;
+}
+.tags-wrapper--btn:hover svg {
+  fill: #a4a09b;
+}
+.tags-wrapper--btn.active {
+  background-color: #312F2F;
+}
+.tags-wrapper--btn.active .afaker {
+  color: #fff;
+}
+.tags-wrapper--btn.active svg {
+  fill: #fff;
+}
+
+.tags-wrapper--cloud.open {
+  background-color: #312F2F;
+}
+.tags-wrapper--cloud.open a.current {
+  border-color: #fff;
+  background-color: #fff;
+  color: #000;
+}
+
+.overview-link svg {
+  fill: #000;
+}
+.overview-link:hover svg {
+  fill: #a4a09b;
+}
+
+.arrow-wrapper svg {
+  fill: #000;
+}
+
+.keynotes .kynote .inview--line {
+  background-color: #707070;
+}
+
+.faq-wrapper .acc-wrapper .filter-wrapper a.active::after {
+  background-color: #000;
+}
+.faq-wrapper .acc-wrapper .filter-wrapper a.active:hover::after {
+  background-color: #a4a09b;
+}
+
+/*
+.speech-bubbles{
+    .grid-width{
+        .speech-bubbles--text--inner{
+            .speech-bubbles-warpper{
+                .bubble{
+                    label{
+                        &:hover{
+                            color:$orange;
+                            .card{
+                                svg{
+                                    stroke: $orange;
+                                }
+                            }
+                        }
+                        .card{
+                            svg{
+                                fill:$white;
+                                stroke:$black;
+                            }
+                        }
+                    }
+                    &.active{
+                        .card svg{
+                            fill: $orange;
+                            stroke: $orange;
+                        }
+                        label{
+                            &:hover{
+                                color:$black;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+*/
+#footer a:hover svg {
+  fill: #a4a09b;
+}
+#footer .menu-main-footer-container ul li.current-menu-item a,
+#footer .menu-footerm-container ul li.current-menu-item a,
+#footer .menu-footerc-container ul li.current-menu-item a,
+#footer .menu-footernav-container ul li.current-menu-item a {
+  color: #a4a09b;
+}
+#footer .menu-main-footer-container ul li.current-menu-item a::before {
+  background-color: #a4a09b;
+}
+#footer .social-wrapper svg {
+  fill: #000;
+}
+#footer .social-wrapper a:hover svg {
+  fill: #fff;
+}
+
+/* dark page -------------------------------------------------------- */
+html.dark-bg body {
+  background-color: #312F2F;
+  color: #fff;
+  /*
+  *::selection {
+      background: $white; color:$orange;
+  }
+  */
+}
+html.dark-bg body a {
+  color: #fff;
+}
+html.dark-bg body a:focus, html.dark-bg body a:active, html.dark-bg body a:hover {
+  color: #a4a09b;
+}
+html.dark-bg body a:focus::after, html.dark-bg body a:active::after, html.dark-bg body a:hover::after {
+  background-color: #a4a09b;
+}
+html.dark-bg body a::before {
+  background-color: #fff;
+}
+html.dark-bg body a.btn {
+  border-color: #fff;
+}
+html.dark-bg body a.btn:focus, html.dark-bg body a.btn:active, html.dark-bg body a.btn:hover {
+  color: #000;
+  border-color: #fff;
+  background-color: #fff;
+}
+html.dark-bg body #header #header-inner #logo svg {
+  fill: #fff;
+}
+html.dark-bg body #header #header-inner .brand-login {
+  border-color: #fff;
+}
+html.dark-bg body #header #header-inner .brand-login svg {
+  fill: #fff;
+}
+html.dark-bg body #header #header-inner .brand-login:hover {
+  border-color: #fff;
+  background-color: #fff;
+}
+html.dark-bg body #header #header-inner .brand-login:hover svg {
+  fill: #000;
+}
+html.dark-bg body #header #header-inner #burger .burger-inner span {
+  background-color: #fff;
+}
+html.dark-bg body #mega-menu a {
+  color: #000;
+}
+html.dark-bg body #mega-menu a:hover {
+  color: #a4a09b;
+}
+html.dark-bg body #mega-menu a::before {
+  background-color: #000;
+}
+html.dark-bg body .separator--line {
+  background-color: #fff;
+}
+html.dark-bg body .page-teaser-wrapper--link:first-child::before {
+  background-color: #fff;
+}
+html.dark-bg body .arrow-wrapper svg {
+  fill: #fff;
+}
+html.dark-bg body #footer svg {
+  fill: #fff;
+}
+html.dark-bg body #footer a:hover svg {
+  fill: #a4a09b;
+}
+html.dark-bg body #footer a.icon-social {
+  border-color: #fff;
+}
+html.dark-bg body #footer a.icon-social svg {
+  fill: #fff;
+}
+html.dark-bg body #footer a.icon-social:hover {
+  border-color: #fff;
+  background-color: #fff;
+}
+html.dark-bg body #footer a.icon-social:hover svg {
+  fill: #000;
+}
+html.dark-bg body.mega-menu--open #header #header-inner .brand-login {
+  border-color: #000;
+}
+html.dark-bg body.mega-menu--open #header #header-inner .brand-login svg {
+  fill: #000;
+}
+html.dark-bg body.mega-menu--open #header #header-inner .brand-login:hover {
+  background-color: #000;
+}
+html.dark-bg body.mega-menu--open #header #header-inner .brand-login:hover svg {
+  fill: #fff;
+}
+html.dark-bg body.mega-menu--open #header #header-inner #burger .burger-inner span {
+  background-color: #000;
+}
+html.dark-bg .menu-pcats-container #menu-pcats li.current-menu-item a {
+  background-color: #fff;
+  color: #000;
+}
+
+/* mega menu -------------------------------------------------------- */
+body.mega-menu--open #mega-menu a {
+  color: #F1F1F1;
+}
+body.mega-menu--open #mega-menu a:hover {
+  color: #212121;
+  color: #212121;
+}
+body.mega-menu--open #mega-menu #header #header-inner .brand-login {
+  border-color: #000;
+}
+body.mega-menu--open #mega-menu #header #header-inner .brand-login svg {
+  fill: #000;
+}
+body.mega-menu--open #mega-menu #header #header-inner .brand-login:hover {
+  background-color: #000;
+}
+body.mega-menu--open #mega-menu #header #header-inner .brand-login:hover svg {
+  fill: #fff;
+}
+body.mega-menu--open #mega-menu #header #header-inner #burger .burger-inner span {
+  background-color: #000;
+}
+
+/* negative menu --------------------------------------------------- */
+html.negative-menu body.is-negative-menu #header.isontop #header-inner .main-menu ul li.current-menu-item a {
+  color: #a4a09b;
+}
+html.negative-menu body.is-negative-menu #header.isontop #header-inner a {
+  color: #fff;
+}
+html.negative-menu body.is-negative-menu #header.isontop #header-inner a:hover {
+  color: #a4a09b;
+}
+html.negative-menu body.is-negative-menu #header.isontop #header-inner #logo svg {
+  fill: #fff;
+}
+html.negative-menu body.is-negative-menu #header.isontop #header-inner .brand-login {
+  border-color: #fff;
+}
+html.negative-menu body.is-negative-menu #header.isontop #header-inner .brand-login svg {
+  fill: #fff;
+}
+html.negative-menu body.is-negative-menu #header.isontop #header-inner .brand-login:hover {
+  background-color: #fff;
+  border-color: #fff;
+}
+html.negative-menu body.is-negative-menu #header.isontop #header-inner .brand-login:hover svg {
+  fill: #000;
+}
+html.negative-menu body.is-negative-menu #header.isontop #header-inner #burger .burger-inner span {
+  background-color: #fff;
+}
+html.negative-menu body.is-negative-menu #header.isontop #mega-menu a {
+  color: #000;
+}
+html.negative-menu body.is-negative-menu #header.isontop #mega-menu a:hover {
+  color: #fff;
+}
+html.negative-menu body.is-negative-menu #header.isontop #mega-menu li.current-menu-item a {
+  color: #fff;
+}
+html.negative-menu body.is-negative-menu body.mega-menu--open #header.isontop #header-inner .brand-login {
+  border-color: #000;
+}
+html.negative-menu body.is-negative-menu body.mega-menu--open #header.isontop #header-inner .brand-login svg {
+  fill: #000;
+}
+html.negative-menu body.is-negative-menu body.mega-menu--open #header.isontop #header-inner .brand-login:hover {
+  border-color: #000;
+  background-color: #000;
+}
+html.negative-menu body.is-negative-menu body.mega-menu--open #header.isontop #header-inner .brand-login:hover svg {
+  fill: #fff;
+}
+html.negative-menu body.is-negative-menu body.mega-menu--open #header.isontop #header-inner #burger .burger-inner span {
+  background-color: #000;
+}
+html.negative-menu body.is-negative-menu.mega-menu--open #header #header-inner .brand-login {
+  border-color: #000;
+}
+html.negative-menu body.is-negative-menu.mega-menu--open #header #header-inner .brand-login svg {
+  fill: #000;
+}
+html.negative-menu body.is-negative-menu.mega-menu--open #header #header-inner .brand-login:hover {
+  border-color: #000;
+  background-color: #000;
+}
+html.negative-menu body.is-negative-menu.mega-menu--open #header #header-inner .brand-login:hover svg {
+  fill: #fff;
+}
+html.negative-menu body.is-negative-menu.mega-menu--open #header #header-inner #burger .burger-inner span {
+  background-color: #000;
+}/*# sourceMappingURL=colors.css.map */

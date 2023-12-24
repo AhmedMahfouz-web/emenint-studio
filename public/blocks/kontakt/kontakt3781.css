@@ -1,0 +1,33 @@
+.kontakt-wrapper {
+  margin: 0 115px;
+}
+@media (max-width: 1090px) {
+  .kontakt-wrapper {
+    margin: 0;
+  }
+}
+.kontakt-wrapper .subline {
+  margin-bottom: 30px;
+}
+@media (max-width: 768px) {
+  .kontakt-wrapper .subline {
+    margin-bottom: 10px;
+  }
+}
+.kontakt-wrapper--text {
+  min-width: 33%;
+  margin-right: 40px;
+}
+@media (max-width: 768px) {
+  .kontakt-wrapper--text {
+    min-width: 100%;
+    margin-right: 0;
+    margin-bottom: 40px;
+  }
+}
+.kontakt-wrapper--text:last-child {
+  margin-right: 0;
+}
+.kontakt-wrapper--text a {
+  margin-bottom: 10px;
+}/*# sourceMappingURL=kontakt.css.map */

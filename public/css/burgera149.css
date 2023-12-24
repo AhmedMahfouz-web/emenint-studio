@@ -1,0 +1,102 @@
+#burger {
+  width: 40px;
+  min-width: 40px;
+  height: 50px;
+  position: relative;
+  z-index: 10;
+  transform: translate3D(0);
+  /* overflow: hidden; */
+  cursor: pointer;
+}
+#burger .burger-inner {
+  width: 40px;
+}
+#burger .burger-inner span {
+  width: 40px;
+  height: 2px;
+  margin:  1px 0;
+  display: block;
+  transition: transform 0.25s ease-out;
+  transform-origin: center center;
+}
+#burger .burger-inner span:first-child {
+  transform: translate3D(0, -6px, 0);
+}
+#burger .burger-inner span:last-child {
+  transform: translate3D(0, 6px, 0);
+}
+#burger:hover .burger-inner span:first-child {
+  transform: translate3D(-6px, -6px, 0);
+}
+#burger:hover .burger-inner span:last-child {
+  transform: translate3D(6px, 6px, 0);
+}
+#burger.active .burger-inner {
+  margin-left: 5px;
+}
+#burger.active .burger-inner span {
+  width: 40px;
+  margin-bottom: 0;
+  -webkit-animation: width 0.35s ease forwards;
+          animation: width 0.35s ease forwards;
+          margin: 0;
+}
+
+#burger.active .burger-inner span:nth-child(2){
+  visibility: hidden;
+  position: absolute;
+  top: -500px;
+  display: none;
+}
+
+#burger.active .burger-inner span:first-child {
+  transform: rotate(45deg);
+}
+#burger.active .burger-inner span:last-child {
+  transform: rotate(-45deg);
+}
+#burger.active:hover .burger-inner span {
+  margin-bottom: 0;
+}
+#burger.active:hover .burger-inner span:first-child {
+  transform: rotate(45deg);
+}
+#burger.active:hover .burger-inner span:last-child {
+  transform: rotate(-45deg);
+}
+
+@-webkit-keyframes width {
+  0% {
+    width: 50px;
+    margin-left: 0;
+    opacity: 1;
+  }
+  50% {
+    width: 0;
+    margin-left: 50%;
+    opacity: 0;
+  }
+  100% {
+    width: 40px;
+    margin-left: 0;
+    opacity: 1;
+  }
+}
+
+@keyframes width {
+  0% {
+    width: 50px;
+    margin-left: 0;
+    opacity: 1;
+  }
+  50% {
+    width: 0;
+    margin-left: 50%;
+    opacity: 0;
+  }
+  100% {
+    width: 40px;
+    margin-left: 0;
+    opacity: 1;
+  }
+}/*# sourceMappingURL=burger.css.map */

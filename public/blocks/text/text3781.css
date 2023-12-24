@@ -1,0 +1,16 @@
+.introtext .grid-width {
+  max-width: 1110px;
+}
+.introtext .grid-width .subline {
+  margin-bottom: 20px;
+}
+.introtext .grid-width.content-sml {
+  max-width: 880px;
+}
+.introtext .grid-width h1 {
+  margin-top: 35px;
+  margin-bottom: 60px;
+}
+.introtext .grid-width.text-left .content-sml {
+  margin-left: 0;
+}/*# sourceMappingURL=text.css.map */

@@ -1,0 +1,35 @@
+.index-intro .grid-width {
+  margin-top: 250px;
+  margin-bottom: 90px;
+}
+@media (max-width: 768px) {
+  .index-intro .grid-width {
+    margin-top: 140px;
+    margin-bottom: 70px;
+  }
+}
+.index-intro .grid-width .intro {
+  margin-left: 7.5%;
+  line-height: 70px;
+}
+@media (max-width: 980px) {
+  .index-intro .grid-width .intro {
+    margin-left: 0;
+  }
+}
+@media (max-width: 768px) {
+  .index-intro .grid-width .intro {
+    line-height: 38px;
+  }
+}
+@media (max-width: 430px) {
+  .index-intro .grid-width .intro br {
+    display: none;
+  }
+}
+.index-intro .grid-width .intro a {
+  padding-bottom: 0;
+}
+.index-intro .grid-width .intro a::after, .index-intro .grid-width .intro a::before {
+  bottom: 8px;
+}/*# sourceMappingURL=index-intro.css.map */

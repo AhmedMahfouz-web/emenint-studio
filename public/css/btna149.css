@@ -1,0 +1,39 @@
+.magnet {
+  position: relative;
+  transition: transform 0.15s linear;
+}
+
+.btn {
+  font-family: "SuisseIntl-Book";
+  border: 1px solid;
+  border-radius: 40px;
+  padding: 15px 26px 13px 26px;
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.25s ease;
+}
+@media (max-width: 768px) {
+  .btn {
+    font-size: 16px;
+    padding: 13px 22px 10px 22px;
+    transition: none;
+  }
+}
+.btn::before, .btn::after {
+  display: none;
+}
+.btn span {
+  display: inline-block;
+  pointer-events: none;
+  transition: transform 0.1s linear;
+}
+.btn-s {
+  padding: 9px 18px 8px 18px;
+}
+.btn--icon {
+  padding: 15px 15px 13px 15px;
+}/*# sourceMappingURL=btn.css.map */
