@@ -145,69 +145,50 @@
 }
 #mega-menu .big-one {
   margin-right: 130px;
+  width: 45%;
 }
 @media (max-width: 1355px) {
   #mega-menu .big-one {
-    margin-right: 65px;
+    margin-right: 0px;
   }
 }
 @media (max-width: 400px) {
   #mega-menu .big-one {
-    margin-right: 35px;
+    margin-right: 0;
   }
 }
 @media (max-width: 340px) {
   #mega-menu .big-one {
-    margin-right: 30px;
+    margin-right: 0;
   }
 }
 #mega-menu .big-one li {
   overflow: hidden;
-  height: 62px;
-  padding-top: 62px;
   transition: 0.3s ease;
-  margin-bottom: 30px;
+  margin-bottom: 15px;
 }
-@media (max-width: 480px) {
-  #mega-menu .big-one li {
-    height: 44px;
-    padding-top: 44px;
-    margin-bottom: 20px;
-  }
-}
-@media (max-width: 400px) {
-  #mega-menu .big-one li {
-    height: 36px;
-    padding-top: 36px;
-    margin-bottom: 15px;
-  }
-}
-@media (max-width: 340px) {
-  #mega-menu .big-one li {
-    height: 34px;
-    padding-top: 34px;
-  }
-}
+
+
 #mega-menu .big-one li a {
-  font-size: 48px;
+  font-size: 44px;
   line-height: 1;
   display: inline-block;
   padding: 7px 0;
 }
 @media (max-width: 480px) {
   #mega-menu .big-one li a {
-    font-size: 38px;
+    font-size: 33px;
     padding: 3px 0;
   }
 }
 @media (max-width: 400px) {
   #mega-menu .big-one li a {
-    font-size: 30px;
+    font-size: 26px;
   }
 }
 @media (max-width: 340px) {
   #mega-menu .big-one li a {
-    font-size: 28px;
+    font-size: 22px;
   }
 }
 #mega-menu .big-one li:last-child {

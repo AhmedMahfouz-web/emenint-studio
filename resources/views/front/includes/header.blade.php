@@ -104,7 +104,16 @@
                         <ul id="menu-big-one-en" class="menu">
                             <li class="current-menu-item"><a href="{{ route('home') }}" aria-current="page">Home</a>
                             </li>
-                            <li><a href="#">Services</a></li>
+                            <li><a href="#">Services</a>
+                                <ul id="services_links">
+                                    <li class="links"><a href="{{ route('branding') }}">Branding</a></li>
+                                    <li class="links"><a href="{{ route('marketing') }}">Marketing</a></li>
+                                    <li class="links"><a href="{{ route('advertising') }}">Advertising</a></li>
+                                    <li class="links"><a href="{{ route('development') }}">Development</a></li>
+                                    <li class="links"><a href="{{ route('ecommerce') }}">E-commerce</a></li>
+                                    <li class="links"><a href="{{ route('consultant') }}">Consultant</a></li>
+                                </ul>
+                            </li>
                             <li><a href="{{ route('about') }}">Studio</a></li>
                             <li><a href="{{ route('contact') }}">Contact us</a></li>
                         </ul>
@@ -114,13 +123,7 @@
                     <div class="flex--strech">
                         <nav class="big-two" aria-label="Off-Canvas Secondary">
                             <div class="menu-big-two-en-container">
-                                <ul id="menu-big-two-en" class="menu">
-                                    <li><a href="brandfit-workshop.html">Brandfit Workshop</a></li>
-                                    <li><a href="solid-brandbase.html">Solid Brandbase</a></li>
-                                    <li><a href="https://solidbold.at/magazin">News &#038; Storys</a></li>
-                                    <li><a href="career.html">Career</a></li>
-                                    <li><a href="contact.html">Contact</a></li>
-                                </ul>
+
                             </div>
                         </nav>
                     </div>

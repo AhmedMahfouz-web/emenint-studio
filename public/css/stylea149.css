@@ -1343,3 +1343,32 @@ width: 100px;
   }
 
 }
+
+#services_links{
+  padding: 10px 20px 0;
+}
+
+#services_links li {
+margin-bottom: 10px !important;
+}
+
+#services_links li a{
+  font-size: 33px !important;
+}
+@media (max-width: 480px) {
+  #services_links li a {
+    font-size: 24px !important;
+  }
+}
+
+@media (max-width: 400px) {
+  #services_links li a {
+    font-size: 20px !important;
+  }
+}
+
+@media (max-width: 340px) {
+  #services_links li a {
+    font-size: 16px !important;
+  }
+}

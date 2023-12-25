@@ -79,10 +79,9 @@
             <div class="foorer--main-menu inview inview--up" role="navigation" aria-label="Footer Main">
                 <div class="menu-main-footer-en-container">
                     <ul id="menu-main-footer-en" class="menu">
-                        <li><a href="branding-2.html">Home</a></li>
-                        <li><a href="projects.html">Services</a></li>
-                        <li><a href="studio.html">Studio</a></li>
-                        <li><a href="service.html">Contact us</a></li>
+                        <li><a href="{{ route('home') }}">Home</a></li>
+                        <li><a href="{{ route('about') }}">Studio</a></li>
+                        <li><a href="{{ route('contact') }}">Contact us</a></li>
                     </ul>
                 </div>
             </div>
@@ -94,7 +93,7 @@
                 <div class="foorer--sec-menu inview inview--up" role="navigation" aria-label="Footer Contact">
                     <div class="menu-footerc-en-container">
                         <ul id="menu-footerc-en" class="menu">
-                            <li><a href="contact.html">Contact</a></li>
+                            <li><a href="{{ route('contact') }}">Contact</a></li>
                         </ul>
                     </div>
                     <div class="menu">
