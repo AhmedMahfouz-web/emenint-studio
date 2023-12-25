@@ -1256,6 +1256,10 @@ a.post-item:hover .parallax-section {
   flex-direction: row-reverse;
 }
 
+.advertising:last-child{
+  margin-bottom: 60px;
+}
+
 .img-adv {
   overflow: hidden;
   position: relative;
@@ -1268,6 +1272,7 @@ a.post-item:hover .parallax-section {
 .adv-slides {
   display: flex;
   position: relative;
+  align-content: flex-start;
   top: 0;
   left: -100%;
   width: 100%;
