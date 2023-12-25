@@ -165,7 +165,7 @@ h1, .h1 {
 }
 @media (max-width: 768px) {
   h1, .h1 {
-    font-size: 55px;
+    font-size: 65px;
     line-height: 66px;
     letter-spacing: -0.02em;
   }
