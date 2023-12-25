@@ -1284,29 +1284,29 @@ a.post-item:hover .parallax-section {
 }
 
 @media (max-width: 768px) {
-.advertising {
-  flex-direction: column;
-  height: auto;
-}
+  .advertising {
+    flex-direction: column;
+    height: auto;
+  }
 
-.svg-header--project{
-  margin-top: 50px;
-}
+  .svg-header--project{
+    margin-top: 50px;
+  }
 
-.adv-container{
-  margin-top: 150px;
-}
+  .adv-container{
+    margin-top: 150px;
+  }
 
-.advertising .img-adv {
-  width: 100%;
-}
+  .advertising .img-adv {
+    width: 100%;
+  }
 
-.advertising .text-adv {
-  width: 100%;
-  padding-top: 0;
-  margin-bottom: 30px;
+  .advertising .text-adv {
+    width: 100%;
+    padding-top: 0;
+    margin-bottom: 30px;
+  }
 }
-
 .adv-slides.shifting {
   transition: left 1s ease-out;
 }
@@ -1399,4 +1399,5 @@ margin-bottom: 10px !important;
   #services_links li a {
     font-size: 16px !important;
   }
+}
 }
