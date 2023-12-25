@@ -1255,6 +1255,10 @@ a.post-item:hover .parallax-section {
 .advertising:nth-child(odd){
   flex-direction: row-reverse;
 }
+@media (max-width: 768px) {
+  .advertising:nth-child(odd){
+    flex-direction: column;
+  }
 
 .advertising:last-child{
   margin-bottom: 60px;
@@ -1277,6 +1281,30 @@ a.post-item:hover .parallax-section {
   left: -100%;
   width: 100%;
   transition: 1s;
+}
+
+@media (max-width: 768px) {
+.advertising {
+  flex-direction: column;
+  height: auto;
+}
+
+.svg-header--project{
+  margin-top: 50px;
+}
+
+.adv-container{
+  margin-top: 150px;
+}
+
+.advertising .img-adv {
+  width: 100%;
+}
+
+.advertising .text-adv {
+  width: 100%;
+  padding-top: 0;
+  margin-bottom: 30px;
 }
 
 .adv-slides.shifting {

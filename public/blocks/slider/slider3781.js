@@ -6,15 +6,14 @@
     // Initialize each block on page load (front end).
     $(document).ready(function () {
         var mySwiper = new Swiper ('.swiper-content', {
-          slidesPerView: 'auto',
-          spaceBetween: 80,
+          spaceBetween: 0,
           centeredSlides: true,
           navigation: {
             nextEl: '.swiper-button-next',
             prevEl: '.swiper-button-prev',
           },
           768: {
-            spaceBetween: 20
+            spaceBetween: 0
           }
         });       
     });
