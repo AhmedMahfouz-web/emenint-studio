@@ -125,11 +125,19 @@ body.loaded #page {
   margin-bottom: -33px;
 }
 
+.svg-header #svg-animaiotn svg.studio.contact{
+  margin-bottom: 0;
+}
+
 @media (max-width: 768px) {
   .svg-header #svg-animaiotn svg.studio{
     width: 40% !important;
     margin-bottom: -40px;
-}
+  }
+
+  .svg-header #svg-animaiotn svg.studio.contact{
+    margin-bottom: 50px;
+  }
 }
 
 .bg-black .cls-1{

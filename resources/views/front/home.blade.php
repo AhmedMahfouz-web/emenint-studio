@@ -293,7 +293,7 @@
                 <div class="flex quicklinks">
                     <div class="inview inview--up">
                         <div class="magnet">
-                            <a class="btn nopagechange" href="mailto:info@eminent-studio.com">
+                            <a class="btn nopagechange" href="mailto:hello@eminent-studio.com">
                                 <span class="flex">
                                     E-Mail </span>
                             </a>

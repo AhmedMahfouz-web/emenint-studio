@@ -65,6 +65,7 @@
         type='text/css' media='all' />
     <script src="{{ asset('js/jquery-3.7.1.min.js') }}"></script>
 
+    <link rel="icon" type="image/x-icon" href="{{ asset('/images/icon.svg') }}">
     {{-- <script id="Cookiebot" src="{{ asset('js/uc.js') }}" data-blockingmode="auto" type="text/javascript"></script> --}}
     <!-- Google Analytics -->
     {{-- <script async src="https://www.googletagmanager.com/gtag/js?id=UA-101867521-1"></script> --}}
