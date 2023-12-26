@@ -130,14 +130,14 @@
                     <div class="kontakt-info" role="navigation" aria-label="Socialmedia">
                         <div class="social-wrapper flex flex--left">
                             <a class="nopagechange icon-social flex" target="_blank"
-                                href="https://www.facebook.com/solidandbold/">
+                                href="https://www.facebook.com/eminentstudiosa">
                                 <svg viewBox="0 0 7 13" width="7" height="13">
                                     <path
                                         d="M2.1,13h2.6V7.2h1.9l0.4-2.3H4.7V3.1c0-0.7,0.6-1,1.2-1H7v-2L5.1,0c-1.9-0.1-3,1.4-3,3.1v1.8H0v2.3h2.1V13z" />
                                 </svg>
                             </a><br />
                             <a class="nopagechange icon-social flex" target="_blank"
-                                href="https://www.instagram.com/solidandbold">
+                                href="https://www.instagram.com/eminent.studio/">
                                 <svg viewBox="0 0 13 13" width="13" height="13">
                                     <path
                                         d="M9.5,0h-6C1.6,0,0,1.6,0,3.5v6C0,11.4,1.6,13,3.5,13h6c1.9,0,3.5-1.6,3.5-3.5v-6C13,1.6,11.4,0,9.5,0z M11.9,9.5c0,1.3-1.1,2.4-2.4,2.4H3.5c-1.3,0-2.4-1.1-2.4-2.4V3.5c0-1.3,1.1-2.4,2.4-2.4h5.9c1.3,0,2.4,1.1,2.4,2.4V9.5z" />
@@ -148,14 +148,14 @@
                                 </svg>
                             </a><br />
                             <a class="nopagechange icon-social flex" target="_blank"
-                                href="https://www.linkedin.com/company/solidbold">
+                                href="https://www.linkedin.com/company/eminentstudiosa/">
                                 <svg viewBox="0 0 13 13" width="13" height="13">
                                     <path
                                         d="M0.2,4.4h2.6V13H0.2V4.4z M1.5,0c0.8,0,1.6,0.7,1.6,1.5S2.4,3.1,1.5,3.1S0,2.4,0,1.5C0,0.7,0.7,0,1.5,0L1.5,0z M4.4,4.4h2.5v1.2c0.5-0.8,1.4-1.3,2.5-1.3h0.7c1.6,0,2.9,1.3,2.9,2.9v1.3V10v2.9h-2.5v0v-0.8l0,0V8.3l0,0c0-1-0.7-1.7-1.7-1.7l0,0c-1,0-1.8,0.8-1.9,1.7l0,0v3.4V13H4.4V4.4z" />
                                 </svg>
                             </a>
                             <a class="nopagechange icon-social flex" target="_blank"
-                                href="https://www.behance.net/solidandbold">
+                                href="https://www.behance.net/eminentstudiosa">
                                 <svg viewBox="0 0 13 13" width="13" height="13">
                                     <path
                                         d="M6.5,8.5c0,0.3-0.1,0.6-0.2,0.9C6.2,9.6,6,9.8,5.8,10s-0.5,0.3-0.8,0.4s-0.7,0.1-1,0.1H0V2.4h4.3c0.3,0,0.5,0.1,0.8,0.2s0.4,0.3,0.6,0.5C5.9,3.3,6,3.5,6.1,3.8s0.1,0.5,0.1,0.7c0,0.4-0.1,0.8-0.3,1.1C5.7,6,5.4,6.2,5,6.4c0.5,0.1,0.8,0.4,1.1,0.7C6.4,7.5,6.5,7.9,6.5,8.5z M1.6,3.8v2.1h2.1c0.3,0,0.5-0.1,0.7-0.3c0.2-0.2,0.3-0.4,0.3-0.7S4.6,4.3,4.4,4.1S4,3.8,3.7,3.8C3.7,3.8,1.6,3.8,1.6,3.8z M5,8.2c0-0.1,0-0.3-0.1-0.4c0-0.1-0.1-0.3-0.2-0.3C4.6,7.3,4.5,7.2,4.4,7.2S4.2,7.1,4,7.1H1.6v2.1h2.4c0.1,0,0.3,0,0.4-0.1c0.1,0,0.2-0.1,0.3-0.2s0.2-0.2,0.2-0.3C4.9,8.4,5,8.3,5,8.2z" />
@@ -167,7 +167,7 @@
                         </div>
                     </div>
                 </div>
-                <a href="https://solidbold.at/branding-workshop" class="quicklink">
+                <a href="#" class="quicklink">
                     <div class="quicklink--image">
                         <div class="inner cover-image"
                             style="background-image:url({{ asset('uploads/2022/07/SolidBold_stills-solidbold_1.363.1-2-1200x750.jpg') }});">

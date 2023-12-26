@@ -13,7 +13,7 @@
 
         <section class="index-page-teaser">
             <div class="grid-width">
-                <a href="studio.html" class="page-teaser">
+                <a href="{{ route('about') }}" class="page-teaser">
                     <div class="page-teaser--video inview inview--up">
                         <video autoplay muted loop playsinline preload="none">
                             <source
