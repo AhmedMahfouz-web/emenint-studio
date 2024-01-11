@@ -34,12 +34,16 @@
 
         <section class="adv-container">
             <section class="flex flex-top advertising">
-                <div class="img-adv">
-                    <div class="adv-slides">
-                        <img class="slide lazyload" src="{{ asset('images/visual_identity/1.jpg') }}" alt="">
-                        <img class="slide lazyload" src="{{ asset('images/visual_identity/2.jpg') }}" alt="">
-                        <img class="slide lazyload" src="{{ asset('images/visual_identity/3.jpg') }}" alt="">
+                <div class=" swiper">
+                    <div class=" swiper-wrapper">
+                        <img class=" swiper-slide lazyload" src="{{ asset('images/visual_identity/1.jpg') }}"
+                            alt="">
+                        <img class=" swiper-slide lazyload" src="{{ asset('images/visual_identity/2.jpg') }}"
+                            alt="">
+                        <img class=" swiper-slide lazyload" src="{{ asset('images/visual_identity/3.jpg') }}"
+                            alt="">
                     </div>
+
                 </div>
                 <div class="text-adv">
                     <div class="adv-header h2 output inview inview--up">Visual Identity</div>
@@ -50,13 +54,18 @@
             </section>
 
             <section class="flex flex-top advertising">
-                <div class="img-adv">
-                    <div class="adv-slides">
-                        <img class="slide lazyload" src="{{ asset('images/printing_solution/1.jpg') }}" alt="">
-                        <img class="slide lazyload" src="{{ asset('images/printing_solution/2.jpg') }}" alt="">
-                        <img class="slide lazyload" src="{{ asset('images/printing_solution/3.jpg') }}" alt="">
-                        <img class="slide lazyload" src="{{ asset('images/printing_solution/4.jpg') }}" alt="">
-                        <img class="slide lazyload" src="{{ asset('images/printing_solution/5.jpg') }}" alt="">
+                <div class="swiper">
+                    <div class="swiper-wrapper">
+                        <img class="swiper-slide lazyload" src="{{ asset('images/printing_solution/1.jpg') }}"
+                            alt="">
+                        <img class="swiper-slide lazyload" src="{{ asset('images/printing_solution/2.jpg') }}"
+                            alt="">
+                        <img class="swiper-slide lazyload" src="{{ asset('images/printing_solution/3.jpg') }}"
+                            alt="">
+                        <img class="swiper-slide lazyload" src="{{ asset('images/printing_solution/4.jpg') }}"
+                            alt="">
+                        <img class="swiper-slide lazyload" src="{{ asset('images/printing_solution/5.jpg') }}"
+                            alt="">
                     </div>
                 </div>
                 <div class="text-adv">
@@ -66,14 +75,14 @@
                         merchandise.</div>
                 </div>
             </section>
-
+            
             <section class="flex flex-top advertising">
-                <div class="img-adv">
-                    <div class="adv-slides">
-                        <img class="slide lazyload" src="{{ asset('images/2d/1.jpg') }}" alt="">
-                        <img class="slide lazyload" src="{{ asset('images/2d/2.jpg') }}" alt="">
-                        <img class="slide lazyload" src="{{ asset('images/2d/3.jpg') }}" alt="">
-                        <img class="slide lazyload" src="{{ asset('images/2d/3.jpg') }}" alt="">
+                <div class="swiper">
+                    <div class="swiper-wrapper">
+                        <img class="swiper-slide lazyload" src="{{ asset('images/2d/1.jpg') }}" alt="">
+                        <img class="swiper-slide lazyload" src="{{ asset('images/2d/2.jpg') }}" alt="">
+                        <img class="swiper-slide lazyload" src="{{ asset('images/2d/3.jpg') }}" alt="">
+                        <img class="swiper-slide lazyload" src="{{ asset('images/2d/3.jpg') }}" alt="">
                     </div>
                 </div>
                 <div class="text-adv">
@@ -86,11 +95,11 @@
             </section>
 
             <section class="flex flex-top advertising">
-                <div class="img-adv">
-                    <div class="adv-slides">
-                        <img class="slide lazyload" src="{{ asset('images/campaign/1.jpg') }}" alt="">
-                        <img class="slide lazyload" src="{{ asset('images/campaign/2.jpg') }}" alt="">
-                        <img class="slide lazyload" src="{{ asset('images/campaign/3.jpg') }}" alt="">
+                <div class="swiper">
+                    <div class="swiper-wrapper">
+                        <img class="swiper-slide lazyload" src="{{ asset('images/campaign/1.jpg') }}" alt="">
+                        <img class="swiper-slide lazyload" src="{{ asset('images/campaign/2.jpg') }}" alt="">
+                        <img class="swiper-slide lazyload" src="{{ asset('images/campaign/3.jpg') }}" alt="">
                     </div>
                 </div>
                 <div class="text-adv">
@@ -103,10 +112,10 @@
             </section>
 
             <section class="flex flex-top advertising">
-                <div class="img-adv">
-                    <div class="adv-slides">
-                        <img class="slide lazyload" src="{{ asset('images/billboard/1.jpg') }}" alt="">
-                        <img class="slide lazyload" src="{{ asset('images/billboard/2.jpg') }}" alt="">
+                <div class="swiper">
+                    <div class="swiper-wrapper">
+                        <img class="swiper-slide lazyload" src="{{ asset('images/billboard/1.jpg') }}" alt="">
+                        <img class="swiper-slide lazyload" src="{{ asset('images/billboard/2.jpg') }}" alt="">
                     </div>
                 </div>
                 <div class="text-adv">
@@ -118,12 +127,12 @@
             </section>
 
             <section class="flex flex-top advertising mb-6">
-                <div class="img-adv">
-                    <div class="adv-slides">
-                        <img class="slide lazyload" src="{{ asset('images/commercial/1.jpg') }}" alt="">
-                        <img class="slide lazyload" src="{{ asset('images/commercial/2.jpg') }}" alt="">
-                        <img class="slide lazyload" src="{{ asset('images/commercial/3.jpg') }}" alt="">
-                        <img class="slide lazyload" src="{{ asset('images/commercial/4.jpg') }}" alt="">
+                <div class="swiper">
+                    <div class="swiper-wrapper">
+                        <img class="swiper-slide lazyload" src="{{ asset('images/commercial/1.jpg') }}" alt="">
+                        <img class="swiper-slide lazyload" src="{{ asset('images/commercial/2.jpg') }}" alt="">
+                        <img class="swiper-slide lazyload" src="{{ asset('images/commercial/3.jpg') }}" alt="">
+                        <img class="swiper-slide lazyload" src="{{ asset('images/commercial/4.jpg') }}" alt="">
                     </div>
                 </div>
                 <div class="text-adv ">

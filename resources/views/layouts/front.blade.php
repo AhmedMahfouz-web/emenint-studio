@@ -12,7 +12,7 @@
     <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
     <title>Eminent Studio</title>
     <!-- This site is optimized with the Yoast SEO plugin v21.5 - https://yoast.com/wordpress/plugins/seo/ -->
-    {{-- 
+    {{--
     <style id='classic-theme-styles-inline-css' type='text/css'>
         /*! This file is auto-generated */
         .wp-block-button__link {
@@ -61,11 +61,12 @@
         type='text/css' media='all' />
     <link rel='stylesheet' id='styles-footer-css' href='{{ asset('css/footera149.css?ver=6.4') }}' type='text/css'
         media='all' />
+    <link rel='stylesheet' href='{{ asset('css/swiper.css') }}' type='text/css' media='all' />
     <link rel='stylesheet' id='styles-editor-content-css' href='{{ asset('css/editor-contenta149.css?ver=6.4') }}'
         type='text/css' media='all' />
     <script src="{{ asset('js/jquery-3.7.1.min.js') }}"></script>
 
-    <link rel="icon" type="image/x-icon" href="{{ asset('/images/icon.svg') }}">
+    <link rel="icon" href="{{ asset('icon.svg') }}">
     {{-- <script id="Cookiebot" src="{{ asset('js/uc.js') }}" data-blockingmode="auto" type="text/javascript"></script> --}}
     <!-- Google Analytics -->
     {{-- <script async src="https://www.googletagmanager.com/gtag/js?id=UA-101867521-1"></script> --}}
@@ -245,7 +246,7 @@
     id="block-acf-info-slider-js"></script>
 <script type="text/javascript" src="{{ asset('blocks/team/team3781.js?ver=6.2.2') }}" id="block-acf-team-js"></script>
 <script type="text/javascript" src="{{ asset('js/main.js') }}"></script>
-</script>
+<script type="text/javascript" src="{{ asset('js/swiper-bundle.min.js') }}"></script>
 <script>
     $(window).on('load', function() {
         $('.loader-wrapper').fadeOut('slow');
