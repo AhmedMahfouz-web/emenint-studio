@@ -1,5 +1,41 @@
 @extends('layouts.front')
 
+@section('css')
+    <style>
+        .swiper {
+            overflow: show;
+            position: relative;
+            width: 45%;
+            margin: 20px 0;
+            height: 100%;
+            z-index: 1;
+            margin-left: unset !important;
+            margin-right: unset !important;
+        }
+
+        .swiper-wrapper {
+            display: flex;
+            position: relative;
+            align-content: flex-start;
+            top: 0;
+            width: 100%;
+            transition: 1s;
+        }
+
+        .swiper-wrapper .swiper-slide {
+            width: 100%;
+            max-height: 100%;
+            cursor: pointer;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            transition: all 1s;
+            position: relative;
+            border-radius: 2px;
+        }
+    </style>
+@endsection
+
 @section('content')
     <div class="page">
         <section class="svg-header svg-header--project">
@@ -75,7 +111,7 @@
                         merchandise.</div>
                 </div>
             </section>
-            
+
             <section class="flex flex-top advertising">
                 <div class="swiper">
                     <div class="swiper-wrapper">

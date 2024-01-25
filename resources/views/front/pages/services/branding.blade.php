@@ -170,16 +170,16 @@
         </section>
 
 
-        <section class="info-swiper">
+        <section class="info-swipers">
             <div class="grid-width">
                 <div class="text-center">
                     <div class="subline inview inview--up">
                         (Our values)
                     </div>
                 </div>
-                <div class="swiper-container info-swiper-content">
-                    <div class="swiper-wrapper">
-                        <div class="swiper-slide">
+                <div class="swipers-container info-swipers-content">
+                    <div class="swipers-wrapper">
+                        <div class="swipers-slide">
                             <div class="subline inview inview--up">
                                 (01)
                             </div>
@@ -192,7 +192,7 @@
                                 their expectations and deliver outstanding results that drive their success. </div>
 
                         </div>
-                        <div class="swiper-slide">
+                        <div class="swipers-slide">
                             <div class="subline inview inview--up">
                                 (02)
                             </div>
@@ -207,7 +207,7 @@
                                 impression of unparalleled service quality. </div>
 
                         </div>
-                        <div class="swiper-slide">
+                        <div class="swipers-slide">
                             <div class="subline inview inview--up">
                                 (03)
                             </div>
@@ -223,7 +223,7 @@
                             </div>
 
                         </div>
-                        <div class="swiper-slide">
+                        <div class="swipers-slide">
                             <div class="subline inview inview--up">
                                 (04)
                             </div>
@@ -237,7 +237,7 @@
                                 that we consistently deliver cutting-edge solutions and experiences. </div>
 
                         </div>
-                        <div class="swiper-slide">
+                        <div class="swipers-slide">
                             <div class="subline inview inview--up">
                                 (05)
                             </div>
@@ -251,7 +251,7 @@
                                 consistent, and dependable services. </div>
 
                         </div>
-                        <div class="swiper-slide">
+                        <div class="swipers-slide">
                             <div class="subline inview inview--up">
                                 (06)
                             </div>
@@ -265,7 +265,7 @@
                                 experience is truly one-of-a-kind. </div>
 
                         </div>
-                        <div class="swiper-slide">
+                        <div class="swipers-slide">
                             <div class="subline inview inview--up">
                                 (07)
                             </div>
@@ -280,7 +280,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="swiper-scrollbar"></div>
+                    <div class="swipers-scrollbar"></div>
                 </div>
             </div>
         </section>

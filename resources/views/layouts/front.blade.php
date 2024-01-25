@@ -1,9 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-GB" class=" ">
 
-<!-- Mirrored from solidbold.at/en/ by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 18 Nov 2023 12:34:28 GMT -->
-<!-- Added by HTTrack -->
-<meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
+
 
 <head>
     <meta charset="UTF-8" />
@@ -11,26 +9,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
     <title>Eminent Studio</title>
-    <!-- This site is optimized with the Yoast SEO plugin v21.5 - https://yoast.com/wordpress/plugins/seo/ -->
-    {{--
-    <style id='classic-theme-styles-inline-css' type='text/css'>
-        /*! This file is auto-generated */
-        .wp-block-button__link {
-            color: #fff;
-            background-color: #32373c;
-            border-radius: 9999px;
-            box-shadow: none;
-            text-decoration: none;
-            padding: calc(.667em + 2px) calc(1.333em + 2px);
-            font-size: 1.125em
-        }
 
-        .wp-block-file__button {
-            background: #32373c;
-            color: #fff;
-            text-decoration: none
-        }
-    </style> --}}
     <link rel='stylesheet' id='styles-normalize-css' href='{{ asset('css/normalizea149.css?ver=6.4') }}' type='text/css'
         media='all' />
     <link rel='stylesheet' id='styles-colors-css' href='{{ asset('css/colorsa149.css?ver=6.4') }}' type='text/css'
@@ -67,21 +46,7 @@
     <script src="{{ asset('js/jquery-3.7.1.min.js') }}"></script>
 
     <link rel="icon" href="{{ asset('icon.svg') }}">
-    {{-- <script id="Cookiebot" src="{{ asset('js/uc.js') }}" data-blockingmode="auto" type="text/javascript"></script> --}}
-    <!-- Google Analytics -->
-    {{-- <script async src="https://www.googletagmanager.com/gtag/js?id=UA-101867521-1"></script> --}}
-    {{-- <script>
-        window.dataLayer = window.dataLayer || [];
-
-        function gtag() {
-            dataLayer.push(arguments);
-        }
-        gtag('js', new Date());
-        gtag('config', 'UA-101867521-1', {
-            'anonymize_ip': true
-        });
-    </script> --}}
-    <!-- End Google Analytics -->
+    @yield('css')
     <style>
         body #page {
             opacity: 0;
@@ -252,9 +217,6 @@
         $('.loader-wrapper').fadeOut('slow');
     });
 </script>
-<!-- W3TC-include-js-head -->
 </body>
-
-<!-- Mirrored from solidbold.at/en/ by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 18 Nov 2023 12:35:04 GMT -->
 
 </html>

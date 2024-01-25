@@ -74,7 +74,7 @@
                             E-Commerce <span class="book">[5]</span>
                         </a>
                         <a class="inview" href="{{ route('consultant') }}">
-                            Connultant <span class="book">[6]</span>
+                            Consultant <span class="book">[6]</span>
                         </a>
                         <a class="inview" href="{{ route('branding') }}">
                             Branding <span class="book">[1]</span>
