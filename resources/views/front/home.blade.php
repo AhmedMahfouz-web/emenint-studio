@@ -16,9 +16,7 @@
                 <a href="{{ route('about') }}" class="page-teaser">
                     <div class="page-teaser--video inview inview--up">
                         <video autoplay muted loop playsinline preload="none">
-                            <source
-                                src="https://solidbold.at/wp-content/uploads/2022/08/STUDIO_Rec709A-1080p-3800kbs-v06B.mp4"
-                                type="video/mp4" />
+                            <source src="{{ asset('uploads/promo_eminent.mp4') }}" type="video/mp4" />
                         </video>
                     </div>
                     <div class="page-teaser--text inview">

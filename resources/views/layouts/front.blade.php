@@ -217,6 +217,7 @@
         $('.loader-wrapper').fadeOut('slow');
     });
 </script>
+
 </body>
 
 </html>
