@@ -1,6 +1,12 @@
 .editor-content p {
   margin: 0 0 35px 0;
 }
+
+@media (max-width: 480px){
+    .editor-content p{
+        margin: 0;
+    }
+}
 .editor-content em {
   font-style: normal;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0) 55%, rgba(224, 111, 114, 0.2) 70%);

@@ -68,7 +68,17 @@ body {
 @media (max-width: 768px) {
   .grid-width {
     padding: 0 40px;
-    margin: 50px auto;
+    margin: 50px auto 0;
+  }
+
+  .grid-width.mt-0{
+    margin-top: 20px;
+  }
+  .introtext{
+    margin-bottom: 50px;
+  }
+  .introtext .grid-width{
+    margin: 30px auto 0;
   }
 }
 .grid-width--small {

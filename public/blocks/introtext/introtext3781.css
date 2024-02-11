@@ -28,6 +28,12 @@
 .introtext .grid-width .quicklinks {
   margin-top: 70px;
 }
+@media (max-width: 480px){
+.introtext .grid-width .quicklinks {
+      margin-top: 35px;
+}
+}
+
 .introtext .grid-width .quicklinks a {
   margin: 0 10px;
 }/*# sourceMappingURL=introtext.css.map */

@@ -43,7 +43,7 @@
                 </div>
                 <div class="editor-content copy-xl inview inview--up">
                     <p class="p1">to offer a transformative journey to our clients, helping them embark on a
-                        new professional identity and brand. We are committed to sharing this journey with our
+                        new professional identity and brand. <br>We are committed to sharing this journey with our
                         clients, fostering enduring relationships beyond project completion.</p>
                 </div>
             </div>
@@ -267,7 +267,7 @@
                     </div>
                 </div>
             </div>
-            <div class="grid-width link-box flex flex--nom text-center">
+            <div class="grid-width mt-0 link-box flex flex--nom text-center">
                 <div class="inview inview--up">
                     <div class="magnet">
                         <a class="btn" href="{{ route('branding') }}">
@@ -279,7 +279,7 @@
         </section>
 
         <section class="introtext">
-            <div class="grid-width text-center">
+            <div class="grid-width  text-center">
                 <div class="subline inview inview--up">
                     (Let&#8217;s be in touch)
                 </div>

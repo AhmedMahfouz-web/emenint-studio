@@ -129,7 +129,7 @@
 }
 @media (max-width: 980px) {
   .latest .latest--items--inner a {
-    margin-bottom: 50px;
+    margin-bottom: 20px;
   }
   .latest .latest--items--inner a:first-child {
     margin-left: 40px;
