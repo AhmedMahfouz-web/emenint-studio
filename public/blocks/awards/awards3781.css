@@ -3,7 +3,7 @@
 }
 @media (max-width: 768px) {
   .awards .grid-width .awards-wrap {
-    display: block;
+    display: flex;
   }
 }
 .awards .grid-width .awards-wrap--image {
@@ -12,7 +12,13 @@
 @media (max-width: 768px) {
   .awards .grid-width .awards-wrap--image {
     display: inline-block;
-    margin: 5px;
+    width: 100%;
+    margin: 15px;
+  }
+
+  .awards .grid-width .awards-wrap--image svg {
+    margin: 0;
+    width: 100%;
   }
 }
 .awards .grid-width .awards-wrap--image img {

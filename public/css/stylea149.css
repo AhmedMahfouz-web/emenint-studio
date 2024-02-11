@@ -718,6 +718,11 @@ body.pagechange{
 .contact-header{
   margin-top: 250px
 }
+@media (max-width: 768px) {
+.contact-header {
+        margin-top: 150px
+    }
+}
 .svg-header .grid-width {
   margin: 0 auto;
 }
@@ -1299,7 +1304,7 @@ a.post-item:hover .parallax-section {
   }
 
   .svg-header--project{
-    margin-top: 33px;
+    /* margin-top: 33px; */
   }
 
   .adv-container{
@@ -1383,6 +1388,7 @@ width: 100px;
 
 #services_links{
   padding: 10px 20px 0;
+  overflow: hidden;
 }
 
 #services_links li {
@@ -1392,11 +1398,25 @@ margin-bottom: 10px !important;
 #services_links li a{
   font-size: 33px !important;
 }
+
+
 @media (max-width: 480px) {
   #services_links li a {
     font-size: 24px !important;
   }
+
+  #services_links.close li {
+      display: none !important;
+  }
+
+  #services_links.open li {
+      display: none !important;
+  }
+  h1.inview--up{
+    font-size: 38px;
+  }
 }
+
 
 @media (max-width: 400px) {
   #services_links li a {
@@ -1409,4 +1429,3 @@ margin-bottom: 10px !important;
     font-size: 16px !important;
   }
 }
-

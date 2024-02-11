@@ -86,10 +86,7 @@
                 </div>
             </div>
             <div class="foorer--sec-menu-wrapper copy-m flex flex--top">
-                <div class="foorer--sec-menu inview inview--up" role="navigation" aria-label="Footer Secondary">
-                    <div class="menu-footernav-en-container">
-                    </div>
-                </div>
+
                 <div class="foorer--sec-menu inview inview--up" role="navigation" aria-label="Footer Contact">
                     <div class="menu-footerc-en-container">
                         <ul id="menu-footerc-en" class="menu">
@@ -103,7 +100,7 @@
                         <a class="nopagechange" target="_blank" href="https://wa.me/201033739707">WhatsApp</a><br />
 
                         @if (Request::is('studio'))
-                            <div class="social-wrapper flex flex--left">
+                            <div class="social-wrapper flex ">
                                 <a class="nopagechange icon-social flex" target="_blank"
                                     href="https://www.facebook.com/eminentstudiosa">
                                     <svg viewBox="0 0 7 13" width="7" height="13" class="lazyload">
@@ -141,7 +138,7 @@
                                 </a>
                             </div>
                         @else
-                            <div class="social-wrapper flex flex--left">
+                            <div class="social-wrapper flex ">
                                 <a class="nopagechange icon-social flex" target="_blank"
                                     href="https://www.facebook.com/eminentstudiosa">
                                     <svg viewBox="0 0 7 13" width="7" height="13" class="lazyload">

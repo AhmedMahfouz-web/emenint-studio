@@ -21,6 +21,12 @@
   margin-bottom: 25px;
   margin-right: 0 !important;
 }
+
+@media (max-width: 480px){
+    .info-swiper .swiper-container .swiper-wrapper .swiper-slide {
+        height: 350px;
+    }
+}
 .info-swiper .swiper-container .swiper-wrapper .swiper-slide::after{
   content: '';
   position: absolute;

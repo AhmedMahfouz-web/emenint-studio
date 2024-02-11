@@ -150,7 +150,7 @@
 @media (max-width: 768px) {
   #footer .grid-width .social-wrapper {
     margin-top: 30px;
-    margin-left: -150px;
+    /* margin-left: -150px; */
   }
 }
 @media (max-width: 360px) {
@@ -202,4 +202,19 @@
   font-size: 12px;
   background-color: #212121;
   text-align: center;
+}
+
+@media (max-width: 480px){
+    .foorer--main-menu ul{
+        margin-top: 40px;
+    }
+
+    .foorer--main-menu ul li {
+        text-align: center;
+    }
+
+    .foorer--sec-menu{
+        text-align: center;
+        justify-content: center;
+    }
 }

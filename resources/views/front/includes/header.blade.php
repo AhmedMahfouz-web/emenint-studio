@@ -97,15 +97,15 @@
                 <span></span>
             </div>
         </div>
-        <div id="mega-menu" class="flex flex--right bh">
-            <div class="flex flex--top">
+        <div id="mega-menu" class="flex flex--left bh">
+            <div class="flex flex--top header-flex">
                 <nav class="big-one" aria-label="Off-Canvas Main">
                     <div class="menu-big-one-en-container">
                         <ul id="menu-big-one-en" class="menu">
                             <li class="current-menu-item"><a href="{{ route('home') }}" aria-current="page">Home</a>
                             </li>
-                            <li><a href="#">Services</a>
-                                <ul id="services_links">
+                            <li><a id="services_link" href="#">Services</a>
+                                <ul class="close" id="services_links">
                                     <li class="links"><a href="{{ route('branding') }}">Branding</a></li>
                                     <li class="links"><a href="{{ route('marketing') }}">Marketing</a></li>
                                     <li class="links"><a href="{{ route('advertising') }}">Advertising</a></li>
@@ -167,25 +167,6 @@
                         </div>
                     </div>
                 </div>
-                <a href="#" class="quicklink">
-                    <div class="quicklink--image">
-                        <div class="inner cover-image"
-                            style="background-image:url({{ asset('uploads/2022/07/SolidBold_stills-solidbold_1.363.1-2-1200x750.jpg') }});">
-                        </div>
-                    </div>
-                    <div class="quicklink--text">
-                        <div class="subline color-white">
-                            (Branding Starthilfe)
-                        </div>
-                        <div class="h3 color-white">
-                            Markenfit-Workshop </div>
-                        <div class="magnet">
-                            <div class="btn color-white">
-                                <span>learn more</span>
-                            </div>
-                        </div>
-                    </div>
-                </a>
 
             </div>
         </div>
