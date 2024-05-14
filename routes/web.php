@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\mailController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -100,3 +101,6 @@ Route::get('/project/profit', function () {
 Route::get('/project/artal', function () {
     return view('front.pages.projects.artal');
 })->name('artal');
+
+
+Route::post('/send_mail', [mailController::class, 'send_mail'])->name('send mail');
