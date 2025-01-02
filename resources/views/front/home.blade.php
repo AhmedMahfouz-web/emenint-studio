@@ -39,12 +39,11 @@
         <section class="introtext">
             <div class="grid-width text-center">
                 <div class="subline inview inview--up">
-                    (An eminent on a mission)
+                    (About)
                 </div>
                 <div class="editor-content copy-xl inview inview--up">
-                    <p class="p1">to offer a transformative journey to our clients, helping them embark on a
-                        new professional identity and brand. <br>We are committed to sharing this journey with our
-                        clients, fostering enduring relationships beyond project completion.</p>
+                    <p class="p1">Welcome to Eminent Studio, a trailblazing marketing and advertising agency, we are not
+                        just a service provider, we are a dedicated partner on your journey.</p>
                 </div>
             </div>
         </section>

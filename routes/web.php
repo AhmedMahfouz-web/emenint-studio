@@ -119,7 +119,7 @@ Route::group(['prefix' => 'admin'], function () {
     Route::post('login', [UserController::class, 'post_login'])->name('post login');
 
     Route::group(['middleware' => 'auth'], function () {
-        Route::get('/', [Controller::class, 'index'])->name('home');
+        Route::get('/', [Controller::class, 'index'])->name('admin_home');
 
         Route::get('/blog', [BlogController::class, 'index'])->name('blogs');
         Route::post('/blog', [BlogController::class, 'store'])->name('add blog');
