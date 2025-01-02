@@ -36,8 +36,7 @@
         <section class="video-block">
             <div class="grid-width inview inview--up">
                 <video class="inview2" autoplay loop muted playsinline preload="none" poster="#">
-                    <source src="https://solidbold.at/wp-content/uploads/2022/05/STUDIO_Rec709A-1080p-3800kbs-v05.mp4"
-                        type="video/mp4" />
+                    <source src="{{ asset('uploads/promo_eminent.mp4') }}" type="video/mp4" />
                 </video>
                 <div class="copy-m inview inview--up">
                 </div>
@@ -354,7 +353,7 @@
                 <div class="flex quicklinks">
                     <div class="inview inview--up">
                         <div class="magnet">
-                            <a class="btn" href="studio.html">
+                            <a class="btn" href="https://www.linkedin.com/company/eminentstudiosa/">
                                 <span class="flex">
                                     Join us</span>
                             </a>

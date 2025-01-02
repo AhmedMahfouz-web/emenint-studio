@@ -1,6 +1,14 @@
 <?php
 
+use App\Http\Controllers\BlogController;
+use App\Http\Controllers\ClientController;
+use App\Http\Controllers\Controller;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\mailController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -104,3 +112,40 @@ Route::get('/project/artal', function () {
 
 
 Route::post('/send_mail', [mailController::class, 'send_mail'])->name('send mail');
+
+
+Route::group(['prefix' => 'admin'], function () {
+    Route::get('login', [UserController::class, 'get_login'])->name('get login');
+    Route::post('login', [UserController::class, 'post_login'])->name('post login');
+
+    Route::group(['middleware' => 'auth'], function () {
+        Route::get('/', [Controller::class, 'index'])->name('home');
+
+        Route::get('/blog', [BlogController::class, 'index'])->name('blogs');
+        Route::post('/blog', [BlogController::class, 'store'])->name('add blog');
+    });
+});
+
+// Dashboard as home page
+Route::group(['prefix' => 'invoice'], function () {
+    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/invoice-view', function () {
+        return view('back.invoices.pdf');
+    });
+
+    Route::get('invoices/bulk', function () {
+        return view('invoices.bulk_download');
+    })->name('invoices.bulk.download');
+    Route::post('/invoices/bulk-download', [InvoiceController::class, 'bulkDownload'])->name('invoices.bulk-download');
+
+    // Resource Routes
+    Route::resource('clients', ClientController::class);
+    Route::resource('products', ProductController::class);
+    Route::resource('invoices', InvoiceController::class);
+
+    // Invoice Additional Routes
+    Route::get('invoices/{invoice}/download', [InvoiceController::class, 'download'])->name('invoices.download');
+    Route::get('invoices-export', [InvoiceController::class, 'exportExcel'])->name('invoices.export');
+    Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+    Route::get('/reports/generate', [ReportController::class, 'generate'])->name('reports.generate');
+});
