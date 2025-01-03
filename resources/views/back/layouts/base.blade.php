@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -13,43 +14,53 @@
 
     <!-- Styles -->
     <link href="{{ asset('assets/css/bootstrap.rtl.min.css') }}" rel="stylesheet">
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    {{-- @vite(['resources/css/app.css', 'resources/js/app.js']) --}}
+    <link href={{ asset('css/app.css') }} rel="stylesheet">
+    <script src={{ asset('js/app.js') }}></script>
 
-    <style>@font-face {
-        font-family: 'Rubik';
-        src: url('{{ asset('assets/fonts/Rubik-Regular.ttf') }}') format('truetype');
-        font-weight: normal;
-    }
+    <style>
+        @font-face {
+            font-family: 'Rubik';
+            src: url('{{ asset('assets/fonts/Rubik-Regular.ttf') }}') format('truetype');
+            font-weight: normal;
+        }
 
-    @font-face {
-        font-family: 'Rubik';
-        src: url('{{ asset('assets/fonts/Rubik-Bold.ttf') }}') format('truetype');
-        font-weight: bold;
-    }
+        @font-face {
+            font-family: 'Rubik';
+            src: url('{{ asset('assets/fonts/Rubik-Bold.ttf') }}') format('truetype');
+            font-weight: bold;
+        }
+
         body {
             font-family: 'Rubik', sans-serif;
         }
+
         .navbar {
             background-color: #333;
             color: #fff;
             padding: 1rem;
             text-align: center;
         }
+
         .navbar-brand {
             color: #fff;
             font-size: 1.5rem;
             font-weight: bold;
         }
+
         .navbar-nav {
             margin-top: 1rem;
         }
+
         .nav-link {
             color: #fff;
             transition: color 0.2s ease;
         }
+
         .nav-link:hover {
             color: #ccc;
         }
+
         .nav-link.active {
             color: #fff;
             background-color: #555;
@@ -58,36 +69,43 @@
         }
     </style>
 </head>
+
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">نظام إدارة الفواتير</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">
-                الرئيسية                        </a>
+                        <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}"
+                            href="{{ route('dashboard') }}">
+                            الرئيسية </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('invoices.*') ? 'active' : '' }}" href="{{ route('invoices.index') }}">
+                        <a class="nav-link {{ request()->routeIs('invoices.*') ? 'active' : '' }}"
+                            href="{{ route('invoices.index') }}">
                             الفواتير
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('clients.*') ? 'active' : '' }}" href="{{ route('clients.index') }}">
+                        <a class="nav-link {{ request()->routeIs('clients.*') ? 'active' : '' }}"
+                            href="{{ route('clients.index') }}">
                             العملاء
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('products.*') ? 'active' : '' }}" href="{{ route('products.index') }}">
+                        <a class="nav-link {{ request()->routeIs('products.*') ? 'active' : '' }}"
+                            href="{{ route('products.index') }}">
                             المنتجات
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('reports.*') ? 'active' : '' }}" href="{{ route('reports.index') }}">
+                        <a class="nav-link {{ request()->routeIs('reports.*') ? 'active' : '' }}"
+                            href="{{ route('reports.index') }}">
                             التقارير
                         </a>
                     </li>
@@ -113,4 +131,5 @@
         </div>
     </footer>
 </body>
+
 </html>

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('content')
+{{-- @section('content')
 
     <div class="py-12 mt-4">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -77,7 +77,7 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    @foreach($recentInvoices as $invoice)
+                                                    @foreach ($recentInvoices as $invoice)
                                                     <tr>
                                                         <td>{{ $invoice->invoice_number }}</td>
                                                         <td>{{ $invoice->client->name }}</td>
@@ -109,7 +109,7 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    @foreach($topClients as $client)
+                                                    @foreach ($topClients as $client)
                                                     <tr>
                                                         <td>{{ $client->name }}</td>
                                                         <td>{{ $client->invoices_count }}</td>
@@ -142,7 +142,7 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    @foreach($topProducts as $product)
+                                                    @foreach ($topProducts as $product)
                                                     <tr>
                                                         <td>{{ $product->name }}</td>
                                                         <td>{{ $product->total_quantity }}</td>
@@ -202,4 +202,4 @@
         });
     });
 </script>
-@endsection
+@endsection --}}

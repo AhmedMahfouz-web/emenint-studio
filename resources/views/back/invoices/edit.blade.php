@@ -191,80 +191,9 @@
         </div>
     </div>
 
-    @push('scripts')
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                const taxRate = {{ config('invoice.tax_rate', 15) }} / 100;
-                let itemCount = {{ count($invoice->items) }};
 
-                // Add new item
-                document.getElementById('add-item').addEventListener('click', function() {
-                    const template = document.querySelector('.invoice-item').cloneNode(true);
-                    template.querySelector('.product-select').name = `items[${itemCount}][product_id]`;
-                    template.querySelector('.quantity').name = `items[${itemCount}][quantity]`;
-                    template.querySelector('.quantity').value = 1;
-                    template.querySelector('.unit-price').value = '';
-                    template.querySelector('.item-total').value = '';
-                    document.getElementById('invoice-items').appendChild(template);
-                    itemCount++;
-                    attachEventListeners();
-                });
+@section('scripts')
+    <script src="{{ asset('js/invoice.js') }}"></script>
+@endsection
 
-                // Remove item
-                function attachEventListeners() {
-                    document.querySelectorAll('.remove-item').forEach(button => {
-                        button.onclick = function() {
-                            if (document.querySelectorAll('.invoice-item').length > 1) {
-                                this.closest('.invoice-item').remove();
-                                calculateTotals();
-                            }
-                        };
-                    });
-
-                    document.querySelectorAll('.product-select').forEach(select => {
-                        select.onchange = function() {
-                            const row = this.closest('.invoice-item');
-                            const price = this.options[this.selectedIndex].dataset.price || 0;
-                            row.querySelector('.unit-price').value = price;
-                            calculateRowTotal(row);
-                        };
-                    });
-
-                    document.querySelectorAll('.quantity').forEach(input => {
-                        input.onchange = function() {
-                            calculateRowTotal(this.closest('.invoice-item'));
-                        };
-                    });
-                }
-
-                function calculateRowTotal(row) {
-                    const quantity = row.querySelector('.quantity').value;
-                    const unitPrice = row.querySelector('.unit-price').value;
-                    const total = quantity * unitPrice;
-                    row.querySelector('.item-total').value = total.toFixed(2);
-                    calculateTotals();
-                }
-
-                function calculateTotals() {
-                    let subtotal = 0;
-                    document.querySelectorAll('.item-total').forEach(input => {
-                        subtotal += parseFloat(input.value || 0);
-                    });
-
-                    const taxAmount = subtotal * taxRate;
-                    const total = subtotal + taxAmount;
-
-                    document.getElementById('subtotal').textContent = `$${subtotal.toFixed(2)}`;
-                    document.getElementById('tax').textContent = `$${taxAmount.toFixed(2)}`;
-                    document.getElementById('total').textContent = `$${total.toFixed(2)}`;
-
-                    document.getElementById('subtotal-input').value = subtotal.toFixed(2);
-                    document.getElementById('tax-input').value = taxAmount.toFixed(2);
-                    document.getElementById('total-input').value = total.toFixed(2);
-                }
-
-                attachEventListeners();
-            });
-        </script>
-    @endpush
 @endsection

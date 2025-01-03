@@ -13,8 +13,8 @@
                     <option value="">اختر المنتج</option>
                     @foreach ($clients as $client)
                         <option value="{{ $client->id }}" data-code="{{ $client->code }}" ">
-                                                                                                                                                        {{ $client->code }} - {{ $client->name }}
-                                                                                                                                                    </option>
+                                                                                                                                                            {{ $client->code }} - {{ $client->name }}
+                                                                                                                                                        </option>
      @endforeach
                 </select>
                 @error('client_id')
@@ -213,7 +213,7 @@
     </div>
 
 @section('scripts')
-    @vite(['resources/js/invoice.js'])
+    <script src="{{ asset('js/invoice.js') }}"></script>
 @endsection
 
 @if ($errors->any())
