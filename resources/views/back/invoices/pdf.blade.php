@@ -20,19 +20,19 @@
                 <div class="invoice-details">
                     <div>
                         <h1>Invoice Number</h1>
-                        <h3>00001</h3>
+                        <h3>{{ $invoice->invoice_number }}</h3>
                     </div>
                     <div>
                         <h1>Payment method</h1>
-                        <h3>Western Union</h3>
+                        <h3>{{ $invoice->payment_method }}</h3>
                     </div>
                     <div>
                         <h1>Amount due</h1>
-                        <h3>$440</h3>
+                        <h3>{{ $invoice->total . ' ' . $invoice->currancy }}</h3>
                     </div>
                     <div>
                         <h1>Date</h1>
-                        <h3>01-12-2023</h3>
+                        <h3>{{ $invoice->invoice_date }}</h3>
                     </div>
                 </div>
             </div>
@@ -41,16 +41,15 @@
 
             <div class="client-details">
                 <h2>Quote to:</h2>
-                <p><span>Name: </span>Mostafa Mohamed Al Ansary</p>
-                <p><span>Company: </span>Eminent Studio</p>
-                <p><span>Mobile: </span>+201006104925</p>
-                <p><span>Country: </span>Riyadh, Saudi Arabia</p>
+                <p><span>Name: </span>{{ $invoice->client->name }}</p>
+                <p><span>Company: </span>{{ $invoice->client->company }}</p>
+                <p><span>Mobile: </span>{{ $invoice->client->phone }}</p>
+                <p><span>Country: </span>{{ $invoice->client->country }}</p>
             </div>
 
             <table>
                 <thead>
                     <tr>
-                        <th>Service</th>
                         <th>Description</th>
                         <th>Rate</th>
                         <th>Quantity</th>
@@ -58,94 +57,46 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>Brand Identity</td>
-                        <td></td>
-                        <td>500$</td>
-                        <td>1</td>
-                        <td>500$</td>
-                    </tr>
-                    <tr>
-                        <td>Printings</td>
-                        <td></td>
-                        <td>200$</td>
-                        <td>5</td>
-                        <td>200$</td>
-                    </tr>
-                    <tr>
-                        <td>Social Media</td>
-                        <td></td>
-                        <td>220$</td>
-                        <td>2</td>
-                        <td>40$</td>
-                    </tr>
-                    <tr>
-                        <td>Website</td>
-                        <td></td>
-                        <td>50,000$</td>
-                        <td>2</td>
-                        <td>40$</td>
-                    </tr>
-                    <tr>
-                        <td>Photography</td>
-                        <td></td>
-                        <td>20$</td>
-                        <td>2</td>
-                        <td>40$</td>
-                    </tr>
-                    <tr>
-                        <td>3D Booth</td>
-                        <td></td>
-                        <td>10$</td>
-                        <td>2</td>
-                        <td>40$</td>
-                    </tr>
+                    @foreach ($invoice->items as $item)
+                        <tr>
+                            <td>{{ $item->description }}</td>
+                            <td>{{ $item->price }}</td>
+                            <td>{{ $item->quantity }}</td>
+                            <td>{{ $item->total . ' ' . $invoice->currancy }}</td>
+                        </tr>
+                    @endforeach
                 </tbody>
             </table>
 
             <div class="invoice-summary">
                 <div class="notes">
-                    <p>
-                        <span>Kindly Note</span> that all pricing, denominated in USD currency, is
-                        structured into two payment installments. The initial
-                        payment amounts to 70% of the total cost, and the final 30%
-                        payment is to be made upon receiving the completed work.
-                        ** We offer a guarantee that this work will be accessible with
-                        lifetime access upon request.
-                        Quotation avaliable for one week
+                    <p>{{ $invoice->first_note }}
                     </p>
-                    <p class="notes-2">
-                        If you have any inquiries concerning pricing details,
-                        please don't hesitate to reach out to us. We would be
-                        delighted to provide further clarification and ensure
-                        a more precise understanding, even if it's solely for
-                        the purpose of clarity. Your trust from the outset is
-                        greatly appreciated, and We’re here to assist you.
-                        Thank you
+                    <p class="notes-2">{{ $invoice->second_note }}
                     </p>
                 </div>
                 <div class="totals">
                     <div>
                         <span class="total-title">Subtotal</span>
-                        <span>$400</span>
+                        <span>{{ $invoice->subtotal . ' ' . $invoice->currancy }}</span>
                     </div>
                     <div>
-                        <span class="total-title">Taxes (10%)</span>
-                        <span>0$</span>
+                        <span class="total-title">Taxes ({{ $invoice->tax_percentage }}%)</span>
+                        <span>{{ $invoice->tax_amount . ' ' . $invoice->currancy }}</span>
                     </div>
                     <div>
                         <span class="total-title">Discount</span>
-                        <span>0$</span>
+                        <span>{{ $invoice->discount . ' ' . $invoice->currancy }}</span>
                     </div>
                     <div class="total">
                         <span class="total-title">Total</span>
 
-                        <span>$440</span>
+                        <span>{{ $invoice->total . ' ' . $invoice->currancy }}</span>
                     </div>
 
                     <div class="signature">
                         <p>Proposal writien by</p>
-                        <img src="{{ url('images/Sign.png') }}" alt="Signature" class="signature-image">
+                        <img src="{{ url('images/' . $invoice->signature) }}" alt="Signature" class="signature-image">
                     </div>
                 </div>
             </div>

@@ -19,7 +19,7 @@
         <section class="introtext">
             <div class="grid-width text-center">
                 <div class="subline inview inview--up" style="text-transform: lowercase">
-                    (&#10094;div&#10095; <span style="text-transform: uppercase"> We are create</span>
+                    (&#10094;div&#10095; <span style="text-transform: uppercase"> We develop</span>
                     &#10094;/div&#10095;)
                 </div>
                 <div class="editor-content copy-xl inview inview--up">

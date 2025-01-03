@@ -66,20 +66,22 @@ class InvoiceController extends Controller
         $validated = $request->validate([
             'client_id' => 'required|exists:clients,id',
             'invoice_date' => 'required|date',
+            'currancy' => 'required',
             'items' => 'required|array|min:1',
             'items.*.product_id' => 'required|exists:products,id',
             'items.*.quantity' => 'required|integer|min:1',
             'tax-rate' => 'required|numeric|min:0|max:100',
             'discount' => 'required|numeric|min:0',
-            'notes' => 'nullable|string',
+            'payment_method' => 'required',
+            'first_note' => 'nullable|string',
+            'second_note' => 'nullable|string',
         ]);
 
 
         try {
             $invoice = DB::transaction(function () use ($validated, $request) {
                 $subtotal = collect($request->items)->sum(function ($item) {
-                    $product = Product::findOrFail($item['product_id']);
-                    return $item['quantity'] * $product->price;
+                    return $item['quantity'] * $item['price'];
                 });
 
                 $tax_amount = ($subtotal - $validated['discount']) * ($validated['tax-rate'] / 100);
@@ -87,6 +89,7 @@ class InvoiceController extends Controller
 
                 $invoice = Invoice::create([
                     'client_id' => $validated['client_id'],
+                    'payment_method' => $validated['payment_method'],
                     'invoice_date' => $validated['invoice_date'],
                     'invoice_number' => Invoice::max('id') + 1,
                     'subtotal' => $subtotal,
@@ -94,15 +97,19 @@ class InvoiceController extends Controller
                     'tax_percentage' => $validated['tax-rate'],
                     'tax_amount' => $tax_amount,
                     'total' => $total,
-                    'notes' => $validated['notes'] ?? null,
+                    'signature' => 'sign.png',
+                    'currancy' => $validated['currancy'],
+                    'first_note' => $validated['first_note'] ?? null,
+                    'second_note' => $validated['second_note'] ?? null,
                 ]);
 
                 foreach ($request->items as $item) {
                     $product = Product::findOrFail($item['product_id']);
                     $invoice->items()->create([
                         'product_id' => $item['product_id'],
+                        'description' => $item['descreption'],
                         'quantity' => $item['quantity'],
-                        'price' => $product->price,
+                        'price' => $item['price'],
                         'total' => $item['quantity'] * $product->price,
                     ]);
                 }
@@ -121,7 +128,7 @@ class InvoiceController extends Controller
             Log::error('Error creating invoice: ' . $e->getMessage());
             return back()
                 ->withInput()
-                ->withErrors(['error' => 'حدث خطأ أثناء إنشاء الفاتورة. يرجى المحاولة مرة أخرى.']);
+                ->withErrors(['error' => $e->getMessage()]);
         }
     }
 

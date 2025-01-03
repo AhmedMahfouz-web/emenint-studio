@@ -24,7 +24,6 @@
                                         <th>كود المنتج</th>
                                         <th>الاسم</th>
                                         <th>الوصف</th>
-                                        <th>سعر الوحدة</th>
                                         <th>الإجراءات</th>
                                     </tr>
                                 </thead>
@@ -34,7 +33,6 @@
                                             <td>{{ $product->code }}</td>
                                             <td>{{ $product->name }}</td>
                                             <td>{{ Str::limit($product->description, 50) }}</td>
-                                            <td>{{ number_format($product->price, 2) }}</td>
                                             <td>
                                                 <div class="btn-group" role="group">
                                                     <a href="{{ route('products.show', $product) }}"

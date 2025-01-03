@@ -35,6 +35,8 @@ class ClientController extends Controller
             'address' => 'nullable|string',
             'email' => 'nullable|email|unique:clients',
             'phone' => 'nullable|string|max:20',
+            'country' => 'required|string|max:20',
+            'company' => 'required|string|max:20',
         ]);
 
         Client::create($validated);

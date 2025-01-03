@@ -14,17 +14,19 @@ return new class extends Migration
         Schema::create('invoices', function (Blueprint $table) {
             $table->id();
             $table->foreignId('client_id')->constrained()->onDelete('cascade');
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            // $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('invoice_number')->unique();
             $table->string('payment_method');
             $table->string('signature');
+            $table->string('currancy');
             $table->date('invoice_date');
             $table->decimal('subtotal', 10, 2);
             $table->decimal('tax_percentage', 10, 2)->default(14);
             $table->decimal('tax_amount', 10, 2);
             $table->decimal('total', 10, 2);
             $table->decimal('discount', 10, 2)->default(0);
-            $table->text('notes')->nullable();
+            $table->text('first_note')->nullable();
+            $table->text('second_note')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

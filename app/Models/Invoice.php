@@ -17,13 +17,16 @@ class Invoice extends Model
         'user_id',
         'invoice_date',
         'invoice_number',
+        'signature',
+        'currancy',
         'subtotal',
         'payment_method',
         'discount',
         'tax_percentage',  // Changed from tax_rate to match database column
         'tax_amount',
         'total',
-        'notes'
+        'first_note',
+        'second_note'
     ];
 
     protected $casts = [
