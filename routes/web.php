@@ -7,6 +7,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\mailController;
+use App\Http\Controllers\QuotationController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -110,9 +111,7 @@ Route::get('/project/artal', function () {
     return view('front.pages.projects.artal');
 })->name('artal');
 
-
 Route::post('/send_mail', [mailController::class, 'send_mail'])->name('send mail');
-
 
 Route::group(['prefix' => 'admin'], function () {
     Route::get('login', [UserController::class, 'get_login'])->name('get login');
@@ -139,13 +138,15 @@ Route::group(['prefix' => 'invoice'], function () {
     Route::post('/invoices/bulk-download', [InvoiceController::class, 'bulkDownload'])->name('invoices.bulk-download');
 
     // Resource Routes
-    Route::resource('clients', ClientController::class);
-    Route::resource('products', ProductController::class);
-    Route::resource('invoices', InvoiceController::class);
+        Route::resource('clients', ClientController::class);
+        Route::resource('products', ProductController::class);
+        Route::resource('quotations', QuotationController::class);
+        Route::get('quotations/{quotation}/download', [QuotationController::class, 'download'])->name('quotations.download');
+        Route::resource('invoices', InvoiceController::class);
+        Route::get('invoices/{invoice}/download', [InvoiceController::class, 'download'])->name('invoices.download');
+    Route::resource('quotations', QuotationController::class);
+    Route::get('quotations/{quotation}/download', [QuotationController::class, 'download'])->name('quotations.download');
+    Route::get('reports', [ReportController::class, 'index'])->name('reports.index');
+        Route::post('reports/generate', [ReportController::class, 'generate'])->name('reports.generate');
+    });
 
-    // Invoice Additional Routes
-    Route::get('invoices/{invoice}/download', [InvoiceController::class, 'download'])->name('invoices.download');
-    Route::get('invoices-export', [InvoiceController::class, 'exportExcel'])->name('invoices.export');
-    Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
-    Route::get('/reports/generate', [ReportController::class, 'generate'])->name('reports.generate');
-});

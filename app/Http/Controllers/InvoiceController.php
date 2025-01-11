@@ -6,12 +6,12 @@ use Illuminate\Http\Request;
 use App\Models\Invoice;
 use App\Models\Client;
 use App\Models\Product;
+use App\Models\Quotation;
 use App\Exports\InvoicesExport;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel as FacadesExcel;
 use ZipArchive;
-use Spipu\Html2Pdf\Html2Pdf;
 
 class InvoiceController extends Controller
 {
@@ -49,11 +49,17 @@ class InvoiceController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
         $clients = Client::all();
         $products = Product::all();
-        return view('back.invoices.create', compact('clients', 'products'));
+        $quotation = null;
+
+        if ($request->has('quotation_id')) {
+            $quotation = Quotation::with('items.product')->findOrFail($request->quotation_id);
+        }
+
+        return view('back.invoices.create', compact('clients', 'products', 'quotation'));
     }
 
     /**
@@ -61,8 +67,6 @@ class InvoiceController extends Controller
      */
     public function store(Request $request)
     {
-        // Log incoming request data
-
         $validated = $request->validate([
             'client_id' => 'required|exists:clients,id',
             'invoice_date' => 'required|date',
@@ -70,21 +74,20 @@ class InvoiceController extends Controller
             'items' => 'required|array|min:1',
             'items.*.product_id' => 'required|exists:products,id',
             'items.*.quantity' => 'required|integer|min:1',
-            'tax-rate' => 'required|numeric|min:0|max:100',
+            'tax_percentage' => 'required|numeric|min:0|max:100',
             'discount' => 'required|numeric|min:0',
             'payment_method' => 'required',
             'first_note' => 'nullable|string',
             'second_note' => 'nullable|string',
         ]);
 
-
         try {
             $invoice = DB::transaction(function () use ($validated, $request) {
                 $subtotal = collect($request->items)->sum(function ($item) {
-                    return $item['quantity'] * $item['price'];
+                    return $item['quantity'] * $item['unit_price'];
                 });
 
-                $tax_amount = ($subtotal - $validated['discount']) * ($validated['tax-rate'] / 100);
+                $tax_amount = ($subtotal - $validated['discount']) * ($validated['tax_percentage'] / 100);
                 $total = $subtotal - $validated['discount'] + $tax_amount;
 
                 $invoice = Invoice::create([
@@ -94,7 +97,7 @@ class InvoiceController extends Controller
                     'invoice_number' => Invoice::max('id') + 1,
                     'subtotal' => $subtotal,
                     'discount' => $validated['discount'],
-                    'tax_percentage' => $validated['tax-rate'],
+                    'tax_percentage' => $validated['tax_percentage'],
                     'tax_amount' => $tax_amount,
                     'total' => $total,
                     'signature' => 'sign.png',
@@ -103,14 +106,14 @@ class InvoiceController extends Controller
                     'second_note' => $validated['second_note'] ?? null,
                 ]);
 
-                foreach ($request->items as $item) {
+                foreach ($request->items as $index => $item) {
                     $product = Product::findOrFail($item['product_id']);
                     $invoice->items()->create([
                         'product_id' => $item['product_id'],
-                        'description' => $item['descreption'],
+                        'description' => $item['description'],
                         'quantity' => $item['quantity'],
-                        'price' => $item['price'],
-                        'total' => $item['quantity'] * $product->price,
+                        'price' => $item['unit_price'],
+                        'total' => $item['quantity'] * $item['unit_price'],
                     ]);
                 }
 
@@ -119,12 +122,7 @@ class InvoiceController extends Controller
 
             return redirect()->route('invoices.index')
                 ->with('success', 'تم إنشاء الفاتورة بنجاح');
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return back()
-                ->withInput()
-                ->withErrors($e->errors());
         } catch (\Exception $e) {
-            // Log the exception message
             Log::error('Error creating invoice: ' . $e->getMessage());
             return back()
                 ->withInput()
@@ -219,39 +217,15 @@ class InvoiceController extends Controller
     /**
      * Download the invoice as a PDF.
      */
-    public function downloadPdf(Invoice $invoice)
-    {
-        // $invoice->load(['client', 'items.product']);
-
-        // $options = new DompdfOptions();
-        // $options->set('defaultFont', 'Amiri'); // Set the default font to an Arabic font
-        // $options->set('isHtml5ParserEnabled', true); // Enable HTML5 support
-
-        // $dompdf = new Dompdf($options);
-        // $fontDir = public_path('assets/fonts'); // Adjust the path to the public assets directory
-        // $fontMetrics = $dompdf->getFontMetrics();
-        // $fontMetrics->registerFont('Amiri', $fontDir . '/Amiri-Regular.ttf'); // Register the Amiri font
-
-        // // Load the HTML and specify the font
-        // $html = view('back.invoices.pdf', compact('invoice'))->render();
-        // $dompdf->loadHtml($html);
-        // $dompdf->setPaper('A4', 'portrait');
-        // $dompdf->render();
-        // $dompdf->stream('invoice.pdf');
-        return view('back.invoices.pdf', compact('invoice'));
-    }
-
-    /**
-     * Download the invoice as a PDF.
-     */
-
     public function download(Invoice $invoice)
     {
-        // Load the necessary relationships
-        $invoice->load(['client', 'items.product']);
-
-        // Render the Blade view to HTML
-        return view('back.invoices.pdf', compact('invoice'));
+        try {
+            $invoice->load(['client', 'items.product']);
+            return view('back.invoices.pdf', compact('invoice'));
+        } catch (\Exception $e) {
+            Log::error('Error showing invoice: ' . $e->getMessage());
+            return back()->with('error', 'An error occurred while showing the invoice: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -265,38 +239,11 @@ class InvoiceController extends Controller
             'end_date' => 'required|date|after_or_equal:start_date',
         ]);
 
-        // Retrieve invoices based on the date range
+        // Return view with all invoices to generate PDFs in browser
         $invoices = Invoice::whereBetween('invoice_date', [$request->start_date, $request->end_date])->get();
-
-        // Create a new ZipArchive instance
-        $zip = new ZipArchive;
-        $zipFileName = 'invoices.zip';
-        $zip->open($zipFileName, ZipArchive::CREATE);
-
-        // Generate PDFs for each invoice using mPDF
-        foreach ($invoices as $invoice) {
-            // Create a new mPDF instance
-            $mpdf = new \Mpdf\Mpdf();
-
-            // Load the view and render it as HTML
-            $html = view('back.invoices.pdf', compact('invoice'))->render();
-
-            // Write the HTML to the PDF
-            $mpdf->WriteHTML($html);
-
-            // Output the PDF to a variable
-            $pdfOutput = $mpdf->Output('', 'S'); // 'S' means return the PDF as a string
-
-            // Add the PDF to the zip file with the invoice ID in the filename
-            $zip->addFromString('invoice-' . $invoice->id . '.pdf', $pdfOutput);
-        }
-
-        // Close the zip file
-        $zip->close();
-
-        // Return the zip file as a download
-        return response()->download($zipFileName)->deleteFileAfterSend(true);
+        return view('back.invoices.bulk-pdf', compact('invoices'));
     }
+
     /**
      * Export all invoices to an Excel file.
      */

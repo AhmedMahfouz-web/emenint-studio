@@ -5,15 +5,15 @@
     <div class="card shadow-sm">
         <div class="card-header py-3">
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
-                <h2 class="mb-0 fs-3">إنشاء فاتورة جديدة</h2>
-                <a href="{{ route('invoices.index') }}" class="btn btn-secondary">
-                    <i class="fas fa-arrow-right me-1"></i> عودة للفواتير
+                <h2 class="mb-0 fs-3">إنشاء عرض سعر جديد</h2>
+                <a href="{{ route('quotations.index') }}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-right me-1"></i> عودة لعروض الأسعار
                 </a>
             </div>
         </div>
 
         <div class="card-body p-3 p-md-4">
-            <form action="{{ route('invoices.store') }}" method="POST" id="invoiceForm">
+            <form action="{{ route('quotations.store') }}" method="POST" id="quotationForm">
                 @csrf
 
                 <div class="row g-4 mb-4">
@@ -22,8 +22,7 @@
                         <select class="form-select select2-searchable" name="client_id" required>
                             <option value="">اختر العميل</option>
                             @foreach ($clients as $client)
-                                <option value="{{ $client->id }}" data-code="{{ $client->code }}"
-                                    {{ isset($quotation) && $quotation->client_id == $client->id ? 'selected' : '' }}>
+                                <option value="{{ $client->id }}" data-code="{{ $client->code }}">
                                     {{ $client->code }} - {{ $client->name }}
                                 </option>
                             @endforeach
@@ -34,40 +33,16 @@
                     </div>
 
                     <div class="col-12 col-md-6">
-                        <label for="invoice_date" class="form-label fw-bold">تاريخ الفاتورة</label>
-                        <input type="date" class="form-control @error('invoice_date') is-invalid @enderror"
-                            id="invoice_date" name="invoice_date" value="{{ date('Y-m-d') }}" required>
-                        @error('invoice_date')
+                        <label for="quotation_date" class="form-label fw-bold">تاريخ عرض السعر</label>
+                        <input type="date" class="form-control @error('quotation_date') is-invalid @enderror"
+                            id="quotation_date" name="quotation_date" value="{{ date('Y-m-d') }}" required>
+                        @error('quotation_date')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
 
                     <div class="col-12 col-md-6">
-                        <label class="form-label fw-bold">طريقة الدفع</label>
-                        <select class="form-select" name="payment_method" required>
-                            <option value="Cash">Cash</option>
-                            <option value="Western Union">Western Union</option>
-                            <option value="Instapay">Instapay</option>
-                        </select>
-                        @error('payment_method')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <div class="col-12 col-md-6">
-                        <label class="form-label fw-bold">حالة الفاتورة</label>
-                        <select class="form-select" name="status" required>
-                            <option value="pending">قيد الانتظار</option>
-                            <option value="paid">مدفوعة</option>
-                            <option value="cancelled">ملغاة</option>
-                        </select>
-                        @error('status')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <div class="col-12 col-md-6">
-                        <label for="currancy" class="form-label fw-bold">العملة</label>
+                        <label for="currency" class="form-label fw-bold">العملة</label>
                         <select class="form-select" id="currancy" name="currancy" required>
                             <option value="USD">USD</option>
                             <option value="EGP">EGP</option>
@@ -82,7 +57,7 @@
                         <label class="form-label fw-bold">نسبة الضريبة</label>
                         <div class="input-group">
                             <input type="number" class="form-control @error('tax_percentage') is-invalid @enderror"
-                                id="tax_percentage" name="tax_percentage" value="{{ isset($quotation) ? $quotation->tax_percentage : 0 }}" min="0" max="100">
+                                id="tax_percentage" name="tax_percentage" value="0" min="0" max="100">
                             <span class="input-group-text">%</span>
                         </div>
                         @error('tax_percentage')
@@ -94,8 +69,8 @@
                         <label class="form-label fw-bold">الخصم</label>
                         <div class="input-group">
                             <input type="number" class="form-control @error('discount') is-invalid @enderror"
-                                id="discount" name="discount" value="{{ isset($quotation) ? $quotation->discount : 0 }}" min="0" step="0.01">
-                            <span class="input-group-text" id="currency-symbol">USD</span>
+                                id="discount" name="discount" value="0" min="0" step="0.01">
+                            <span class="input-group-text">ج.م</span>
                         </div>
                         @error('discount')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -103,21 +78,10 @@
                     </div>
                 </div>
 
-                <div class="row g-3 mb-4">
-                    <div class="col-12">
-                        <label class="form-label fw-bold">Notes</label>
-                        <textarea class="form-control" name="first_note" rows="3">{{ isset($quotation) ? $quotation->first_note : 'Kindly Note that all pricing, denominated in USD currency, is structured into two payment installments. The initial payment amounts to 70% of the total cost, and the final 30% payment is to be made upon receiving the completed work. ** We offer a guarantee that this work will be accessible with lifetime access upon request. Quotation avaliable for one week' }}</textarea>
-                    </div>
-                    <div class="col-12">
-                        <label class="form-label fw-bold">Additional Notes</label>
-                        <textarea class="form-control" name="second_note" rows="3">{{ isset($quotation) ? $quotation->second_note : 'If you have any inquiries concerning pricing details, please don\'t hesitate to reach out to us. We would be delighted to provide further clarification and ensure a more precise understanding, even if it\'s solely for the purpose of clarity. Your trust from the outset is greatly appreciated, and We\'re here to assist you. Thank you' }}</textarea>
-                    </div>
-                </div>
-
                 <div class="card border mb-4">
                     <div class="card-header py-3">
                         <div class="d-flex justify-content-between align-items-center">
-                            <h4 class="mb-0 fs-5">بنود الفاتورة</h4>
+                            <h4 class="mb-0 fs-5">بنود عرض السعر</h4>
                             <button type="button" class="btn btn-primary" id="add-item">
                                 <i class="fas fa-plus me-1"></i> إضافة بند
                             </button>
@@ -137,46 +101,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @if(isset($quotation))
-                                        @foreach($quotation->items as $item)
-                                        <tr class="invoice-item">
-                                            <td data-label="المنتج">
-                                                <select class="form-select select2-searchable" name="items[{{ $loop->index }}][product_id]" required>
-                                                    <option value="">اختر المنتج</option>
-                                                    @foreach($products as $product)
-                                                        <option value="{{ $product->id }}" 
-                                                            {{ $item->product_id == $product->id ? 'selected' : '' }}
-                                                            data-unit-price="{{ $product->price }}"
-                                                            data-code="{{ $product->code }}">
-                                                            {{ $product->code }} - {{ $product->name }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            </td>
-                                            <td data-label="الوصف">
-                                                <input type="text" class="form-control" name="items[{{ $loop->index }}][description]" 
-                                                    value="{{ $item->description }}">
-                                            </td>
-                                            <td data-label="الكمية">
-                                                <input type="number" class="form-control quantity" name="items[{{ $loop->index }}][quantity]" 
-                                                    value="{{ $item->quantity }}" min="1" required>
-                                            </td>
-                                            <td data-label="السعر">
-                                                <input type="number" class="form-control unit-price" name="items[{{ $loop->index }}][unit_price]" 
-                                                    value="{{ $item->unit_price }}" min="0" step="0.01" required>
-                                            </td>
-                                            <td data-label="المجموع">
-                                                <input type="hidden" name="items[{{ $loop->index }}][total]" value="{{ $item->total }}">
-                                                <span class="item-total-display">{{ number_format($item->total, 2) }}</span>
-                                            </td>
-                                            <td data-label="العمليات">
-                                                <button type="button" class="btn btn-danger btn-sm remove-item">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        @endforeach
-                                    @endif
+                                    <!-- Items will be added here dynamically -->
                                 </tbody>
                             </table>
                         </div>
@@ -190,7 +115,7 @@
                                 <option value="">اختر المنتج</option>
                                 @foreach($products as $product)
                                     <option value="{{ $product->id }}"
-                                        data-unit-price="{{ $product->price }}"
+                                        data-unit-price="{{ $product->unit_price }}"
                                         data-code="{{ $product->code }}">
                                         {{ $product->code }} - {{ $product->name }}
                                     </option>
@@ -244,9 +169,20 @@
                     </div>
                 </div>
 
+                <div class="row g-3 mb-4">
+                    <div class="col-12">
+                        <label class="form-label fw-bold">Notes</label>
+                        <textarea class="form-control" name="first_note" rows="3">Kindly Note that all pricing, denominated in USD currency, is structured into two payment installments. The initial payment amounts to 70% of the total cost, and the final 30% payment is to be made upon receiving the completed work. ** We offer a guarantee that this work will be accessible with lifetime access upon request. Quotation avaliable for one week</textarea>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label fw-bold">Additional Notes</label>
+                        <textarea class="form-control" name="second_note" rows="3">If you have any inquiries concerning pricing details, please don't hesitate to reach out to us. We would be delighted to provide further clarification and ensure a more precise understanding, even if it's solely for the purpose of clarity. Your trust from the outset is greatly appreciated, and We're here to assist you. Thank you</textarea>
+                    </div>
+                </div>
+
                 <div class="d-flex gap-2 justify-content-end">
                     <button type="button" class="btn btn-secondary" onclick="window.history.back()">إلغاء</button>
-                    <button type="submit" class="btn btn-primary">حفظ الفاتورة</button>
+                    <button type="submit" class="btn btn-primary">حفظ عرض السعر</button>
                 </div>
             </form>
         </div>
@@ -312,32 +248,19 @@
 </style>
 
 @push('scripts')
-    <script>
-        console.log('Create invoice page loaded');
-    </script>
-    <script>
-        // Product options for dynamic rows
-        window.productOptions = `
-            <option value="">اختر المنتج</option>
-            @foreach($products as $product)
-                <option value="{{ $product->id }}"
-                    data-unit-price="{{ $product->price }}"
-                    data-code="{{ $product->code }}">
-                    {{ $product->code }} - {{ $product->name }}
-                </option>
-            @endforeach
-        `;
-    </script>
-    <script src="{{ asset('js/invoice.js') }}" defer></script>
+<script>
+    // Product options for dynamic rows
+    window.productOptions = `
+        <option value="">اختر المنتج</option>
+        @foreach($products as $product)
+            <option value="{{ $product->id }}"
+                data-unit-price="{{ $product->unit_price }}"
+                data-code="{{ $product->code }}">
+                {{ $product->code }} - {{ $product->name }}
+            </option>
+        @endforeach
+    `;
+</script>
+<script src="{{ asset('js/invoice.js') }}" defer></script>
 @endpush
-
-@if ($errors->any())
-    <div class="alert alert-danger">
-        <ul class="mb-0">
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif
 @endsection

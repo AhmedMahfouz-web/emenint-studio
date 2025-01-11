@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Invoice {{ $invoice->invoice_number }}</title>
+    <title>Quotation {{ $quotation->quotation_number }}</title>
     <link rel="stylesheet" href="{{ asset('css/main.css') }}">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -13,7 +13,6 @@
         <img class="watermark" src="{{ asset('images/Logo-Watermark.png') }}" alt="">
         <!-- Header Template -->
         <div id="header-template" class="header-section">
-
             <div class="header-bar"></div>
             <div class="main">
                 <div class="header">
@@ -22,32 +21,32 @@
                     </div>
                     <div class="invoice-details">
                         <div>
-                            <h1>Invoice Number</h1>
-                            <h3>{{ $invoice->invoice_number }}</h3>
+                            <h1>Quotation Number</h1>
+                            <h3>{{ $quotation->quotation_number }}</h3>
                         </div>
                         <div>
-                            <h1>Payment method</h1>
-                            <h3>{{ $invoice->payment_method }}</h3>
+                            <h1>Status</h1>
+                            <h3>{{ $quotation->status }}</h3>
                         </div>
                         <div>
-                            <h1>Amount due</h1>
-                            <h3>{{ $invoice->total . ' ' . $invoice->currancy }}</h3>
+                            <h1>Amount</h1>
+                            <h3>{{ $quotation->total . ' ' . $quotation->currancy }}</h3>
                         </div>
                         <div>
                             <h1>Date</h1>
-                            <h3>{{ $invoice->invoice_date }}</h3>
+                            <h3>{{ $quotation->quotation_date }}</h3>
                         </div>
                     </div>
                 </div>
 
-                <h1 class="main-title">Invoice</h1>
+                <h1 class="main-title">Quotation</h1>
 
                 <div class="client-details">
                     <h2>Quote to:</h2>
-                    <p><span>Name: </span>{{ $invoice->client->name }}</p>
-                    <p><span>Company: </span>{{ $invoice->client->company }}</p>
-                    <p><span>Mobile: </span>{{ $invoice->client->phone }}</p>
-                    <p><span>Country: </span>{{ $invoice->client->country }}</p>
+                    <p><span>Name: </span>{{ $quotation->client->name }}</p>
+                    <p><span>Company: </span>{{ $quotation->client->company }}</p>
+                    <p><span>Mobile: </span>{{ $quotation->client->phone }}</p>
+                    <p><span>Country: </span>{{ $quotation->client->country }}</p>
                 </div>
             </div>
         </div>
@@ -64,12 +63,12 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($invoice->items as $item)
+                    @foreach ($quotation->items as $item)
                         <tr class="invoice-item">
                             <td>{{ $item->description }}</td>
                             <td>{{ $item->price }}</td>
                             <td>{{ $item->quantity }}</td>
-                            <td>{{ $item->total . ' ' . $invoice->currancy }}</td>
+                            <td>{{ $item->total . ' ' . $quotation->currancy }}</td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -77,30 +76,30 @@
 
             <div class="invoice-summary">
                 <div class="notes">
-                    <p>{{ $invoice->first_note }}</p>
-                    <p class="notes-2">{{ $invoice->second_note }}</p>
+                    <p>{{ $quotation->first_note }}</p>
+                    <p class="notes-2">{{ $quotation->second_note }}</p>
                 </div>
                 <div class="totals">
                     <div>
                         <span class="total-title">Subtotal</span>
-                        <span>{{ $invoice->subtotal . ' ' . $invoice->currancy }}</span>
+                        <span>{{ $quotation->subtotal . ' ' . $quotation->currancy }}</span>
                     </div>
                     <div>
-                        <span class="total-title">Taxes ({{ $invoice->tax_percentage }}%)</span>
-                        <span>{{ $invoice->tax_amount . ' ' . $invoice->currancy }}</span>
+                        <span class="total-title">Taxes ({{ $quotation->tax_percentage }}%)</span>
+                        <span>{{ $quotation->tax_amount . ' ' . $quotation->currancy }}</span>
                     </div>
                     <div>
                         <span class="total-title">Discount</span>
-                        <span>{{ $invoice->discount . ' ' . $invoice->currancy }}</span>
+                        <span>{{ $quotation->discount . ' ' . $quotation->currancy }}</span>
                     </div>
                     <div class="total">
                         <span class="total-title">Total</span>
-                        <span>{{ $invoice->total . ' ' . $invoice->currancy }}</span>
+                        <span>{{ $quotation->total . ' ' . $quotation->currancy }}</span>
                     </div>
 
                     <div class="signature">
                         <p>Proposal written by</p>
-                        <img src="{{ asset('images/' . $invoice->signature) }}" alt="Signature" class="signature-image">
+                        <img src="{{ asset('images/' . $quotation->signature) }}" alt="Signature" class="signature-image">
                     </div>
                 </div>
             </div>
@@ -188,7 +187,7 @@
                     document.querySelector('.invoice-summary').style.display = '';
 
                     // Save the PDF
-                    pdf.save('Invoice-{{ $invoice->invoice_number }}.pdf');
+                    pdf.save('Quotation-{{ $quotation->quotation_number }}.pdf');
 
                     // Close window after a short delay
                     setTimeout(() => {

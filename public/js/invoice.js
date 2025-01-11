@@ -1,191 +1,217 @@
-import jQuery from 'jquery';
-import select2 from 'select2';
-import 'select2/dist/css/select2.css';
-import 'select2/dist/js/select2.full.js';
-import Toastify from 'toastify-js';
-import 'toastify-js/src/toastify.css';
+// Function to update totals
+function updateTotals() {
+    let subtotal = 0;
 
-// Ensure jQuery is globally available
-window.$ = window.jQuery = jQuery;
+    // Calculate subtotal from each item total
+    document.querySelectorAll('.item-total-display').forEach(span => {
+        const itemTotal = parseFloat(span.textContent.replace(' ج.م', '')) || 0;
+        subtotal += itemTotal;
+    });
 
-// Initialize select2
-select2(window.jQuery);
+    // Get discount and calculate net before tax
+    const discount = parseFloat(document.getElementById('discount').value) || 0;
+    const netBeforeTax = subtotal - discount;
 
-// Only initialize once
+    // Calculate tax
+    const taxRate = parseFloat(document.getElementById('tax_percentage').value) || 0;
+    const taxAmount = (netBeforeTax * taxRate) / 100;
+
+    // Calculate total
+    const total = netBeforeTax + taxAmount;
+
+    // Get currency from select
+    const currency = document.getElementById('currancy').value || 'EGP';
+
+    // Update display values
+    document.getElementById('subtotal').textContent = subtotal.toFixed(2) + ' ' + currency;
+    document.getElementById('discount-amount').textContent = discount.toFixed(2) + ' ' + currency;
+    document.getElementById('tax-amount').textContent = taxAmount.toFixed(2) + ' ' + currency;
+    document.getElementById('total').textContent = total.toFixed(2) + ' ' + currency;
+}
+
+// Ensure script only runs once
 if (!window.invoiceInitialized) {
-    window.invoiceInitialized = true;
-
     document.addEventListener('DOMContentLoaded', function() {
-        // Initialize Select2
-        initializeSelect2();
-
+        // Set initialization flag
+        window.invoiceInitialized = true;
+        
         // Initialize item counter
-        let itemCounter = 1;
+        let itemCounter = 0;
 
-        // Function to update totals
-        function updateTotals() {
-            let subtotal = 0;
-
-            // Calculate subtotal from each item total
-            document.querySelectorAll('.item-total').forEach(input => {
-                const itemTotal = parseFloat(input.value) || 0; // Ensure we parse the value correctly
-                subtotal += itemTotal;
-            });
-
-            // Get discount and calculate net before tax
-            const discount = parseFloat(document.getElementById('discount').value) || 0;
-            const netBeforeTax = subtotal - discount;
-
-            // Calculate tax
-            const taxRate = parseFloat(document.getElementById('tax-rate').value) || 0;
-            const taxAmount = (netBeforeTax * taxRate) / 100;
-
-            // Calculate total
-            const total = netBeforeTax + taxAmount;
-
-            // Update display values with currency
-            document.getElementById('subtotal-display').textContent = subtotal.toFixed(2) + ' ج.م';
-            document.getElementById('discount-display').textContent = discount.toFixed(2) + ' ج.م';
-            document.getElementById('tax-amount-display').textContent = taxAmount.toFixed(2) + ' ج.م';
-            document.getElementById('total-display').textContent = total.toFixed(2) + ' ج.م';
-
-            // Update hidden inputs
-            document.getElementById('subtotal-input').value = subtotal.toFixed(2);
-            document.getElementById('tax-input').value = taxAmount.toFixed(2);
-            document.getElementById('total-input').value = total.toFixed(2);
-        }
-
-        // Function to add item event listeners
-        function addItemEventListeners(item) {
-                const productSelect = item.querySelector('.product-select');
-    const quantityInput = item.querySelector('input[name*="[quantity]"]'); // Select quantity input
-    const unitPriceInput = item.querySelector('.unit-price');
-    const itemTotalInput = item.querySelector('.item-total');
-    const removeButton = item.querySelector('.remove-item');
-
-
-            // Product selection
-            jQuery(productSelect).on('change', function() {
-        const selectedOption = this.options[this.selectedIndex];
-        const price = parseFloat(selectedOption.dataset.price) || 0; // Ensure price is parsed correctly
-        unitPriceInput.value = price.toFixed(2); // Set unit price
-        updateItemTotal(item); // Update item total
-    });
-
-
-            // Quantity change
-            quantityInput.addEventListener('input', function() {
-        if (this.value < 1) this.value = 1; // Ensure quantity is at least 1
-        updateItemTotal(item); // Update item total
-            });
-
-            // Unit price change
-    unitPriceInput.addEventListener('input', function() {
-        updateItemTotal(item); // Update item total when unit price changes
-    });
-
-
-            // Remove item
-            if (removeButton) {
-                removeButton.addEventListener('click', function() {
-                    if (document.querySelectorAll('.invoice-item').length > 1) {
-                        item.remove();
-                        updateTotals(); // Recalculate totals after removing an item
+        // Initialize Select2
+        function initializeSelect2(element) {
+            $(element).select2({
+                theme: 'bootstrap-5',
+                dir: 'rtl',
+                width: '100%',
+                language: {
+                    noResults: function() {
+                        return "لا توجد نتائج";
+                    },
+                    searching: function() {
+                        return "جاري البحث...";
                     }
-                });
-            }
+                },
+                placeholder: "اختر المنتج",
+                allowClear: true
+            });
         }
 
         // Function to update item total
-       function updateItemTotal(item) {
-    const quantity = parseFloat(item.querySelector('input[name*="[quantity]"]').value) || 0; // Get quantity
-    const unitPrice = parseFloat(item.querySelector('.unit-price').value) || 0; // Get unit price
-    const itemTotal = quantity * unitPrice; // Calculate item total
-    item.querySelector('.item-total').value = itemTotal.toFixed(2); // Set item total
-    console.log(`Quantity: ${quantity}, Unit Price: ${unitPrice}, Item Total: ${itemTotal.toFixed(2)}`); // Debugging log
-    updateTotals(); // Recalculate totals after updating item total
-}
+        function updateItemTotal(row) {
+            const quantity = parseFloat(row.querySelector('.quantity').value) || 0;
+            const unitPrice = parseFloat(row.querySelector('.unit-price').value) || 0;
+            const totalInput = row.querySelector('input[name$="[total]"]');
+            const totalDisplay = row.querySelector('.item-total-display');
+            
+            const total = quantity * unitPrice;
+            totalInput.value = total.toFixed(2);
+            totalDisplay.textContent = total.toFixed(2) + ' ' + document.getElementById('currancy').value;
+            
+            updateTotals();
+        }
 
-        // Add new item row
+        // Function to initialize item row event listeners
+        function initializeItemRow(row) {
+            const quantityInput = row.querySelector('.quantity');
+            const unitPriceInput = row.querySelector('.unit-price');
+            const removeButton = row.querySelector('.remove-item');
+            const select = row.querySelector('select.select2-searchable');
+
+            if (quantityInput) {
+                quantityInput.addEventListener('input', () => updateItemTotal(row));
+            }
+
+            if (unitPriceInput) {
+                unitPriceInput.addEventListener('input', () => updateItemTotal(row));
+            }
+
+            if (removeButton) {
+                removeButton.addEventListener('click', () => {
+                    if (document.querySelectorAll('.invoice-item').length > 1) {
+                        row.remove();
+                        updateTotals();
+                    }
+                });
+            }
+
+            if (select) {
+                initializeSelect2(select);
+                select.addEventListener('change', function() {
+                    const selectedOption = this.options[this.selectedIndex];
+                    if (selectedOption && selectedOption.dataset.unitPrice) {
+                        const priceInput = row.querySelector('.unit-price');
+                        if (priceInput) {
+                            priceInput.value = selectedOption.dataset.unitPrice;
+                            updateItemTotal(row);
+                        }
+                    }
+                });
+            }
+
+            // Calculate initial total for this row
+            updateItemTotal(row);
+        }
+
+        // Function to add new item row
+        function addItemRow() {
+            const tbody = document.querySelector('#invoice-items tbody');
+            const newRow = document.createElement('tr');
+            newRow.className = 'invoice-item';
+            
+            newRow.innerHTML = `
+                <td data-label="المنتج">
+                    <select class="form-select select2-searchable" name="items[${itemCounter}][product_id]" required>
+                        ${window.productOptions}
+                    </select>
+                </td>
+                <td data-label="الوصف">
+                    <input type="text" class="form-control" name="items[${itemCounter}][description]">
+                </td>
+                <td data-label="الكمية">
+                    <input type="number" class="form-control quantity" name="items[${itemCounter}][quantity]" value="1" min="1" required>
+                </td>
+                <td data-label="السعر">
+                    <input type="number" class="form-control unit-price" name="items[${itemCounter}][unit_price]" value="0.00" min="0" step="0.01" required>
+                </td>
+                <td data-label="المجموع">
+                    <input type="hidden" name="items[${itemCounter}][total]" value="0.00">
+                    <span class="item-total-display">0.00 ${document.getElementById('currancy').value}</span>
+                </td>
+                <td data-label="العمليات">
+                    <button type="button" class="btn btn-danger btn-sm remove-item">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            `;
+
+            tbody.appendChild(newRow);
+            initializeItemRow(newRow);
+            itemCounter++;
+            updateItemTotal(newRow);
+        }
+
+        // Initialize existing rows and calculate totals
+        document.querySelectorAll('.invoice-item').forEach(row => {
+            initializeItemRow(row);
+            itemCounter++;
+        });
+
+        // Update totals after all rows are initialized
+        updateTotals();
+
+        // Add event listener to "Add Item" button
         const addItemButton = document.getElementById('add-item');
         if (addItemButton) {
-            addItemButton.addEventListener('click', function() {
-                // Disable the button to prevent multiple clicks
-                addItemButton.disabled = true;
-
-                const itemsContainer = document.getElementById('invoice-items');
-                const newItem = document.querySelector('.invoice-item').cloneNode(true);
-
-                // Update names and clear values
-                const inputs = newItem.querySelectorAll('input, select');
-                inputs.forEach(input => {
-                    if (input.name) {
-                        input.name = input.name.replace(/\[\d+\]/, `[${itemCounter}]`); // Update index in name
-                    }
-                    if (input.type !== 'button') {
-                        input.value = input.type === 'number' ? '1' : ''; // Reset values
-                    }
-                });
-
-                // Remove any existing select2 instances
-                jQuery(newItem).find('.select2-container').remove();
-
-                // Add event listeners to new elements
-                addItemEventListeners(newItem);
-
-                // Append the new item
-                itemsContainer.appendChild(newItem);
-
-                // Re-initialize Select2 on the new select input
-                jQuery(newItem).find('.select2-searchable').select2({
-                    theme: 'bootstrap-5',
-                    dir: 'rtl',
-                    width: '100%',
-                    language: {
-                        noResults: function() {
-                            return "لا توجد نتائج";
-                        },
-                        searching: function() {
-                            return "جاري البحث...";
-                        }
-                    },
-                    placeholder: "اختر أو ابحث...",
-                    allowClear: true
-                });
-
-                // Recalculate totals after adding a new item
-                updateTotals();
-
-                itemCounter++;
-
-                // Re-enable the button after a short delay
-                setTimeout(() => {
-                    addItemButton.disabled = false;
-                }, 100); // Adjust the delay as needed
+            // Remove any existing listeners
+            const newAddItemButton = addItemButton.cloneNode(true);
+            addItemButton.parentNode.replaceChild(newAddItemButton, addItemButton);
+            
+            newAddItemButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                addItemRow();
             });
         }
 
-        // Add event listeners to initial row
-        document.querySelectorAll('.invoice-item').forEach(addItemEventListeners);
+        // Add event listeners to discount and tax rate inputs
+        const discountInput = document.getElementById('discount');
+        const taxRateInput = document.getElementById('tax_percentage');
+        
+        if (discountInput) {
+            discountInput.addEventListener('input', updateTotals);
+        }
+        
+        if (taxRateInput) {
+            taxRateInput.addEventListener('input', updateTotals);
+        }
 
-        // Add event listeners to tax rate and discount inputs
-        document.getElementById('tax-rate')?.addEventListener('input', updateTotals);
-        document.getElementById('discount')?.addEventListener('input', updateTotals);
+        // Initialize with first row if there are no items
+        if (!document.querySelector('.invoice-item')) {
+            addItemRow();
+        }
+
+        // Calculate initial totals
+        updateTotals();
     });
 }
 
-
+// Function to show toast
 function showToast(message) {
-    Toastify({
-        text: message,
-        duration: 3000, // Duration in milliseconds
-        gravity: "top", // `top` or `bottom`
-        position: 'right', // `left`, `center` or `right`
-        backgroundColor: "linear-gradient(to right, #ff5f6d, #ffc371)",
-        stopOnFocus: true, // Prevents dismissing of toast on hover
-    }).showToast();
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.innerHTML = `
+        <div class="toast-body">
+            ${message}
+        </div>
+    `;
+    document.body.appendChild(toast);
+    setTimeout(() => {
+        toast.remove();
+    }, 3000);
 }
 
+// Function to initialize select2
 function initializeSelect2(container = document) {
     const config = {
         theme: 'bootstrap-5',
@@ -205,30 +231,34 @@ function initializeSelect2(container = document) {
 
     // Initialize client select
     if (container === document) {
-        jQuery('.select2-searchable').select2({
-            ...config,
-            matcher: function(params, data) {
-                // If there are no search terms, return all of the data
-                if (jQuery.trim(params.term) === '') {
-                    return data;
-                }
+        const selectElements = document.querySelectorAll('.select2-searchable');
+        selectElements.forEach(select => {
+            const options = {
+                ...config,
+                matcher: function(params, data) {
+                    // If there are no search terms, return all of the data
+                    if (params.term === '') {
+                        return data;
+                    }
 
-                // Do not display the item if there is no 'text' property
-                if (typeof data.text === 'undefined') {
+                    // Do not display the item if there is no 'text' property
+                    if (typeof data.text === 'undefined') {
+                        return null;
+                    }
+
+                    const term = params.term.toLowerCase();
+                    const text = data.text.toLowerCase();
+
+                    // Check if the text contains the term
+                    if (text.indexOf(term) > -1) {
+                        return data;
+                    }
+
+                    // Return `null` if the term should not be displayed
                     return null;
                 }
-
-                const term = params.term.toLowerCase();
-                const text = data.text.toLowerCase();
-
-                // Check if the text contains the term
-                if (text.indexOf(term) > -1) {
-                    return data;
-                }
-
-                // Return `null` if the term should not be displayed
-                return null;
-            }
+            };
+            new Select2(select, options);
         });
     }
 }

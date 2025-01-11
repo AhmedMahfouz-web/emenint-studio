@@ -2,35 +2,31 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Models\Client;
-use App\Models\InvoiceItem;
 
-class Invoice extends Model
+class Quotation extends Model
 {
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'client_id',
-        'payment_method',
-        'invoice_date',
-        'invoice_number',
+        'quotation_number',
+        'quotation_date',
         'subtotal',
         'discount',
         'tax_percentage',
         'tax_amount',
         'total',
-        'signature',
-        'currancy',
         'first_note',
         'second_note',
+        'currancy',
         'status',
     ];
 
     protected $casts = [
-        'invoice_date' => 'date',
+        'quotation_date' => 'date',
         'subtotal' => 'decimal:2',
         'discount' => 'decimal:2',
         'tax_percentage' => 'decimal:2',
@@ -45,17 +41,6 @@ class Invoice extends Model
 
     public function items()
     {
-        return $this->hasMany(InvoiceItem::class);
-    }
-
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($invoice) {
-            if (!$invoice->invoice_number) {
-                $invoice->invoice_number = 'INV-' . str_pad(static::max('id') + 1, 6, '0', STR_PAD_LEFT);
-            }
-        });
+        return $this->hasMany(QuotationItem::class);
     }
 }
