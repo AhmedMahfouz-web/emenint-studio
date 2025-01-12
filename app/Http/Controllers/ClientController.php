@@ -31,8 +31,10 @@ class ClientController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'company' => 'nullable|string|max:255',
+            'company' => 'required|string|max:255',
             'phone' => 'required|string|max:255',
+            'email' => 'nullable|email|max:255',
+            'address' => 'required|string',
             'country' => 'required|string|max:255',
         ]);
 
@@ -40,15 +42,15 @@ class ClientController extends Controller
             // Generate client code (CL-YYYY-XXXX)
             $latestClient = Client::latest()->first();
             $year = date('Y');
-            
+
             if ($latestClient && str_starts_with($latestClient->code, "CL-$year")) {
                 $number = (int)substr($latestClient->code, -4) + 1;
             } else {
                 $number = 1;
             }
-            
+
             $validated['code'] = sprintf("CL-%s-%04d", $year, $number);
-            
+
             $client = Client::create($validated);
 
             if ($request->wantsJson()) {

@@ -14,15 +14,6 @@
 
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label for="code" class="form-label">كود العميل</label>
-                                <input type="text" class="form-control @error('code') is-invalid @enderror"
-                                    id="code" name="code" value="{{ old('code') }}" required>
-                                @error('code')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <div class="col-md-6">
                                 <label for="name" class="form-label">الاسم</label>
                                 <input type="text" class="form-control @error('name') is-invalid @enderror"
                                     id="name" name="name" value="{{ old('name') }}" required>
@@ -30,8 +21,7 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                        </div>
-                        <div class="row mb-3">
+
                             <div class="col-md-6">
                                 <label for="company" class="form-label">الشركة</label>
                                 <input type="text" class="form-control @error('company') is-invalid @enderror"
@@ -40,7 +30,9 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
+                        </div>
 
+                        <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="email" class="form-label">البريد الإلكتروني</label>
                                 <input type="email" class="form-control @error('email') is-invalid @enderror"
@@ -50,9 +42,6 @@
                                 @enderror
                             </div>
 
-                        </div>
-
-                        <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="phone" class="form-label">رقم الهاتف</label>
                                 <input type="text" class="form-control @error('phone') is-invalid @enderror"
@@ -62,6 +51,9 @@
                                 @enderror
                             </div>
 
+                        </div>
+
+                        <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="address" class="form-label">العنوان</label>
                                 <textarea class="form-control @error('address') is-invalid @enderror" id="address" name="address" rows="3"
@@ -70,9 +62,7 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col-md-12">
+                            <div class="col-md-6">
                                 <label for="country" class="form-label text-dark fw-bold">البلد</label>
                                 <select class="form-select" id="country" name="country" required>
                                     <option value="">اختر البلد</option>
