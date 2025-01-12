@@ -19,14 +19,19 @@
                 <div class="row g-4 mb-4">
                     <div class="col-12">
                         <label for="client_id" class="form-label fw-bold">العميل</label>
-                        <select class="form-select select2-searchable" name="client_id" required>
-                            <option value="">اختر العميل</option>
-                            @foreach ($clients as $client)
-                                <option value="{{ $client->id }}" data-code="{{ $client->code }}">
-                                    {{ $client->code }} - {{ $client->name }}
-                                </option>
-                            @endforeach
-                        </select>
+                        <div class="d-flex gap-2">
+                            <select class="form-select select2-searchable" name="client_id" required>
+                                <option value="">اختر العميل</option>
+                                @foreach ($clients as $client)
+                                    <option value="{{ $client->id }}" data-code="{{ $client->code }}">
+                                        {{ $client->code }} - {{ $client->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createClientModal">
+                                <i class="fas fa-plus"></i> عميل جديد
+                            </button>
+                        </div>
                         @error('client_id')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -189,63 +194,7 @@
     </div>
 </div>
 
-<style>
-    @media (max-width: 768px) {
-        .table-responsive {
-            border: 0;
-        }
-
-        .table-responsive table thead {
-            display: none;
-        }
-
-        .table-responsive table tbody tr {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-            padding: 1rem;
-            border: 1px solid #ddd;
-            border-radius: 0.5rem;
-            background-color: #fff;
-        }
-
-        .table-responsive table td {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            align-items: center;
-            padding: 0.5rem;
-            border: none;
-        }
-
-        .table-responsive table td::before {
-            content: attr(data-label);
-            font-weight: bold;
-            margin-left: 0.5rem;
-        }
-
-        .select2-container {
-            width: 100% !important;
-        }
-
-        .form-control {
-            width: 100%;
-        }
-
-        .btn {
-            width: 100%;
-            margin-top: 0.5rem;
-        }
-
-        .card-body {
-            padding: 1rem !important;
-        }
-
-        .invoice-item {
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-    }
-</style>
+<x-client-modal />
 
 @push('scripts')
 <script>
@@ -262,5 +211,17 @@
     `;
 </script>
 <script src="{{ asset('js/invoice.js') }}" defer></script>
+<script>
+    // Initialize the modal trigger
+    document.querySelector('[data-modal-target="#createClientModal"]').addEventListener('click', function() {
+        const modal = new bootstrap.Modal(document.getElementById('createClientModal'));
+        modal.show();
+    });
+</script>
 @endpush
+
+@push('modals')
+    @include('components.client-modal')
+@endpush
+
 @endsection

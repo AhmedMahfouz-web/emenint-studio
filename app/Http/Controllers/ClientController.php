@@ -31,18 +31,49 @@ class ClientController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'code' => 'required|string|max:50|unique:clients',
-            'address' => 'nullable|string',
-            'email' => 'nullable|email|unique:clients',
-            'phone' => 'nullable|string|max:20',
-            'country' => 'required|string|max:20',
-            'company' => 'required|string|max:20',
+            'company' => 'nullable|string|max:255',
+            'phone' => 'required|string|max:255',
+            'country' => 'required|string|max:255',
         ]);
 
-        Client::create($validated);
+        try {
+            // Generate client code (CL-YYYY-XXXX)
+            $latestClient = Client::latest()->first();
+            $year = date('Y');
+            
+            if ($latestClient && str_starts_with($latestClient->code, "CL-$year")) {
+                $number = (int)substr($latestClient->code, -4) + 1;
+            } else {
+                $number = 1;
+            }
+            
+            $validated['code'] = sprintf("CL-%s-%04d", $year, $number);
+            
+            $client = Client::create($validated);
 
-        return redirect()->route('clients.index')
-            ->with('success', 'Client created successfully.');
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'client' => $client,
+                    'message' => 'Client created successfully'
+                ]);
+            }
+
+            return redirect()->route('clients.index')
+                ->with('success', 'Client created successfully');
+        } catch (\Exception $e) {
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error creating client',
+                    'errors' => ['error' => [$e->getMessage()]]
+                ], 422);
+            }
+
+            return back()
+                ->withInput()
+                ->withErrors(['error' => $e->getMessage()]);
+        }
     }
 
     /**

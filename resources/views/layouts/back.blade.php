@@ -15,6 +15,8 @@
     <!-- BEGIN: Theme CSS-->
     <link rel="stylesheet" href="{{ asset('css/rt-plugins.css') }}">
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <!-- End : Theme CSS-->
     <script src="{{ asset('js/settings.js') }}" sync></script>
 </head>
@@ -51,6 +53,9 @@
     <script src="{{ asset('js/jquery-3.6.0.min.js') }}"></script>
     <script src="{{ asset('js/rt-plugins.js') }}"></script>
     <script src="{{ asset('js/app.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    @stack('scripts')
 </body>
 
 </html>

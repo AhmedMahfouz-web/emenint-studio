@@ -137,16 +137,16 @@ Route::group(['prefix' => 'invoice'], function () {
     })->name('invoices.bulk.download');
     Route::post('/invoices/bulk-download', [InvoiceController::class, 'bulkDownload'])->name('invoices.bulk-download');
 
+    // Client routes
+    Route::post('/clients', [ClientController::class, 'store'])->name('clients.store');
+    Route::resource('clients', ClientController::class)->except(['store']);
+
     // Resource Routes
-        Route::resource('clients', ClientController::class);
-        Route::resource('products', ProductController::class);
-        Route::resource('quotations', QuotationController::class);
-        Route::get('quotations/{quotation}/download', [QuotationController::class, 'download'])->name('quotations.download');
-        Route::resource('invoices', InvoiceController::class);
-        Route::get('invoices/{invoice}/download', [InvoiceController::class, 'download'])->name('invoices.download');
+    Route::resource('products', ProductController::class);
     Route::resource('quotations', QuotationController::class);
     Route::get('quotations/{quotation}/download', [QuotationController::class, 'download'])->name('quotations.download');
+    Route::resource('invoices', InvoiceController::class);
+    Route::get('invoices/{invoice}/download', [InvoiceController::class, 'download'])->name('invoices.download');
     Route::get('reports', [ReportController::class, 'index'])->name('reports.index');
-        Route::post('reports/generate', [ReportController::class, 'generate'])->name('reports.generate');
-    });
-
+    Route::post('reports/generate', [ReportController::class, 'generate'])->name('reports.generate');
+});

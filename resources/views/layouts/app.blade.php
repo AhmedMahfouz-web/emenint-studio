@@ -25,4 +25,6 @@
 </div>
 
 @stack('styles')
+@stack('scripts')
+
 @endsection

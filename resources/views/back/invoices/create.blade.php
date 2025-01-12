@@ -19,15 +19,20 @@
                 <div class="row g-4 mb-4">
                     <div class="col-12">
                         <label for="client_id" class="form-label fw-bold">العميل</label>
-                        <select class="form-select select2-searchable" name="client_id" required>
-                            <option value="">اختر العميل</option>
-                            @foreach ($clients as $client)
-                                <option value="{{ $client->id }}" data-code="{{ $client->code }}"
-                                    {{ isset($quotation) && $quotation->client_id == $client->id ? 'selected' : '' }}>
-                                    {{ $client->code }} - {{ $client->name }}
-                                </option>
-                            @endforeach
-                        </select>
+                        <div class="d-flex gap-2">
+                            <select class="form-select select2-searchable" name="client_id" required>
+                                <option value="">اختر العميل</option>
+                                @foreach ($clients as $client)
+                                    <option value="{{ $client->id }}" data-code="{{ $client->code }}"
+                                        {{ isset($quotation) && $quotation->client_id == $client->id ? 'selected' : '' }}>
+                                        {{ $client->code }} - {{ $client->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <button type="button" class="btn btn-primary" data-modal-target="#createClientModal">
+                                <i class="fas fa-plus"></i> عميل جديد
+                            </button>
+                        </div>
                         @error('client_id')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -253,6 +258,18 @@
     </div>
 </div>
 
+<x-client-modal />
+
+@push('scripts')
+<script>
+    // Initialize the modal trigger
+    document.querySelector('[data-modal-target="#createClientModal"]').addEventListener('click', function() {
+        const modal = new bootstrap.Modal(document.getElementById('createClientModal'));
+        modal.show();
+    });
+</script>
+@endpush
+
 <style>
     @media (max-width: 768px) {
         .table-responsive {
@@ -329,6 +346,10 @@
         `;
     </script>
     <script src="{{ asset('js/invoice.js') }}" defer></script>
+@endpush
+
+@push('modals')
+    @include('components.client-modal')
 @endpush
 
 @if ($errors->any())
