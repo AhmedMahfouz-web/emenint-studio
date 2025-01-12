@@ -11,7 +11,7 @@
                 </a>
             </div>
         </div>
-        
+
         <div class="card-body p-3 p-md-4">
             <form action="{{ route('invoices.update', $invoice) }}" method="POST" id="invoiceForm">
                 @csrf
@@ -23,7 +23,7 @@
                         <select class="form-select select2-searchable" name="client_id" required>
                             <option value="">اختر العميل</option>
                             @foreach ($clients as $client)
-                                <option value="{{ $client->id }}" 
+                                <option value="{{ $client->id }}"
                                     {{ old('client_id', $invoice->client_id) == $client->id ? 'selected' : '' }}
                                     data-code="{{ $client->code }}">
                                     {{ $client->code }} - {{ $client->name }}
@@ -37,8 +37,8 @@
 
                     <div class="col-12 col-md-6">
                         <label for="invoice_date" class="form-label fw-bold">تاريخ الفاتورة</label>
-                        <input type="date" class="form-control @error('invoice_date') is-invalid @enderror" 
-                            id="invoice_date" name="invoice_date" 
+                        <input type="date" class="form-control @error('invoice_date') is-invalid @enderror"
+                            id="invoice_date" name="invoice_date"
                             value="{{ old('invoice_date', $invoice->invoice_date->format('Y-m-d')) }}" required>
                         @error('invoice_date')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -83,8 +83,8 @@
                     <div class="col-12 col-md-6">
                         <label class="form-label fw-bold">نسبة الضريبة</label>
                         <div class="input-group">
-                            <input type="number" class="form-control @error('tax-rate') is-invalid @enderror" 
-                                id="tax-rate" name="tax-rate" value="{{ old('tax-rate', $invoice->tax_rate) }}" 
+                            <input type="number" class="form-control @error('tax-rate') is-invalid @enderror"
+                                id="tax-rate" name="tax-rate" value="{{ old('tax-rate', $invoice->tax_rate) }}"
                                 min="0" max="100">
                             <span class="input-group-text">%</span>
                         </div>
@@ -96,8 +96,8 @@
                     <div class="col-12 col-md-6">
                         <label class="form-label fw-bold">الخصم</label>
                         <div class="input-group">
-                            <input type="number" class="form-control @error('discount') is-invalid @enderror" 
-                                id="discount" name="discount" value="{{ old('discount', $invoice->discount_value) }}" 
+                            <input type="number" class="form-control @error('discount') is-invalid @enderror"
+                                id="discount" name="discount" value="{{ old('discount', $invoice->discount) }}"
                                 min="0" step="0.01">
                             <span class="input-group-text">ج.م</span>
                         </div>
@@ -147,7 +147,7 @@
                                             <select class="form-select select2-searchable" name="items[{{ $loop->index }}][product_id]" required>
                                                 <option value="">اختر المنتج</option>
                                                 @foreach($products as $product)
-                                                    <option value="{{ $product->id }}" 
+                                                    <option value="{{ $product->id }}"
                                                         {{ $item->product_id == $product->id ? 'selected' : '' }}
                                                         data-price="{{ $product->price }}"
                                                         data-code="{{ $product->code }}">
@@ -157,18 +157,18 @@
                                             </select>
                                         </td>
                                         <td data-label="الوصف">
-                                            <input type="text" class="form-control description" 
-                                                name="items[{{ $loop->index }}][description]" 
+                                            <input type="text" class="form-control description"
+                                                name="items[{{ $loop->index }}][description]"
                                                 value="{{ $item->description }}">
                                         </td>
                                         <td data-label="الكمية">
-                                            <input type="number" class="form-control quantity" 
-                                                name="items[{{ $loop->index }}][quantity]" 
+                                            <input type="number" class="form-control quantity"
+                                                name="items[{{ $loop->index }}][quantity]"
                                                 value="{{ $item->quantity }}" min="1" required>
                                         </td>
                                         <td data-label="السعر">
-                                            <input type="number" class="form-control unit-price" 
-                                                name="items[{{ $loop->index }}][unit_price]" 
+                                            <input type="number" class="form-control unit-price"
+                                                name="items[{{ $loop->index }}][unit_price]"
                                                 value="{{ $item->price }}" min="0" step="0.01" required>
                                         </td>
                                         <td data-label="المجموع">
@@ -228,15 +228,15 @@
         .table-responsive {
             margin: -1px;
         }
-        
+
         .table-responsive table {
             border: 0;
         }
-        
+
         .table-responsive table thead {
             display: none;
         }
-        
+
         .table-responsive table tbody tr {
             display: grid;
             grid-template-columns: 1fr;
@@ -246,7 +246,7 @@
             border: 1px solid #ddd;
             border-radius: 0.5rem;
         }
-        
+
         .table-responsive table td {
             display: grid;
             grid-template-columns: 1fr 2fr;
@@ -254,12 +254,12 @@
             padding: 0.5rem;
             border: none;
         }
-        
+
         .table-responsive table td::before {
             content: attr(data-label);
             font-weight: bold;
         }
-        
+
         .select2-container {
             width: 100% !important;
         }

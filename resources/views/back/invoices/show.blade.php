@@ -36,18 +36,18 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="col-12 col-md-6">
                     <div class="card h-100 border">
                         <div class="card-body">
                             <h6 class="card-title mb-3 fw-bold">معلومات الفاتورة</h6>
                             <div class="d-flex flex-column gap-2">
                                 <div>
-                                    <span class="fw-bold">تاريخ الفاتورة:</span> 
+                                    <span class="fw-bold">تاريخ الفاتورة:</span>
                                     {{ $invoice->invoice_date ? ($invoice->invoice_date->format('Y/m/d')) : 'غير محدد' }}
                                 </div>
                                 <div>
-                                    <span class="fw-bold">رقم الفاتورة:</span> 
+                                    <span class="fw-bold">رقم الفاتورة:</span>
                                     {{ $invoice->invoice_number }}
                                 </div>
                                 <div class="col-12 col-md-6 mb-3">
@@ -114,7 +114,7 @@
                             </div>
                             <div class="d-flex justify-content-between mb-2">
                                 <span class="fw-bold">خصم:</span>
-                                <span>{{ number_format($invoice->discount_value ?? 0, 2) }} ج.م</span>
+                                <span>{{ number_format($invoice->discount ?? 0, 2) }} ج.م</span>
                             </div>
                             <div class="d-flex justify-content-between mb-2">
                                 <span class="fw-bold">الضريبة (14%):</span>
@@ -138,11 +138,11 @@
         .table-responsive table {
             border: 0;
         }
-        
+
         .table-responsive table thead {
             display: none;
         }
-        
+
         .table-responsive table tr {
             display: block;
             margin-bottom: 1rem;
@@ -151,21 +151,21 @@
             padding: 1rem;
             background-color: #fff;
         }
-        
+
         .table-responsive table td {
             display: block;
             text-align: right;
             padding: 0.5rem 0;
             border: none;
         }
-        
+
         .table-responsive table td:before {
             content: attr(data-label);
             float: right;
             font-weight: bold;
             margin-left: 0.5rem;
         }
-        
+
         .table-responsive table td:last-child {
             border-bottom: 0;
         }

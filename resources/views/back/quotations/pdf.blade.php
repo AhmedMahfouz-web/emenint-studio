@@ -2,11 +2,52 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=1024">
     <title>Quotation {{ $quotation->quotation_number }}</title>
-    <link rel="stylesheet" href="{{ asset('css/main.css') }}">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        @page {
+            size: A4;
+            margin: 0;
+        }
+        @media print {
+            html, body {
+                width: 210mm;
+                height: 297mm;
+                margin: 0;
+                padding: 0;
+            }
+        }
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+        }
+        #invoice {
+            width: 210mm;
+            min-height: 297mm;
+            margin: 0 auto;
+            background: white;
+            position: relative;
+            box-sizing: border-box;
+        }
+        @media screen and (max-width: 1024px) {
+            body {
+                background: white;
+            }
+            #invoice {
+                margin: 0;
+                padding: 0;
+                transform-origin: top left;
+                transform: scale(1);
+            }
+        }
+
+    </style>
+
+    <link rel="stylesheet" href="{{ asset('css/main.css') }}">
 </head>
 <body>
     <div id="invoice" class="invoice">
@@ -25,16 +66,12 @@
                             <h3>{{ $quotation->quotation_number }}</h3>
                         </div>
                         <div>
-                            <h1>Status</h1>
-                            <h3>{{ $quotation->status }}</h3>
-                        </div>
-                        <div>
-                            <h1>Amount</h1>
-                            <h3>{{ $quotation->total . ' ' . $quotation->currancy }}</h3>
+                            <h1></h1>
+                            <h3></h3>
                         </div>
                         <div>
                             <h1>Date</h1>
-                            <h3>{{ $quotation->quotation_date }}</h3>
+                            <h3>{{ $quotation->quotation_date->format('Y-m-d') }}</h3>
                         </div>
                     </div>
                 </div>
@@ -131,7 +168,7 @@
 
             setTimeout(async function() {
                 try {
-                    const ITEMS_PER_PAGE = 12;
+                    const ITEMS_PER_PAGE = 13;
                     const items = Array.from(document.querySelectorAll('.invoice-item'));
                     const totalPages = Math.ceil(items.length / ITEMS_PER_PAGE);
 
