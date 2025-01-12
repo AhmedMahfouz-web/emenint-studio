@@ -211,6 +211,11 @@
                             التقارير
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('currencies.*') ? 'active' : '' }}" href="{{ route('currencies.index') }}">
+                            إدارة العملات
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>

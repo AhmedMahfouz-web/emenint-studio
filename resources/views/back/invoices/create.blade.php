@@ -84,6 +84,19 @@
                     </div>
 
                     <div class="col-12 col-md-6">
+                        <label for="currency_id" class="form-label fw-bold">Currency</label>
+                        <select class="form-select" name="currency_id" required>
+                            @foreach($currencies as $currency)
+                                <option value="{{ $currency->id }}" 
+                                    {{ $currency->is_default ? 'selected' : '' }}
+                                    data-symbol="{{ $currency->symbol }}">
+                                    {{ $currency->code }} - {{ $currency->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="col-12 col-md-6">
                         <label class="form-label fw-bold">نسبة الضريبة</label>
                         <div class="input-group">
                             <input type="number" class="form-control @error('tax_percentage') is-invalid @enderror"

@@ -1,141 +1,75 @@
 @extends('layouts.app')
 
 @section('page-content')
-    {{-- <div class="container-fluid px-3 px-md-4">
-        <!-- Summary Statistics -->
-        <div class="row g-3 mb-4">
-            <div class="col-12 col-md-4">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-body p-4">
-                        <div class="d-flex align-items-center mb-3">
-                            <i class="fas fa-money-bill-wave fs-4 me-2 text-primary"></i>
-                            <h5 class="card-title mb-0">إجمالي الإيرادات</h5>
-                        </div>
-                        <h3 class="mb-3">{{ number_format($stats['total_revenue'], 2) }} ج.م</h3>
-                        <div class="progress">
-                            <div class="progress-bar bg-primary" role="progressbar"
-                                style="width: {{ $stats['revenue_percentage'] }}%;"
-                                aria-valuenow="{{ $stats['revenue_percentage'] }}"
-                                aria-valuemin="0" aria-valuemax="100">
+<div class="container-fluid px-3 px-md-4">
+    <!-- Statistics Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0 me-3">
+                            <div class="avatar avatar-lg bg-primary bg-opacity-10 rounded-circle">
+                                <i class="fas fa-users fa-lg text-primary"></i>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-4">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-body p-4">
-                        <div class="d-flex align-items-center mb-3">
-                            <i class="fas fa-file-invoice fs-4 me-2 text-info"></i>
-                            <h5 class="card-title mb-0">عدد الفواتير</h5>
-                        </div>
-                        <h3 class="mb-3">{{ $stats['total_invoices'] }}</h3>
-                        <div class="progress">
-                            <div class="progress-bar bg-info" role="progressbar"
-                                style="width: {{ $stats['invoice_percentage'] }}%;"
-                                aria-valuenow="{{ $stats['invoice_percentage'] }}"
-                                aria-valuemin="0" aria-valuemax="100">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-4">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-body p-4">
-                        <div class="d-flex align-items-center mb-3">
-                            <i class="fas fa-users fs-4 me-2 text-warning"></i>
-                            <h5 class="card-title mb-0">عدد العملاء</h5>
-                        </div>
-                        <h3 class="mb-3">{{ $stats['total_clients'] }}</h3>
-                        <div class="progress">
-                            <div class="progress-bar bg-warning" role="progressbar"
-                                style="width: {{ $stats['client_percentage'] }}%;"
-                                aria-valuenow="{{ $stats['client_percentage'] }}"
-                                aria-valuemin="0" aria-valuemax="100">
-                            </div>
+                        <div>
+                            <h6 class="card-subtitle mb-1 text-muted">إجمالي العملاء</h6>
+                            <h2 class="card-title mb-0">{{ number_format($totalClients) }}</h2>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Charts -->
-        <div class="row g-3 mb-4">
-            <div class="col-12">
-                <div class="card shadow-sm">
-                    <div class="card-header py-3">
-                        <h5 class="mb-0">الإيرادات الشهرية</h5>
-                    </div>
-                    <div class="card-body p-0 p-md-3">
-                        <div class="chart-container" style="position: relative; height:50vh; width:100%">
-                            <canvas id="revenueChart"></canvas>
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0 me-3">
+                            <div class="avatar avatar-lg bg-success bg-opacity-10 rounded-circle">
+                                <i class="fas fa-box fa-lg text-success"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <h6 class="card-subtitle mb-1 text-muted">إجمالي المنتجات</h6>
+                            <h2 class="card-title mb-0">{{ number_format($totalProducts) }}</h2>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="row g-3">
-            <!-- Recent Invoices -->
-            <div class="col-12 col-lg-6">
-                <div class="card shadow-sm">
-                    <div class="card-header py-3">
-                        <h5 class="mb-0">أحدث الفواتير</h5>
-                    </div>
-                    <div class="card-body p-0 p-md-3">
-                        <div class="table-responsive">
-                            <table class="table">
-                                <thead class="bg-light">
-                                    <tr>
-                                        <th>رقم الفاتورة</th>
-                                        <th>العميل</th>
-                                        <th>التاريخ</th>
-                                        <th>المبلغ</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($recentInvoices as $invoice)
-                                    <tr>
-                                        <td data-label="رقم الفاتورة">{{ $invoice->invoice_number }}</td>
-                                        <td data-label="العميل">{{ $invoice->client->name }}</td>
-                                        <td data-label="التاريخ">{{ $invoice->invoice_date->format('Y-m-d') }}</td>
-                                        <td data-label="المبلغ">{{ number_format($invoice->total, 2) }} ج.م</td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0 me-3">
+                            <div class="avatar avatar-lg bg-info bg-opacity-10 rounded-circle">
+                                <i class="fas fa-file-alt fa-lg text-info"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <h6 class="card-subtitle mb-1 text-muted">عروض الأسعار</h6>
+                            <h2 class="card-title mb-0">{{ number_format($totalQuotations) }}</h2>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Top Clients -->
-            <div class="col-12 col-lg-6">
-                <div class="card shadow-sm">
-                    <div class="card-header py-3">
-                        <h5 class="mb-0">أفضل العملاء</h5>
-                    </div>
-                    <div class="card-body p-0 p-md-3">
-                        <div class="table-responsive">
-                            <table class="table">
-                                <thead class="bg-light">
-                                    <tr>
-                                        <th>العميل</th>
-                                        <th>عدد الفواتير</th>
-                                        <th>إجمالي المبيعات</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($topClients as $client)
-                                    <tr>
-                                        <td data-label="العميل">{{ $client->name }}</td>
-                                        <td data-label="عدد الفواتير">{{ $client->invoices_count }}</td>
-                                        <td data-label="إجمالي المبيعات">{{ number_format($client->total_revenue, 2) }} ج.م</td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0 me-3">
+                            <div class="avatar avatar-lg bg-warning bg-opacity-10 rounded-circle">
+                                <i class="fas fa-file-invoice fa-lg text-warning"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <h6 class="card-subtitle mb-1 text-muted">الفواتير</h6>
+                            <h2 class="card-title mb-0">{{ number_format($totalInvoices) }}</h2>
                         </div>
                     </div>
                 </div>
@@ -143,94 +77,314 @@
         </div>
     </div>
 
-    <style>
-        @media (max-width: 768px) {
-            .card {
-                margin-bottom: 1rem;
-            }
+    <!-- Revenue Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-12 col-md-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title mb-4">إيرادات الشهر الحالي</h5>
 
-            .table-responsive {
-                margin: -1px;
-            }
+                    <div class="mb-4">
+                        <h6 class="text-success mb-3">الفواتير المدفوعة</h6>
+                        @foreach($monthlyRevenue['paid'] as $paid)
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span>{{ $paid['currency'] }}</span>
+                                <span class="text-success">{{ number_format($paid['amount']) }}</span>
+                                <span class="badge bg-success">{{ $paid['count'] }} فواتير</span>
+                            </div>
+                        @endforeach
+                    </div>
 
-            .table-responsive table {
-                border: 0;
-            }
+                    <div>
+                        <h6 class="text-warning mb-3">الفواتير المعلقة</h6>
+                        @foreach($monthlyRevenue['pending'] as $pending)
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span>{{ $pending['currency'] }}</span>
+                                <span class="text-warning">{{ number_format($pending['amount']) }}</span>
+                                <span class="badge bg-warning">{{ $pending['count'] }} فواتير</span>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+        </div>
 
-            .table-responsive table thead {
-                display: none;
-            }
+        <div class="col-12 col-md-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title mb-4">إيرادات السنة الحالية</h5>
 
-            .table-responsive table tr {
-                display: block;
-                margin-bottom: 1rem;
-                border: 1px solid #ddd;
-                border-radius: 0.5rem;
-                padding: 1rem;
-                background-color: #fff;
-            }
+                    <div class="mb-4">
+                        <h6 class="text-success mb-3">الفواتير المدفوعة</h6>
+                        @foreach($yearlyRevenue['paid'] as $paid)
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span>{{ $paid['currency'] }}</span>
+                                <span class="text-success">{{ number_format($paid['amount']) }}</span>
+                                <span class="badge bg-success">{{ $paid['count'] }} فواتير</span>
+                            </div>
+                        @endforeach
+                    </div>
 
-            .table-responsive table td {
-                display: block;
-                text-align: right;
-                padding: 0.5rem;
-                border: none;
-            }
+                    <div>
+                        <h6 class="text-warning mb-3">الفواتير المعلقة</h6>
+                        @foreach($yearlyRevenue['pending'] as $pending)
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span>{{ $pending['currency'] }}</span>
+                                <span class="text-warning">{{ number_format($pending['amount']) }}</span>
+                                <span class="badge bg-warning">{{ $pending['count'] }} فواتير</span>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-            .table-responsive table td:before {
-                content: attr(data-label);
-                float: right;
-                font-weight: bold;
-                margin-left: 0.5rem;
-            }
+    <!-- Charts Row -->
+    <div class="row g-3 mb-4">
+        <div class="col-12 col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title mb-4">إيرادات الشهرية</h5>
+                    <canvas id="revenueChart" height="75"></canvas>
+                </div>
+            </div>
+        </div>
 
-            .table-responsive table td:last-child {
-                border-bottom: 0;
-            }
+        <div class="col-12 col-lg-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title mb-4">حالة الفواتير</h5>
+                    <div style="height: 75px; position: relative;">
+                        <canvas id="invoiceStatusChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-            .chart-container {
-                height: 40vh !important;
-            }
-        }
-    </style>
+    <!-- Recent Activity Row -->
+    <div class="row g-3 mb-4">
+        <div class="col-12 col-lg-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-transparent">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">أحدث الفواتير</h5>
+                        <a href="{{ route('invoices.index') }}" class="btn btn-sm btn-link">عرض الكل</a>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>رقم الفاتورة</th>
+                                <th>العميل</th>
+                                <th>تاريخ الفاتورة</th>
+                                <th>المبلغ</th>
+                                <th>العملة</th>
+                                <th>الحالة</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($recentInvoices as $invoice)
+                            <tr>
+                                <td>
+                                    <a href="{{ route('invoices.show', $invoice) }}" class="text-decoration-none">
+                                        {{ $invoice->invoice_number }}
+                                    </a>
+                                </td>
+                                <td>{{ $invoice->client->name }}</td>
+                                <td>{{ $invoice->invoice_date->format('Y-m-d') }}</td>
+                                <td>
+                                    {{ number_format($invoice->total, 2) }}
+                                    {{ $invoice->currency->symbol ?? $invoice->currency->code }}
+                                </td>
+                                <td>
+                                    @if($invoice->status === 'paid')
+                                        <span class="badge bg-success">مدفوعة</span>
+                                    @elseif($invoice->status === 'pending')
+                                        <span class="badge bg-warning">قيد الانتظار</span>
+                                    @else
+                                        <span class="badge bg-danger">ملغاة</span>
+                                    @endif
+                                </td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="6" class="text-center py-3">لا توجد فواتير حديثة</td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
 
-    <script src="{{ asset('assets/js/chart.js') }}"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const ctx = document.getElementById('revenueChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: {!! json_encode($revenueData['labels']) !!},
-                    datasets: [{
-                        label: 'الإيرادات الشهرية',
-                        data: {!! json_encode($revenueData['values']) !!},
-                        borderColor: 'rgb(75, 192, 192)',
-                        tension: 0.1,
-                        fill: true,
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                callback: function(value) {
-                                    return value.toLocaleString('ar-EG') + ' ج.م';
-                                }
-                            }
+        <div class="col-12 col-lg-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-transparent">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">أحدث عروض الأسعار</h5>
+                        <a href="{{ route('quotations.index') }}" class="btn btn-sm btn-link">عرض الكل</a>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>رقم العرض</th>
+                                <th>العميل</th>
+                                <th>المبلغ</th>
+                                <th>الحالة</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($recentQuotations as $quotation)
+                            <tr>
+                                <td>{{ $quotation->quotation_number }}</td>
+                                <td>{{ $quotation->client->name }}</td>
+                                <td>{{ number_format($quotation->total_amount, 2) }} ريال</td>
+                                <td>
+                                    <span class="badge bg-{{ $quotation->status === 'approved' ? 'success' : ($quotation->status === 'pending' ? 'warning' : 'danger') }}">
+                                        {{ $quotation->status === 'approved' ? 'تمت الموافقة' : ($quotation->status === 'pending' ? 'قيد الانتظار' : 'مرفوض') }}
+                                    </span>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Clients -->
+    <div class="row g-3">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-transparent">
+                    <h5 class="mb-0">أفضل العملاء</h5>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>#</th>
+                                <th>العميل</th>
+                                <th>إجمالي المبيعات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($topClients as $index => $client)
+                            <tr>
+                                <td>{{ $index + 1 }}</td>
+                                <td>{{ $client->client->name }}</td>
+                                <td>{{ number_format($client->total, 2) }} ريال</td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
+
+@push('styles')
+<style>
+.avatar {
+    width: 3rem;
+    height: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.avatar-lg {
+    width: 3.5rem;
+    height: 3.5rem;
+}
+.avatar-xl {
+    width: 4rem;
+    height: 4rem;
+}
+</style>
+@endpush
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Revenue Chart
+    const ctx = document.getElementById('revenueChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: @json($chartData),
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return new Intl.NumberFormat().format(value);
                         }
                     }
                 }
-            });
-        }); --}}
-    {{-- </script> --}}
-@endsection
+            },
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.dataset.label || '';
+                            if (label) {
+                                label += ': ';
+                            }
+                            label += new Intl.NumberFormat().format(context.raw);
+                            return label;
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Invoice Status Chart
+    const invoiceStatusCtx = document.getElementById('invoiceStatusChart').getContext('2d');
+    new Chart(invoiceStatusCtx, {
+        type: 'doughnut',
+        data: @json($invoiceStatusChart),
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        padding: 20,
+                        boxWidth: 12,
+                        font: {
+                            size: 12
+                        }
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const label = context.label || '';
+                            const value = context.raw || 0;
+                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            const percentage = Math.round((value / total) * 100);
+                            return `${label}: ${value} (${percentage}%)`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+});
+</script>
+@endpush

@@ -101,8 +101,11 @@
                                 <td>{{ $invoice->id }}</td>
                                 <td>{{ $invoice->invoice_number }}</td>
                                 <td>{{ $invoice->client->name }}</td>
-                                <td>{{ \Carbon\Carbon::parse($invoice->invoice_date)->format('Y-m-d') }}</td>
-                                <td>{{ number_format($invoice->total, 2) }} {{ $invoice->currancy }}</td>
+                                <td>{{ $invoice->invoice_date->format('Y-m-d') }}</td>
+                                <td>
+                                    {{ number_format($invoice->total, 2) }}
+                                    {{ $invoice->currency->symbol ?? $invoice->currency->code }}
+                                </td>
                                 <td>
                                     @switch($invoice->status)
                                         @case('pending')

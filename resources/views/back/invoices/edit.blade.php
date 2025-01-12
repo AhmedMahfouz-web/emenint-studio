@@ -46,14 +46,16 @@
                     </div>
 
                     <div class="col-12 col-md-6">
-                        <label for="currency" class="form-label fw-bold">العملة</label>
-                        <select class="form-select" id="currancy" name="currancy" required>
-                            <option value="EGP" {{ $invoice->currancy == 'EGP' ? 'selected' : '' }}>EGP</option>
-                            <option value="$" {{ $invoice->currancy == '$' ? 'selected' : '' }}>$</option>
+                        <label for="currency_id" class="form-label fw-bold">Currency</label>
+                        <select class="form-select" name="currency_id" required>
+                            @foreach($currencies as $currency)
+                                <option value="{{ $currency->id }}" 
+                                    {{ old('currency_id', $invoice->currency_id) == $currency->id ? 'selected' : '' }}
+                                    data-symbol="{{ $currency->symbol }}">
+                                    {{ $currency->code }} - {{ $currency->name }}
+                                </option>
+                            @endforeach
                         </select>
-                        @error('currancy')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
                     </div>
 
                     <div class="col-12 col-md-6">
@@ -83,12 +85,12 @@
                     <div class="col-12 col-md-6">
                         <label class="form-label fw-bold">نسبة الضريبة</label>
                         <div class="input-group">
-                            <input type="number" class="form-control @error('tax-rate') is-invalid @enderror"
-                                id="tax-rate" name="tax-rate" value="{{ old('tax-rate', $invoice->tax_rate) }}"
+                            <input type="number" class="form-control @error('tax_percentage') is-invalid @enderror"
+                                id="tax-rate" name="tax_percentage" value="{{ old('tax_percentage', $invoice->tax_percentage) }}"
                                 min="0" max="100">
                             <span class="input-group-text">%</span>
                         </div>
-                        @error('tax-rate')
+                        @error('tax_percentage')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
@@ -110,11 +112,11 @@
                 <div class="row g-3 mb-4">
                     <div class="col-12">
                         <label class="form-label fw-bold">Notes</label>
-                        <textarea class="form-control" name="first_note" rows="3">{{ $invoice->first_note ?? 'Kindly Note that all pricing, denominated in USD currency, is structured into two payment installments. The initial payment amounts to 70% of the total cost, and the final 30% payment is to be made upon receiving the completed work. ** We offer a guarantee that this work will be accessible with lifetime access upon request. Quotation avaliable for one week' }}</textarea>
+                        <textarea class="form-control" name="first_note" rows="3">{{ $invoice->first_note ?? "Kindly Note that all pricing, denominated in USD currency, is structured into two payment installments. The initial payment amounts to 70% of the total cost, and the final 30% payment is to be made upon receiving the completed work. ** We offer a guarantee that this work will be accessible with lifetime access upon request. Quotation avaliable for one week" }}</textarea>
                     </div>
                     <div class="col-12">
                         <label class="form-label fw-bold">Additional Notes</label>
-                        <textarea class="form-control" name="second_note" rows="3">{{ $invoice->second_note ?? 'If you have any inquiries concerning pricing details, please don't hesitate to reach out to us. We would be delighted to provide further clarification and ensure a more precise understanding, even if it's solely for the purpose of clarity. Your trust from the outset is greatly appreciated, and We're here to assist you. Thank you' }}</textarea>
+                        <textarea class="form-control" name="second_note" rows="3">{{ $invoice->second_note ?? "If you have any inquiries concerning pricing details, please don't hesitate to reach out to us. We would be delighted to provide further clarification and ensure a more precise understanding, even if it's solely for the purpose of clarity. Your trust from the outset is greatly appreciated, and We're here to assist you. Thank you" }}</textarea>
                     </div>
                 </div>
 
@@ -172,8 +174,7 @@
                                                 value="{{ $item->price }}" min="0" step="0.01" required>
                                         </td>
                                         <td data-label="المجموع">
-                                            <input type="hidden" name="items[{{ $loop->index }}][total]" value="{{ $item->total }}">
-                                            <span class="item-total-display">{{ number_format($item->total, 2) }} ج.م</span>
+                                            <span class="item-total-display">{{ number_format($item->quantity * $item->price, 2) }} ج.م</span>
                                         </td>
                                         <td data-label="العمليات">
                                             <button type="button" class="btn btn-danger btn-sm remove-item">
@@ -198,7 +199,7 @@
                                 </div>
                                 <div class="d-flex justify-content-between mb-2">
                                     <span class="fw-bold">الخصم:</span>
-                                    <span id="discount-amount">{{ number_format($invoice->discount_value, 2) }} ج.م</span>
+                                    <span id="discount-amount">{{ number_format($invoice->discount, 2) }} ج.م</span>
                                 </div>
                                 <div class="d-flex justify-content-between mb-2">
                                     <span class="fw-bold">الضريبة:</span>
@@ -271,6 +272,58 @@
         console.log('Edit invoice page loaded');
     </script>
     <script src="{{ asset('js/invoice.js') }}" defer></script>
+    <script>
+        $(document).ready(function() {
+            // Function to calculate item total
+            function calculateItemTotal(row) {
+                const quantity = parseFloat(row.find('.quantity').val()) || 0;
+                const unitPrice = parseFloat(row.find('.unit-price').val()) || 0;
+                const total = quantity * unitPrice;
+                row.find('.item-total-display').text(total.toFixed(2) + ' ج.م');
+                return total;
+            }
+
+            // Function to update all totals
+            function updateTotals() {
+                let subtotal = 0;
+                $('.invoice-item').each(function() {
+                    subtotal += calculateItemTotal($(this));
+                });
+
+                const discount = parseFloat($('#discount').val()) || 0;
+                const taxPercentage = parseFloat($('#tax_percentage').val()) || 0;
+                const taxAmount = (subtotal - discount) * (taxPercentage / 100);
+                const total = subtotal - discount + taxAmount;
+
+                $('#subtotal').text(subtotal.toFixed(2) + ' ج.م');
+                $('#discount-amount').text(discount.toFixed(2) + ' ج.م');
+                $('#tax-amount').text(taxAmount.toFixed(2) + ' ج.م');
+                $('#total').text(total.toFixed(2) + ' ج.م');
+            }
+
+            // Event listeners for quantity and unit price changes
+            $(document).on('input', '.quantity, .unit-price', function() {
+                updateTotals();
+            });
+
+            // Event listener for discount changes
+            $('#discount, #tax_percentage').on('input', function() {
+                updateTotals();
+            });
+
+            // Event listener for product selection
+            $(document).on('change', 'select[name$="[product_id]"]', function() {
+                const selectedOption = $(this).find('option:selected');
+                const row = $(this).closest('tr');
+                const price = selectedOption.data('price');
+                row.find('.unit-price').val(price);
+                updateTotals();
+            });
+
+            // Initial calculation
+            updateTotals();
+        });
+    </script>
 @endpush
 
 @if ($errors->any())

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Client;
 use App\Models\InvoiceItem;
+use App\Models\Currency;
 
 class Invoice extends Model
 {
@@ -14,28 +15,28 @@ class Invoice extends Model
 
     protected $fillable = [
         'client_id',
-        'payment_method',
-        'invoice_date',
         'invoice_number',
+        'invoice_date',
+        'payment_method',
         'subtotal',
         'discount',
         'tax_percentage',
         'tax_amount',
         'total',
         'signature',
-        'currancy',
         'first_note',
         'second_note',
         'status',
+        'currency_id'
     ];
 
     protected $casts = [
-        'invoice_date' => 'date',
+        'invoice_date' => 'datetime',
         'subtotal' => 'decimal:2',
         'discount' => 'decimal:2',
         'tax_percentage' => 'decimal:2',
         'tax_amount' => 'decimal:2',
-        'total' => 'decimal:2',
+        'total' => 'decimal:2'
     ];
 
     public function client()
@@ -46,6 +47,14 @@ class Invoice extends Model
     public function items()
     {
         return $this->hasMany(InvoiceItem::class);
+    }
+
+    public function currency()
+    {
+        return $this->belongsTo(Currency::class)->withDefault([
+            'code' => 'EGP',
+            'symbol' => 'ج.م'
+        ]);
     }
 
     protected static function boot()

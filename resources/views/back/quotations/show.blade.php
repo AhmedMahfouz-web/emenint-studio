@@ -96,23 +96,40 @@
                 <div class="col-12 col-md-5 col-lg-4">
                     <div class="card border">
                         <div class="card-body">
-                            <div class="d-flex justify-content-between mb-2">
-                                <span class="fw-bold">المجموع الفرعي:</span>
-                                <span>{{ number_format($quotation->subtotal, 2) }} {{ $quotation->currancy }}</span>
-                            </div>
-                            <div class="d-flex justify-content-between mb-2">
-                                <span class="fw-bold">الخصم:</span>
-                                <span>{{ number_format($quotation->discount, 2) }} {{ $quotation->currancy }}</span>
-                            </div>
-                            <div class="d-flex justify-content-between mb-2">
-                                <span class="fw-bold">الضريبة:</span>
-                                <span>{{ number_format($quotation->tax_amount, 2) }} {{ $quotation->currancy }}</span>
-                            </div>
-                            <hr>
-                            <div class="d-flex justify-content-between">
-                                <span class="fw-bold fs-5">الإجمالي:</span>
-                                <span class="fw-bold fs-5">{{ number_format($quotation->total, 2) }} {{ $quotation->currancy }}</span>
-                            </div>
+                            <table>
+                                <tr>
+                                    <th>المجموع الفرعي:</th>
+                                    <td>
+                                        {{ number_format($quotation->subtotal, 2) }}
+                                        {{ $quotation->currency->symbol ?? $quotation->currency->code }}
+                                    </td>
+                                </tr>
+                                @if($quotation->discount > 0)
+                                <tr>
+                                    <th>الخصم:</th>
+                                    <td>
+                                        {{ number_format($quotation->discount, 2) }}
+                                        {{ $quotation->currency->symbol ?? $quotation->currency->code }}
+                                    </td>
+                                </tr>
+                                @endif
+                                @if($quotation->tax_amount > 0)
+                                <tr>
+                                    <th>الضريبة ({{ $quotation->tax_percentage }}%):</th>
+                                    <td>
+                                        {{ number_format($quotation->tax_amount, 2) }}
+                                        {{ $quotation->currency->symbol ?? $quotation->currency->code }}
+                                    </td>
+                                </tr>
+                                @endif
+                                <tr>
+                                    <th>الإجمالي:</th>
+                                    <td>
+                                        {{ number_format($quotation->total, 2) }}
+                                        {{ $quotation->currency->symbol ?? $quotation->currency->code }}
+                                    </td>
+                                </tr>
+                            </table>
                         </div>
                     </div>
                 </div>

@@ -10,6 +10,7 @@ use App\Http\Controllers\mailController;
 use App\Http\Controllers\QuotationController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\CurrencyController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -127,7 +128,15 @@ Route::group(['prefix' => 'admin'], function () {
 
 // Dashboard as home page
 Route::group(['prefix' => 'invoice'], function () {
-    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+        Route::resource('invoices', InvoiceController::class);
+        Route::resource('quotations', QuotationController::class);
+        Route::resource('clients', ClientController::class);
+        Route::resource('products', ProductController::class);
+        Route::resource('currencies', CurrencyController::class);
+        Route::post('currencies/{currency}/set-default', [CurrencyController::class, 'setDefault'])->name('currencies.set-default');
+
+
     Route::get('/invoice-view', function () {
         return view('back.invoices.pdf');
     });
@@ -137,15 +146,7 @@ Route::group(['prefix' => 'invoice'], function () {
     })->name('invoices.bulk.download');
     Route::post('/invoices/bulk-download', [InvoiceController::class, 'bulkDownload'])->name('invoices.bulk-download');
 
-    // Client routes
-    Route::post('/clients', [ClientController::class, 'store'])->name('clients.store');
-    Route::resource('clients', ClientController::class)->except(['store']);
-
-    // Resource Routes
-    Route::resource('products', ProductController::class);
-    Route::resource('quotations', QuotationController::class);
     Route::get('quotations/{quotation}/download', [QuotationController::class, 'download'])->name('quotations.download');
-    Route::resource('invoices', InvoiceController::class);
     Route::get('invoices/{invoice}/download', [InvoiceController::class, 'download'])->name('invoices.download');
     Route::get('reports', [ReportController::class, 'index'])->name('reports.index');
     Route::post('reports/generate', [ReportController::class, 'generate'])->name('reports.generate');

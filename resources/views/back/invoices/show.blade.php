@@ -108,23 +108,40 @@
                 <div class="col-12 col-md-5 col-lg-4">
                     <div class="card border">
                         <div class="card-body">
-                            <div class="d-flex justify-content-between mb-2">
-                                <span class="fw-bold">المجموع الفرعي:</span>
-                                <span>{{ number_format($invoice->subtotal ?? 0, 2) }} ج.م</span>
-                            </div>
-                            <div class="d-flex justify-content-between mb-2">
-                                <span class="fw-bold">خصم:</span>
-                                <span>{{ number_format($invoice->discount ?? 0, 2) }} ج.م</span>
-                            </div>
-                            <div class="d-flex justify-content-between mb-2">
-                                <span class="fw-bold">الضريبة (14%):</span>
-                                <span>{{ number_format($invoice->tax_amount ?? 0, 2) }} ج.م</span>
-                            </div>
-                            <hr>
-                            <div class="d-flex justify-content-between">
-                                <span class="fw-bold fs-5">الإجمالي:</span>
-                                <span class="fw-bold fs-5">{{ number_format($invoice->total ?? 0, 2) }} ج.م</span>
-                            </div>
+                            <table>
+                                <tr>
+                                    <th>المجموع الفرعي:</th>
+                                    <td>
+                                        {{ number_format($invoice->subtotal, 2) }}
+                                        {{ $invoice->currency->symbol ?? $invoice->currency->code }}
+                                    </td>
+                                </tr>
+                                @if($invoice->discount > 0)
+                                <tr>
+                                    <th>الخصم:</th>
+                                    <td>
+                                        {{ number_format($invoice->discount, 2) }}
+                                        {{ $invoice->currency->symbol ?? $invoice->currency->code }}
+                                    </td>
+                                </tr>
+                                @endif
+                                @if($invoice->tax_amount > 0)
+                                <tr>
+                                    <th>الضريبة ({{ $invoice->tax_percentage }}%):</th>
+                                    <td>
+                                        {{ number_format($invoice->tax_amount, 2) }}
+                                        {{ $invoice->currency->symbol ?? $invoice->currency->code }}
+                                    </td>
+                                </tr>
+                                @endif
+                                <tr>
+                                    <th>الإجمالي:</th>
+                                    <td>
+                                        {{ number_format($invoice->total, 2) }}
+                                        {{ $invoice->currency->symbol ?? $invoice->currency->code }}
+                                    </td>
+                                </tr>
+                            </table>
                         </div>
                     </div>
                 </div>
