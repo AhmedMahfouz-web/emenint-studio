@@ -73,19 +73,7 @@
 
                     <div class="col-12 col-md-6">
                         <label for="currancy" class="form-label fw-bold">العملة</label>
-                        <select class="form-select" id="currancy" name="currancy" required>
-                            <option value="USD">USD</option>
-                            <option value="EGP">EGP</option>
-                            <option value="EUR">EUR</option>
-                        </select>
-                        @error('currancy')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <div class="col-12 col-md-6">
-                        <label for="currency_id" class="form-label fw-bold">Currency</label>
-                        <select class="form-select" name="currency_id" required>
+                        <select class="form-select" name="currency_id" id="currancy" required>
                             @foreach($currencies as $currency)
                                 <option value="{{ $currency->id }}" 
                                     {{ $currency->is_default ? 'selected' : '' }}
@@ -94,13 +82,17 @@
                                 </option>
                             @endforeach
                         </select>
+                        @error('currency_id')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
 
                     <div class="col-12 col-md-6">
                         <label class="form-label fw-bold">نسبة الضريبة</label>
                         <div class="input-group">
                             <input type="number" class="form-control @error('tax_percentage') is-invalid @enderror"
-                                id="tax_percentage" name="tax_percentage" value="{{ isset($quotation) ? $quotation->tax_percentage : 0 }}" min="0" max="100">
+                                id="tax_percentage" name="tax_percentage" value="{{ old('tax_percentage', 0) }}"
+                                min="0" max="100">
                             <span class="input-group-text">%</span>
                         </div>
                         @error('tax_percentage')
@@ -112,8 +104,9 @@
                         <label class="form-label fw-bold">الخصم</label>
                         <div class="input-group">
                             <input type="number" class="form-control @error('discount') is-invalid @enderror"
-                                id="discount" name="discount" value="{{ isset($quotation) ? $quotation->discount : 0 }}" min="0" step="0.01">
-                            <span class="input-group-text" id="currency-symbol">USD</span>
+                                id="discount" name="discount" value="{{ old('discount', 0) }}"
+                                min="0" step="0.01">
+                            <span class="input-group-text currency-symbol">ج.م</span>
                         </div>
                         @error('discount')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -279,6 +272,39 @@
     document.querySelector('[data-modal-target="#createClientModal"]').addEventListener('click', function() {
         const modal = new bootstrap.Modal(document.getElementById('createClientModal'));
         modal.show();
+    });
+</script>
+@endpush
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize currency symbols
+        function updateCurrencySymbols() {
+            const currencySelect = document.getElementById('currancy');
+            if (!currencySelect) return;
+
+            const selectedOption = currencySelect.options[currencySelect.selectedIndex];
+            if (!selectedOption) return;
+
+            const symbol = selectedOption.getAttribute('data-symbol') || 'ج.م';
+            document.querySelectorAll('.currency-symbol').forEach(span => {
+                span.textContent = symbol;
+            });
+
+            // Update totals with new currency
+            if (typeof updateTotals === 'function') {
+                updateTotals();
+            }
+        }
+
+        // Add event listener for currency change
+        const currencySelect = document.getElementById('currancy');
+        if (currencySelect) {
+            currencySelect.addEventListener('change', updateCurrencySymbols);
+            // Initial update
+            updateCurrencySymbols();
+        }
     });
 </script>
 @endpush

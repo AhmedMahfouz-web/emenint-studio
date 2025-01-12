@@ -1,10 +1,22 @@
+// Function to get current currency symbol
+function getCurrentCurrencySymbol() {
+    const currencySelect = document.getElementById('currancy');
+    if (!currencySelect) return 'ج.م';
+
+    const selectedOption = currencySelect.options[currencySelect.selectedIndex];
+    if (!selectedOption) return 'ج.م';
+
+    return selectedOption.getAttribute('data-symbol') || 'ج.م';
+}
+
 // Function to update totals
 function updateTotals() {
     let subtotal = 0;
+    const currencySymbol = getCurrentCurrencySymbol();
 
     // Calculate subtotal from each item total
     document.querySelectorAll('.item-total-display').forEach(span => {
-        const itemTotal = parseFloat(span.textContent.replace(' ج.م', '')) || 0;
+        const itemTotal = parseFloat(span.textContent.replace(/[^\d.-]/g, '')) || 0;
         subtotal += itemTotal;
     });
 
@@ -19,14 +31,11 @@ function updateTotals() {
     // Calculate total
     const total = netBeforeTax + taxAmount;
 
-    // Get currency from select
-    const currency = document.getElementById('currancy').value || 'EGP';
-
-    // Update display values
-    document.getElementById('subtotal').textContent = subtotal.toFixed(2) + ' ' + currency;
-    document.getElementById('discount-amount').textContent = discount.toFixed(2) + ' ' + currency;
-    document.getElementById('tax-amount').textContent = taxAmount.toFixed(2) + ' ' + currency;
-    document.getElementById('total').textContent = total.toFixed(2) + ' ' + currency;
+    // Update display values with currency symbol
+    document.getElementById('subtotal').textContent = subtotal.toFixed(2) + ' ' + currencySymbol;
+    document.getElementById('discount-amount').textContent = discount.toFixed(2) + ' ' + currencySymbol;
+    document.getElementById('tax-amount').textContent = taxAmount.toFixed(2) + ' ' + currencySymbol;
+    document.getElementById('total').textContent = total.toFixed(2) + ' ' + currencySymbol;
 }
 
 // Ensure script only runs once
@@ -63,10 +72,11 @@ if (!window.invoiceInitialized) {
             const unitPrice = parseFloat(row.querySelector('.unit-price').value) || 0;
             const totalInput = row.querySelector('input[name$="[total]"]');
             const totalDisplay = row.querySelector('.item-total-display');
+            const currencySymbol = getCurrentCurrencySymbol();
             
             const total = quantity * unitPrice;
             totalInput.value = total.toFixed(2);
-            totalDisplay.textContent = total.toFixed(2) + ' ' + document.getElementById('currancy').value;
+            totalDisplay.textContent = total.toFixed(2) + ' ' + currencySymbol;
             
             updateTotals();
         }
@@ -118,6 +128,7 @@ if (!window.invoiceInitialized) {
             const tbody = document.querySelector('#invoice-items tbody');
             const newRow = document.createElement('tr');
             newRow.className = 'invoice-item';
+            const currencySymbol = getCurrentCurrencySymbol();
             
             newRow.innerHTML = `
                 <td data-label="المنتج">
@@ -136,7 +147,7 @@ if (!window.invoiceInitialized) {
                 </td>
                 <td data-label="المجموع">
                     <input type="hidden" name="items[${itemCounter}][total]" value="0.00">
-                    <span class="item-total-display">0.00 ${document.getElementById('currancy').value}</span>
+                    <span class="item-total-display">0.00 ${currencySymbol}</span>
                 </td>
                 <td data-label="العمليات">
                     <button type="button" class="btn btn-danger btn-sm remove-item">
@@ -186,6 +197,19 @@ if (!window.invoiceInitialized) {
             taxRateInput.addEventListener('input', updateTotals);
         }
 
+        // Add event listener for currency change
+        const currencySelect = document.getElementById('currancy');
+        if (currencySelect) {
+            currencySelect.addEventListener('change', function() {
+                // Update all item totals with new currency
+                document.querySelectorAll('.invoice-item').forEach(row => {
+                    updateItemTotal(row);
+                });
+                // Update main totals
+                updateTotals();
+            });
+        }
+
         // Initialize with first row if there are no items
         if (!document.querySelector('.invoice-item')) {
             addItemRow();
@@ -199,68 +223,17 @@ if (!window.invoiceInitialized) {
 // Function to show toast
 function showToast(message) {
     const toast = document.createElement('div');
-    toast.className = 'toast';
+    toast.className = 'toast show position-fixed bottom-0 end-0 m-3';
+    toast.setAttribute('role', 'alert');
     toast.innerHTML = `
-        <div class="toast-body">
-            ${message}
+        <div class="toast-header">
+            <strong class="me-auto">تنبيه</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
         </div>
+        <div class="toast-body">${message}</div>
     `;
     document.body.appendChild(toast);
-    setTimeout(() => {
-        toast.remove();
-    }, 3000);
-}
-
-// Function to initialize select2
-function initializeSelect2(container = document) {
-    const config = {
-        theme: 'bootstrap-5',
-        dir: 'rtl',
-        width: '100%',
-        language: {
-            noResults: function() {
-                return "لا توجد نتائج";
-            },
-            searching: function() {
-                return "جاري البحث...";
-            }
-        },
-        placeholder: "اختر أو ابحث...",
-        allowClear: true
-    };
-
-    // Initialize client select
-    if (container === document) {
-        const selectElements = document.querySelectorAll('.select2-searchable');
-        selectElements.forEach(select => {
-            const options = {
-                ...config,
-                matcher: function(params, data) {
-                    // If there are no search terms, return all of the data
-                    if (params.term === '') {
-                        return data;
-                    }
-
-                    // Do not display the item if there is no 'text' property
-                    if (typeof data.text === 'undefined') {
-                        return null;
-                    }
-
-                    const term = params.term.toLowerCase();
-                    const text = data.text.toLowerCase();
-
-                    // Check if the text contains the term
-                    if (text.indexOf(term) > -1) {
-                        return data;
-                    }
-
-                    // Return `null` if the term should not be displayed
-                    return null;
-                }
-            };
-            new Select2(select, options);
-        });
-    }
+    setTimeout(() => toast.remove(), 3000);
 }
 
 // Initial call to update totals on page load

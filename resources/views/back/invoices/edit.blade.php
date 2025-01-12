@@ -46,8 +46,8 @@
                     </div>
 
                     <div class="col-12 col-md-6">
-                        <label for="currency_id" class="form-label fw-bold">Currency</label>
-                        <select class="form-select" name="currency_id" required>
+                        <label for="currancy" class="form-label fw-bold">العملة</label>
+                        <select class="form-select" name="currency_id" id="currancy" required>
                             @foreach($currencies as $currency)
                                 <option value="{{ $currency->id }}" 
                                     {{ old('currency_id', $invoice->currency_id) == $currency->id ? 'selected' : '' }}
@@ -56,6 +56,9 @@
                                 </option>
                             @endforeach
                         </select>
+                        @error('currency_id')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
 
                     <div class="col-12 col-md-6">
@@ -71,22 +74,11 @@
                     </div>
 
                     <div class="col-12 col-md-6">
-                        <label class="form-label fw-bold">حالة الفاتورة</label>
-                        <select class="form-select" name="status" required>
-                            <option value="pending" {{ $invoice->status == 'pending' ? 'selected' : '' }}>قيد الانتظار</option>
-                            <option value="paid" {{ $invoice->status == 'paid' ? 'selected' : '' }}>مدفوعة</option>
-                            <option value="cancelled" {{ $invoice->status == 'cancelled' ? 'selected' : '' }}>ملغاة</option>
-                        </select>
-                        @error('status')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <div class="col-12 col-md-6">
                         <label class="form-label fw-bold">نسبة الضريبة</label>
                         <div class="input-group">
                             <input type="number" class="form-control @error('tax_percentage') is-invalid @enderror"
-                                id="tax-rate" name="tax_percentage" value="{{ old('tax_percentage', $invoice->tax_percentage) }}"
+                                id="tax_percentage" name="tax_percentage" 
+                                value="{{ old('tax_percentage', $invoice->tax_percentage) }}" 
                                 min="0" max="100">
                             <span class="input-group-text">%</span>
                         </div>
@@ -99,11 +91,24 @@
                         <label class="form-label fw-bold">الخصم</label>
                         <div class="input-group">
                             <input type="number" class="form-control @error('discount') is-invalid @enderror"
-                                id="discount" name="discount" value="{{ old('discount', $invoice->discount) }}"
+                                id="discount" name="discount" 
+                                value="{{ old('discount', $invoice->discount) }}" 
                                 min="0" step="0.01">
-                            <span class="input-group-text">ج.م</span>
+                            <span class="input-group-text currency-symbol">{{ $invoice->currency->symbol }}</span>
                         </div>
                         @error('discount')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <label class="form-label fw-bold">حالة الفاتورة</label>
+                        <select class="form-select" name="status" required>
+                            <option value="pending" {{ old('status', $invoice->status) == 'pending' ? 'selected' : '' }}>قيد الانتظار</option>
+                            <option value="paid" {{ old('status', $invoice->status) == 'paid' ? 'selected' : '' }}>مدفوعة</option>
+                            <option value="cancelled" {{ old('status', $invoice->status) == 'cancelled' ? 'selected' : '' }}>ملغاة</option>
+                        </select>
+                        @error('status')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
@@ -272,6 +277,36 @@
         console.log('Edit invoice page loaded');
     </script>
     <script src="{{ asset('js/invoice.js') }}" defer></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize currency symbols
+            function updateCurrencySymbols() {
+                const currencySelect = document.getElementById('currancy');
+                if (!currencySelect) return;
+
+                const selectedOption = currencySelect.options[currencySelect.selectedIndex];
+                if (!selectedOption) return;
+
+                const symbol = selectedOption.getAttribute('data-symbol') || 'ج.م';
+                document.querySelectorAll('.currency-symbol').forEach(span => {
+                    span.textContent = symbol;
+                });
+
+                // Update totals with new currency
+                if (typeof updateTotals === 'function') {
+                    updateTotals();
+                }
+            }
+
+            // Add event listener for currency change
+            const currencySelect = document.getElementById('currancy');
+            if (currencySelect) {
+                currencySelect.addEventListener('change', updateCurrencySymbols);
+                // Initial update
+                updateCurrencySymbols();
+            }
+        });
+    </script>
     <script>
         $(document).ready(function() {
             // Function to calculate item total

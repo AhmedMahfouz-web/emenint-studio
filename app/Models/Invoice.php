@@ -53,7 +53,8 @@ class Invoice extends Model
     {
         return $this->belongsTo(Currency::class)->withDefault([
             'code' => 'EGP',
-            'symbol' => 'ج.م'
+            'symbol' => 'ج.م',
+            'name' => 'جنيه مصري'
         ]);
     }
 

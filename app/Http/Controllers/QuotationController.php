@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Quotation;
 use App\Models\Client;
 use App\Models\Product;
+use App\Models\Currency;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Dompdf\Dompdf;
@@ -49,7 +50,8 @@ class QuotationController extends Controller
     {
         $clients = Client::all();
         $products = Product::all();
-        return view('back.quotations.create', compact('clients', 'products'));
+        $currencies = Currency::all();
+        return view('back.quotations.create', compact('clients', 'products', 'currencies'));
     }
 
     public function store(Request $request)
@@ -57,128 +59,151 @@ class QuotationController extends Controller
         $validated = $request->validate([
             'client_id' => 'required|exists:clients,id',
             'quotation_date' => 'required|date',
-            'currancy' => 'required',
             'items' => 'required|array|min:1',
             'items.*.product_id' => 'required|exists:products,id',
             'items.*.quantity' => 'required|integer|min:1',
             'items.*.unit_price' => 'required|numeric|min:0',
-            'tax_percentage' => 'required|numeric|min:0|max:100',
+            'tax_percentage' => 'nullable|numeric|min:0|max:100',
             'discount' => 'required|numeric|min:0',
             'first_note' => 'nullable|string',
             'second_note' => 'nullable|string',
+            'currency_id' => 'required|exists:currencies,id',
+            'status' => 'required|in:pending,accepted,rejected'
         ]);
 
         try {
-            $quotation = DB::transaction(function () use ($validated, $request) {
+            DB::transaction(function () use ($validated, $request) {
+                // Calculate subtotal
                 $subtotal = collect($request->items)->sum(function ($item) {
                     return $item['quantity'] * $item['unit_price'];
                 });
 
-                $tax_amount = ($subtotal - $validated['discount']) * ($validated['tax_percentage'] / 100);
+                $tax_percentage = $validated['tax_percentage'] ?? 0;
+                $tax_amount = ($subtotal - $validated['discount']) * ($tax_percentage / 100);
                 $total = $subtotal - $validated['discount'] + $tax_amount;
 
+                // Create quotation
                 $quotation = Quotation::create([
                     'client_id' => $validated['client_id'],
                     'quotation_date' => $validated['quotation_date'],
-                    'quotation_number' => 'Q-' . (Quotation::max('id') + 1),
+                    'quotation_number' => $this->generateQuotationNumber(),
                     'subtotal' => $subtotal,
                     'discount' => $validated['discount'],
-                    'tax_percentage' => $validated['tax_percentage'],
+                    'tax_percentage' => $tax_percentage,
                     'tax_amount' => $tax_amount,
                     'total' => $total,
-                    'currancy' => $validated['currancy'],
+                    'signature' => 'sign.png',
+                    'currency_id' => $validated['currency_id'],
                     'first_note' => $validated['first_note'] ?? null,
                     'second_note' => $validated['second_note'] ?? null,
+                    'status' => $validated['status']
                 ]);
 
+                // Create items
                 foreach ($request->items as $item) {
                     $quotation->items()->create([
                         'product_id' => $item['product_id'],
-                        'description' => $item['description'] ?? null,
+                        'description' => $item['description'],
                         'quantity' => $item['quantity'],
-                        'unit_price' => $item['unit_price'],
-                        'total' => $item['quantity'] * $item['unit_price'],
+                        'price' => $item['unit_price'],
+                        'total' => $item['quantity'] * $item['unit_price']
                     ]);
                 }
-
-                return $quotation;
             });
 
-            return redirect()->route('quotations.index')
+            return redirect()
+                ->route('quotations.index')
                 ->with('success', 'تم إنشاء عرض السعر بنجاح');
         } catch (\Exception $e) {
-            return back()
+            return redirect()
+                ->back()
                 ->withInput()
-                ->withErrors(['error' => $e->getMessage()]);
+                ->with('error', 'فشل في إنشاء عرض السعر: ' . $e->getMessage());
         }
     }
 
     public function show(Quotation $quotation)
     {
-        $quotation->load(['client', 'items.product']);
+        $quotation->load(['client', 'items.product', 'currency']);
         return view('back.quotations.show', compact('quotation'));
     }
 
     public function edit(Quotation $quotation)
     {
-        $quotation->load(['client', 'items.product']);
+        $quotation->load(['client', 'items.product', 'currency']);
         $clients = Client::all();
         $products = Product::all();
-        return view('back.quotations.edit', compact('quotation', 'clients', 'products'));
+        $currencies = Currency::all();
+        return view('back.quotations.edit', compact('quotation', 'clients', 'products', 'currencies'));
     }
 
     public function update(Request $request, Quotation $quotation)
     {
         $validated = $request->validate([
             'client_id' => 'required|exists:clients,id',
+            'quotation_date' => 'required|date',
             'items' => 'required|array|min:1',
             'items.*.product_id' => 'required|exists:products,id',
             'items.*.quantity' => 'required|integer|min:1',
             'items.*.unit_price' => 'required|numeric|min:0',
-            'tax_percentage' => 'required|numeric|min:0|max:100',
+            'tax_percentage' => 'nullable|numeric|min:0|max:100',
             'discount' => 'required|numeric|min:0',
-            'status' => 'required|in:pending,approved,rejected',
             'first_note' => 'nullable|string',
             'second_note' => 'nullable|string',
+            'currency_id' => 'required|exists:currencies,id',
+            'status' => 'required|in:pending,accepted,rejected'
         ]);
 
-        DB::transaction(function () use ($validated, $request, $quotation) {
-            $subtotal = collect($request->items)->sum(function ($item) {
-                return $item['quantity'] * $item['unit_price'];
+        try {
+            DB::transaction(function () use ($validated, $request, $quotation) {
+                // Calculate subtotal
+                $subtotal = collect($request->items)->sum(function ($item) {
+                    return $item['quantity'] * $item['unit_price'];
+                });
+
+                $tax_percentage = $validated['tax_percentage'] ?? 0;
+                $tax_amount = ($subtotal - $validated['discount']) * ($tax_percentage / 100);
+                $total = $subtotal - $validated['discount'] + $tax_amount;
+
+                // Update quotation
+                $quotation->update([
+                    'client_id' => $validated['client_id'],
+                    'quotation_date' => $validated['quotation_date'],
+                    'subtotal' => $subtotal,
+                    'discount' => $validated['discount'],
+                    'tax_percentage' => $tax_percentage,
+                    'tax_amount' => $tax_amount,
+                    'total' => $total,
+                    'currency_id' => $validated['currency_id'],
+                    'first_note' => $validated['first_note'] ?? null,
+                    'second_note' => $validated['second_note'] ?? null,
+                    'status' => $validated['status']
+                ]);
+
+                // Delete old items
+                $quotation->items()->delete();
+
+                // Create new items
+                foreach ($request->items as $item) {
+                    $quotation->items()->create([
+                        'product_id' => $item['product_id'],
+                        'description' => $item['description'],
+                        'quantity' => $item['quantity'],
+                        'price' => $item['unit_price'],
+                        'total' => $item['quantity'] * $item['unit_price']
+                    ]);
+                }
             });
 
-            $tax_amount = ($subtotal - $validated['discount']) * ($validated['tax_percentage'] / 100);
-            $total = $subtotal - $validated['discount'] + $tax_amount;
-
-            $quotation->update([
-                'client_id' => $validated['client_id'],
-                'subtotal' => $subtotal,
-                'discount' => $validated['discount'],
-                'tax_percentage' => $validated['tax_percentage'],
-                'tax_amount' => $tax_amount,
-                'total' => $total,
-                'status' => $validated['status'],
-                'first_note' => $validated['first_note'] ?? null,
-                'second_note' => $validated['second_note'] ?? null,
-            ]);
-
-            // Delete existing items
-            $quotation->items()->delete();
-
-            // Create new items
-            foreach ($request->items as $item) {
-                $quotation->items()->create([
-                    'product_id' => $item['product_id'],
-                    'description' => $item['description'] ?? null,
-                    'quantity' => $item['quantity'],
-                    'unit_price' => $item['unit_price'],
-                    'total' => $item['quantity'] * $item['unit_price'],
-                ]);
-            }
-        });
-
-        return redirect()->route('quotations.index')
-            ->with('success', 'تم تحديث عرض السعر بنجاح');
+            return redirect()
+                ->route('quotations.index')
+                ->with('success', 'تم تحديث عرض السعر بنجاح');
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with('error', 'فشل في تحديث عرض السعر: ' . $e->getMessage());
+        }
     }
 
     public function destroy(Quotation $quotation)
@@ -194,7 +219,7 @@ class QuotationController extends Controller
     public function download(Quotation $quotation)
     {
         try {
-            $quotation->load(['client', 'items']);
+            $quotation->load(['client', 'items', 'currency']);
             return view('back.quotations.pdf', compact('quotation'));
         } catch (\Exception $e) {
             \Log::error('PDF Generation Error: ' . $e->getMessage());

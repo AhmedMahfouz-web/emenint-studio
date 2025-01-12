@@ -57,12 +57,10 @@ class InvoiceController extends Controller
      */
     public function create()
     {
-        $clients = Client::orderBy('name')->get();
-        $products = Product::orderBy('name')->get();
-        $currencies = Currency::where('is_active', true)->orderBy('name')->get();
-        $defaultCurrency = Currency::getDefault();
-
-        return view('back.invoices.create', compact('clients', 'products', 'currencies', 'defaultCurrency'));
+        $clients = Client::all();
+        $products = Product::all();
+        $currencies = Currency::all();
+        return view('back.invoices.create', compact('clients', 'products', 'currencies'));
     }
 
     /**
@@ -82,18 +80,22 @@ class InvoiceController extends Controller
             'payment_method' => 'required',
             'first_note' => 'nullable|string',
             'second_note' => 'nullable|string',
-            'currency_id' => 'required|exists:currencies,id'
+            'currency_id' => 'required|exists:currencies,id',
+            'status' => 'required|in:paid,pending,cancelled'
         ]);
 
         try {
-            $invoice = DB::transaction(function () use ($validated, $request) {
+            DB::transaction(function () use ($validated, $request) {
+                // Calculate subtotal
                 $subtotal = collect($request->items)->sum(function ($item) {
                     return $item['quantity'] * $item['unit_price'];
                 });
+
                 $tax_percentage = $validated['tax_percentage'] ?? 0;
                 $tax_amount = ($subtotal - $validated['discount']) * ($tax_percentage / 100);
                 $total = $subtotal - $validated['discount'] + $tax_amount;
 
+                // Create invoice
                 $invoice = Invoice::create([
                     'client_id' => $validated['client_id'],
                     'payment_method' => $validated['payment_method'],
@@ -108,30 +110,29 @@ class InvoiceController extends Controller
                     'currency_id' => $validated['currency_id'],
                     'first_note' => $validated['first_note'] ?? null,
                     'second_note' => $validated['second_note'] ?? null,
-                    'status' => 'pending'
+                    'status' => $validated['status']
                 ]);
 
-                foreach ($request->items as $index => $item) {
-                    $product = Product::findOrFail($item['product_id']);
+                // Create items
+                foreach ($request->items as $item) {
                     $invoice->items()->create([
                         'product_id' => $item['product_id'],
                         'description' => $item['description'],
                         'quantity' => $item['quantity'],
                         'price' => $item['unit_price'],
-                        'total' => $item['quantity'] * $item['unit_price'],
+                        'total' => $item['quantity'] * $item['unit_price']
                     ]);
                 }
-
-                return $invoice;
             });
 
-            return redirect()->route('invoices.index')
+            return redirect()
+                ->route('invoices.index')
                 ->with('success', 'تم إنشاء الفاتورة بنجاح');
         } catch (\Exception $e) {
-            Log::error('Error creating invoice: ' . $e->getMessage());
-            return back()
+            return redirect()
+                ->back()
                 ->withInput()
-                ->withErrors(['error' => $e->getMessage()]);
+                ->with('error', 'فشل في إنشاء الفاتورة: ' . $e->getMessage());
         }
     }
 
@@ -149,11 +150,10 @@ class InvoiceController extends Controller
      */
     public function edit(Invoice $invoice)
     {
-        $invoice->load(['client', 'items.product']);
-        $clients = Client::orderBy('name')->get();
-        $products = Product::orderBy('name')->get();
-        $currencies = Currency::where('is_active', true)->orderBy('name')->get();
-
+        $invoice->load(['client', 'items.product', 'currency']);
+        $clients = Client::all();
+        $products = Product::all();
+        $currencies = Currency::all();
         return view('back.invoices.edit', compact('invoice', 'clients', 'products', 'currencies'));
     }
 
@@ -179,14 +179,12 @@ class InvoiceController extends Controller
         ]);
 
         try {
-            DB::transaction(function () use ($invoice, $validated, $request) {
-                // Delete existing items
-                $invoice->items()->delete();
-
-                // Calculate new subtotal from items
+            DB::transaction(function () use ($validated, $request, $invoice) {
+                // Calculate subtotal
                 $subtotal = collect($request->items)->sum(function ($item) {
                     return $item['quantity'] * $item['unit_price'];
                 });
+
                 $tax_percentage = $validated['tax_percentage'] ?? 0;
                 $tax_amount = ($subtotal - $validated['discount']) * ($tax_percentage / 100);
                 $total = $subtotal - $validated['discount'] + $tax_amount;
@@ -201,12 +199,14 @@ class InvoiceController extends Controller
                     'tax_percentage' => $tax_percentage,
                     'tax_amount' => $tax_amount,
                     'total' => $total,
-                    'signature' => 'sign.png',
                     'currency_id' => $validated['currency_id'],
                     'first_note' => $validated['first_note'] ?? null,
                     'second_note' => $validated['second_note'] ?? null,
                     'status' => $validated['status']
                 ]);
+
+                // Delete old items
+                $invoice->items()->delete();
 
                 // Create new items
                 foreach ($request->items as $item) {
@@ -222,12 +222,12 @@ class InvoiceController extends Controller
 
             return redirect()
                 ->route('invoices.index')
-                ->with('success', 'Invoice updated successfully.');
+                ->with('success', 'تم تحديث الفاتورة بنجاح');
         } catch (\Exception $e) {
             return redirect()
                 ->back()
                 ->withInput()
-                ->with('error', 'Failed to update invoice: ' . $e->getMessage());
+                ->with('error', 'فشل في تحديث الفاتورة: ' . $e->getMessage());
         }
     }
 

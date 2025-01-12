@@ -47,13 +47,17 @@
                     </div>
 
                     <div class="col-12 col-md-6">
-                        <label for="currency" class="form-label fw-bold">العملة</label>
-                        <select class="form-select" id="currancy" name="currancy" required>
-                            <option value="USD">USD</option>
-                            <option value="EGP">EGP</option>
-                            <option value="EUR">EUR</option>
+                        <label for="currancy" class="form-label fw-bold">العملة</label>
+                        <select class="form-select" name="currency_id" id="currancy" required>
+                            @foreach($currencies as $currency)
+                                <option value="{{ $currency->id }}" 
+                                    {{ $currency->is_default ? 'selected' : '' }}
+                                    data-symbol="{{ $currency->symbol }}">
+                                    {{ $currency->code }} - {{ $currency->name }}
+                                </option>
+                            @endforeach
                         </select>
-                        @error('currancy')
+                        @error('currency_id')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
@@ -62,7 +66,8 @@
                         <label class="form-label fw-bold">نسبة الضريبة</label>
                         <div class="input-group">
                             <input type="number" class="form-control @error('tax_percentage') is-invalid @enderror"
-                                id="tax_percentage" name="tax_percentage" value="0" min="0" max="100">
+                                id="tax_percentage" name="tax_percentage" value="{{ old('tax_percentage', 0) }}"
+                                min="0" max="100">
                             <span class="input-group-text">%</span>
                         </div>
                         @error('tax_percentage')
@@ -74,10 +79,23 @@
                         <label class="form-label fw-bold">الخصم</label>
                         <div class="input-group">
                             <input type="number" class="form-control @error('discount') is-invalid @enderror"
-                                id="discount" name="discount" value="0" min="0" step="0.01">
-                            <span class="input-group-text">ج.م</span>
+                                id="discount" name="discount" value="{{ old('discount', 0) }}"
+                                min="0" step="0.01">
+                            <span class="input-group-text currency-symbol">ج.م</span>
                         </div>
                         @error('discount')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <label class="form-label fw-bold">حالة عرض السعر</label>
+                        <select class="form-select" name="status" required>
+                            <option value="pending" {{ old('status') == 'pending' ? 'selected' : '' }}>قيد الانتظار</option>
+                            <option value="accepted" {{ old('status') == 'accepted' ? 'selected' : '' }}>مقبول</option>
+                            <option value="rejected" {{ old('status') == 'rejected' ? 'selected' : '' }}>مرفوض</option>
+                        </select>
+                        @error('status')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
@@ -198,24 +216,33 @@
 
 @push('scripts')
 <script>
-    // Product options for dynamic rows
-    window.productOptions = `
-        <option value="">اختر المنتج</option>
-        @foreach($products as $product)
-            <option value="{{ $product->id }}"
-                data-unit-price="{{ $product->unit_price }}"
-                data-code="{{ $product->code }}">
-                {{ $product->code }} - {{ $product->name }}
-            </option>
-        @endforeach
-    `;
-</script>
-<script src="{{ asset('js/invoice.js') }}" defer></script>
-<script>
-    // Initialize the modal trigger
-    document.querySelector('[data-modal-target="#createClientModal"]').addEventListener('click', function() {
-        const modal = new bootstrap.Modal(document.getElementById('createClientModal'));
-        modal.show();
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize currency symbols
+        function updateCurrencySymbols() {
+            const currencySelect = document.getElementById('currancy');
+            if (!currencySelect) return;
+
+            const selectedOption = currencySelect.options[currencySelect.selectedIndex];
+            if (!selectedOption) return;
+
+            const symbol = selectedOption.getAttribute('data-symbol') || 'ج.م';
+            document.querySelectorAll('.currency-symbol').forEach(span => {
+                span.textContent = symbol;
+            });
+
+            // Update totals with new currency
+            if (typeof updateTotals === 'function') {
+                updateTotals();
+            }
+        }
+
+        // Add event listener for currency change
+        const currencySelect = document.getElementById('currancy');
+        if (currencySelect) {
+            currencySelect.addEventListener('change', updateCurrencySymbols);
+            // Initial update
+            updateCurrencySymbols();
+        }
     });
 </script>
 @endpush

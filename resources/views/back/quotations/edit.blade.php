@@ -45,13 +45,17 @@
                     </div>
 
                     <div class="col-12 col-md-6">
-                        <label for="status" class="form-label fw-bold">الحالة</label>
-                        <select class="form-select" name="status" required>
-                            <option value="pending" {{ $quotation->status == 'pending' ? 'selected' : '' }}>قيد الانتظار</option>
-                            <option value="approved" {{ $quotation->status == 'approved' ? 'selected' : '' }}>تمت الموافقة</option>
-                            <option value="rejected" {{ $quotation->status == 'rejected' ? 'selected' : '' }}>مرفوض</option>
+                        <label for="currancy" class="form-label fw-bold">العملة</label>
+                        <select class="form-select" name="currency_id" id="currancy" required>
+                            @foreach($currencies as $currency)
+                                <option value="{{ $currency->id }}" 
+                                    {{ old('currency_id', $quotation->currency_id) == $currency->id ? 'selected' : '' }}
+                                    data-symbol="{{ $currency->symbol }}">
+                                    {{ $currency->code }} - {{ $currency->name }}
+                                </option>
+                            @endforeach
                         </select>
-                        @error('status')
+                        @error('currency_id')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
@@ -60,7 +64,9 @@
                         <label class="form-label fw-bold">نسبة الضريبة</label>
                         <div class="input-group">
                             <input type="number" class="form-control @error('tax_percentage') is-invalid @enderror"
-                                id="tax_percentage" name="tax_percentage" value="{{ $quotation->tax_percentage }}" min="0" max="100">
+                                id="tax_percentage" name="tax_percentage" 
+                                value="{{ old('tax_percentage', $quotation->tax_percentage) }}" 
+                                min="0" max="100">
                             <span class="input-group-text">%</span>
                         </div>
                         @error('tax_percentage')
@@ -72,10 +78,24 @@
                         <label class="form-label fw-bold">الخصم</label>
                         <div class="input-group">
                             <input type="number" class="form-control @error('discount') is-invalid @enderror"
-                                id="discount" name="discount" value="{{ $quotation->discount }}" min="0" step="0.01">
-                            <span class="input-group-text">{{ $quotation->currancy }}</span>
+                                id="discount" name="discount" 
+                                value="{{ old('discount', $quotation->discount) }}" 
+                                min="0" step="0.01">
+                            <span class="input-group-text currency-symbol">{{ $quotation->currency->symbol }}</span>
                         </div>
                         @error('discount')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <label class="form-label fw-bold">حالة عرض السعر</label>
+                        <select class="form-select" name="status" required>
+                            <option value="pending" {{ old('status', $quotation->status) == 'pending' ? 'selected' : '' }}>قيد الانتظار</option>
+                            <option value="accepted" {{ old('status', $quotation->status) == 'accepted' ? 'selected' : '' }}>مقبول</option>
+                            <option value="rejected" {{ old('status', $quotation->status) == 'rejected' ? 'selected' : '' }}>مرفوض</option>
+                        </select>
+                        @error('status')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
@@ -133,7 +153,7 @@
                                         </td>
                                         <td data-label="المجموع">
                                             <input type="hidden" name="items[{{ $loop->index }}][total]" value="{{ $item->total }}">
-                                            <span class="item-total-display">{{ number_format($item->total, 2) }} {{ $quotation->currancy }}</span>
+                                            <span class="item-total-display">{{ number_format($item->total, 2) }} {{ $quotation->currency->symbol }}</span>
                                         </td>
                                         <td data-label="العمليات">
                                             <button type="button" class="btn btn-danger btn-sm remove-item">
@@ -154,20 +174,20 @@
                             <div class="card-body">
                                 <div class="d-flex justify-content-between mb-2">
                                     <span class="fw-bold">المجموع الفرعي:</span>
-                                    <span id="subtotal">{{ number_format($quotation->subtotal, 2) }} {{ $quotation->currancy }}</span>
+                                    <span id="subtotal">{{ number_format($quotation->subtotal, 2) }} {{ $quotation->currency->symbol }}</span>
                                 </div>
                                 <div class="d-flex justify-content-between mb-2">
                                     <span class="fw-bold">الخصم:</span>
-                                    <span id="discount-amount">{{ number_format($quotation->discount, 2) }} {{ $quotation->currancy }}</span>
+                                    <span id="discount-amount">{{ number_format($quotation->discount, 2) }} {{ $quotation->currency->symbol }}</span>
                                 </div>
                                 <div class="d-flex justify-content-between mb-2">
                                     <span class="fw-bold">الضريبة:</span>
-                                    <span id="tax-amount">{{ number_format($quotation->tax_amount, 2) }} {{ $quotation->currancy }}</span>
+                                    <span id="tax-amount">{{ number_format($quotation->tax_amount, 2) }} {{ $quotation->currency->symbol }}</span>
                                 </div>
                                 <hr>
                                 <div class="d-flex justify-content-between">
                                     <span class="fw-bold fs-5">الإجمالي:</span>
-                                    <span class="fw-bold fs-5" id="total">{{ number_format($quotation->total, 2) }} {{ $quotation->currancy }}</span>
+                                    <span class="fw-bold fs-5" id="total">{{ number_format($quotation->total, 2) }} {{ $quotation->currency->symbol }}</span>
                                 </div>
                             </div>
                         </div>
@@ -254,18 +274,34 @@
 
 @push('scripts')
 <script>
-    // Product options for dynamic rows
-    window.productOptions = `
-        <option value="">اختر المنتج</option>
-        @foreach($products as $product)
-            <option value="{{ $product->id }}"
-                data-unit-price="{{ $product->price }}"
-                data-code="{{ $product->code }}">
-                {{ $product->code }} - {{ $product->name }}
-            </option>
-        @endforeach
-    `;
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize currency symbols
+        function updateCurrencySymbols() {
+            const currencySelect = document.getElementById('currancy');
+            if (!currencySelect) return;
+
+            const selectedOption = currencySelect.options[currencySelect.selectedIndex];
+            if (!selectedOption) return;
+
+            const symbol = selectedOption.getAttribute('data-symbol') || 'ج.م';
+            document.querySelectorAll('.currency-symbol').forEach(span => {
+                span.textContent = symbol;
+            });
+
+            // Update totals with new currency
+            if (typeof updateTotals === 'function') {
+                updateTotals();
+            }
+        }
+
+        // Add event listener for currency change
+        const currencySelect = document.getElementById('currancy');
+        if (currencySelect) {
+            currencySelect.addEventListener('change', updateCurrencySymbols);
+            // Initial update
+            updateCurrencySymbols();
+        }
+    });
 </script>
-<script src="{{ asset('js/invoice.js') }}" defer></script>
 @endpush
 @endsection

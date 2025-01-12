@@ -9,11 +9,12 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
         Schema::create('quotations', function (Blueprint $table) {
             $table->id();
             $table->foreignId('client_id')->constrained()->onDelete('cascade');
+            $table->foreignId('currency_id')->constrained()->onDelete('restrict');
             $table->string('quotation_number')->unique();
             $table->date('quotation_date');
             $table->decimal('subtotal', 10, 2);
@@ -21,10 +22,10 @@ return new class extends Migration
             $table->decimal('tax_percentage', 5, 2)->default(0);
             $table->decimal('tax_amount', 10, 2)->default(0);
             $table->decimal('total', 10, 2);
+            $table->string('signature')->nullable();
             $table->text('first_note')->nullable();
             $table->text('second_note')->nullable();
-            $table->string('currancy')->default('EGP');
-            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
+            $table->enum('status', ['pending', 'accepted', 'rejected'])->default('pending');
             $table->timestamps();
             $table->softDeletes();
         });
