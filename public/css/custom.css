@@ -1,0 +1,64 @@
+/* Custom Badge Colors */
+.badge {
+    padding: 0.35em 0.65em !important;
+    font-size: 0.85em !important;
+    font-weight: 500 !important;
+    border-radius: 6px !important;
+    transition: background-color 0.2s ease-in-out !important;
+}
+
+/* Bootstrap Color Overrides */
+.bg-success {
+    background-color: #0EA5E9 !important;
+}
+
+.text-success {
+    color: #0EA5E9 !important;
+}
+
+.btn-success {
+    background-color: #0EA5E9 !important;
+    border-color: #0EA5E9 !important;
+}
+
+.btn-success:hover {
+    background-color: #0284C7 !important;
+    border-color: #0284C7 !important;
+}
+
+.alert-success {
+    background-color: #F0F9FF !important;
+    border-color: #0EA5E9 !important;
+    color: #0EA5E9 !important;
+}
+
+/* Modern Success Badge */
+.badge.badge-success {
+    background-color: #0EA5E9 !important;
+    color: #F0F9FF !important;
+}
+
+/* Modern Warning Badge */
+.badge.badge-warning {
+    background-color: #F59E0B !important;
+    color: #FFFBEB !important;
+}
+
+/* Modern Danger Badge */
+.badge.badge-danger {
+    background-color: #EF4444 !important;
+    color: #FEF2F2 !important;
+}
+
+/* Hover effects */
+.badge.badge-success:hover {
+    background-color: #0284C7 !important;
+}
+
+.badge.badge-warning:hover {
+    background-color: #D97706 !important;
+}
+
+.badge.badge-danger:hover {
+    background-color: #DC2626 !important;
+}

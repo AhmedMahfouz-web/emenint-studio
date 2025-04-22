@@ -7,7 +7,6 @@ use App\Models\Invoice;
 use App\Models\Product;
 use App\Models\Quotation;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
@@ -24,82 +23,96 @@ class DashboardController extends Controller
         $monthlyStats = Invoice::selectRaw('
             SUM(CASE WHEN status = "paid" THEN total ELSE 0 END) as paid_amount,
             SUM(CASE WHEN status = "pending" THEN total ELSE 0 END) as pending_amount,
-            currancy,
+            currencies.code as currency_code,
+            currencies.symbol as currency_symbol,
             COUNT(CASE WHEN status = "paid" THEN 1 END) as paid_count,
             COUNT(CASE WHEN status = "pending" THEN 1 END) as pending_count
         ')
+        ->join('currencies', 'currencies.id', '=', 'invoices.currency_id')
         ->whereYear('invoice_date', Carbon::now()->year)
         ->whereMonth('invoice_date', Carbon::now()->month)
-        ->groupBy('currancy')
+        ->groupBy('currencies.id', 'currencies.code', 'currencies.symbol')
         ->get();
 
         $monthlyRevenue = [
             'paid' => $monthlyStats->map(function($stat) {
                 return [
                     'amount' => $stat->paid_amount,
-                    'currency' => $stat->currancy,
+                    'currency' => $stat->currency_symbol,
                     'count' => $stat->paid_count
                 ];
-            }),
+            })->filter(function($item) {
+                return $item['count'] > 0;
+            })->values(),
             'pending' => $monthlyStats->map(function($stat) {
                 return [
                     'amount' => $stat->pending_amount,
-                    'currency' => $stat->currancy,
+                    'currency' => $stat->currency_symbol,
                     'count' => $stat->pending_count
                 ];
-            })
+            })->filter(function($item) {
+                return $item['count'] > 0;
+            })->values()
         ];
 
         // Yearly Revenue Statistics
         $yearlyStats = Invoice::selectRaw('
             SUM(CASE WHEN status = "paid" THEN total ELSE 0 END) as paid_amount,
             SUM(CASE WHEN status = "pending" THEN total ELSE 0 END) as pending_amount,
-            currancy,
+            currencies.code as currency_code,
+            currencies.symbol as currency_symbol,
             COUNT(CASE WHEN status = "paid" THEN 1 END) as paid_count,
             COUNT(CASE WHEN status = "pending" THEN 1 END) as pending_count
         ')
+        ->join('currencies', 'currencies.id', '=', 'invoices.currency_id')
         ->whereYear('invoice_date', Carbon::now()->year)
-        ->groupBy('currancy')
+        ->groupBy('currencies.id', 'currencies.code', 'currencies.symbol')
         ->get();
 
         $yearlyRevenue = [
             'paid' => $yearlyStats->map(function($stat) {
                 return [
                     'amount' => $stat->paid_amount,
-                    'currency' => $stat->currancy,
+                    'currency' => $stat->currency_symbol,
                     'count' => $stat->paid_count
                 ];
-            }),
+            })->filter(function($item) {
+                return $item['count'] > 0;
+            })->values(),
             'pending' => $yearlyStats->map(function($stat) {
                 return [
                     'amount' => $stat->pending_amount,
-                    'currency' => $stat->currancy,
+                    'currency' => $stat->currency_symbol,
                     'count' => $stat->pending_count
                 ];
-            })
+            })->filter(function($item) {
+                return $item['count'] > 0;
+            })->values()
         ];
 
         // Monthly Revenue Chart Data
         $monthlyRevenueData = Invoice::selectRaw('
             MONTH(invoice_date) as month,
             status,
-            currancy,
+            currencies.code as currency_code,
+            currencies.symbol as currency_symbol,
             SUM(total) as total
         ')
+        ->join('currencies', 'currencies.id', '=', 'invoices.currency_id')
         ->whereYear('invoice_date', Carbon::now()->year)
-        ->groupBy('month', 'status', 'currancy')
+        ->groupBy('month', 'status', 'currencies.id', 'currencies.code', 'currencies.symbol')
         ->orderBy('month')
         ->get()
         ->groupBy('month')
         ->map(function($monthData) {
             return [
-                'paid' => $monthData->where('status', 'paid')->groupBy('currancy')
+                'paid' => $monthData->where('status', 'paid')->groupBy('currencies.id')
                     ->map(function($curr) {
-                        return ['amount' => $curr->sum('total'), 'currency' => $curr->first()->currancy];
+                        return ['amount' => $curr->sum('total'), 'currency' => $curr->first()->currency_symbol];
                     })->values(),
-                'pending' => $monthData->where('status', 'pending')->groupBy('currancy')
+                'pending' => $monthData->where('status', 'pending')->groupBy('currencies.id')
                     ->map(function($curr) {
-                        return ['amount' => $curr->sum('total'), 'currency' => $curr->first()->currancy];
+                        return ['amount' => $curr->sum('total'), 'currency' => $curr->first()->currency_symbol];
                     })->values()
             ];
         });
@@ -150,24 +163,23 @@ class DashboardController extends Controller
         ];
 
         // Recent Invoices
-        $recentInvoices = Invoice::with('client')
+        $recentInvoices = Invoice::with(['client', 'currency'])
             ->latest()
             ->take(5)
             ->get();
 
         // Recent Quotations
-        $recentQuotations = Quotation::with('client')
+        $recentQuotations = Quotation::with(['client', 'currency'])
             ->latest()
             ->take(5)
             ->get();
 
         // Top Clients
-        $topClients = Invoice::where('status', 'paid')
-            ->whereYear('invoice_date', Carbon::now()->year)
-            ->select('client_id', DB::raw('SUM(total) as total'))
-            ->with('client:id,name')
-            ->groupBy('client_id')
-            ->orderByDesc('total')
+        $topClients = Client::withCount('invoices')
+            ->withSum(['invoices' => function($query) {
+                $query->where('status', 'paid');
+            }], 'total')
+            ->orderByDesc('invoices_count')
             ->take(5)
             ->get();
 

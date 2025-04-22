@@ -215,36 +215,7 @@
 <x-client-modal />
 
 @push('scripts')
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Initialize currency symbols
-        function updateCurrencySymbols() {
-            const currencySelect = document.getElementById('currancy');
-            if (!currencySelect) return;
-
-            const selectedOption = currencySelect.options[currencySelect.selectedIndex];
-            if (!selectedOption) return;
-
-            const symbol = selectedOption.getAttribute('data-symbol') || 'ج.م';
-            document.querySelectorAll('.currency-symbol').forEach(span => {
-                span.textContent = symbol;
-            });
-
-            // Update totals with new currency
-            if (typeof updateTotals === 'function') {
-                updateTotals();
-            }
-        }
-
-        // Add event listener for currency change
-        const currencySelect = document.getElementById('currancy');
-        if (currencySelect) {
-            currencySelect.addEventListener('change', updateCurrencySymbols);
-            // Initial update
-            updateCurrencySymbols();
-        }
-    });
-</script>
+    <script src="{{ asset('js/invoice.js') }}"></script>
 @endpush
 
 @push('modals')

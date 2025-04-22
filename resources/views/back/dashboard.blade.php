@@ -1,6 +1,62 @@
 @extends('layouts.app')
 
 @section('page-content')
+<style>
+    /* Bootstrap Color Overrides */
+    .bg-success {
+        background-color: #0df0311a !important;
+    }
+    .text-success {
+        color: #0df053 !important;
+    }
+    .badge.bg-success {
+        background-color: #0df0311a !important;
+        color: #F0FDF4 !important;
+    }
+    .badge.bg-warning {
+        background-color: #F59E0B !important;
+        color: #FFFBEB !important;
+    }
+    .badge.bg-danger {
+        background-color: #EF4444 !important;
+        color: #FEF2F2 !important;
+    }
+    .badge {
+        padding: 0.35em 0.65em !important;
+        font-size: 0.85em !important;
+        font-weight: 500 !important;
+        border-radius: 6px !important;
+    }
+    .avatar {
+        width: 3rem;
+        height: 3rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .avatar-lg {
+        width: 3.5rem;
+        height: 3.5rem;
+    }
+    .avatar-xl {
+        width: 4rem;
+        height: 4rem;
+    }
+    .btn-success {
+        background-color: #4ADE80 !important;
+        border-color: #22C55E !important;
+    }
+    .btn-success:hover {
+        background-color: #22C55E !important;
+        border-color: #16A34A !important;
+    }
+    .alert-success {
+        background-color: #BBF7D0 !important;
+        border-color: #4ADE80 !important;
+        color: #16A34A !important;
+    }
+</style>
+
 <div class="container-fluid px-3 px-md-4">
     <!-- Statistics Cards -->
     <div class="row g-3 mb-4">
@@ -90,7 +146,7 @@
                             <div class="d-flex justify-content-between align-items-center mb-2">
                                 <span>{{ $paid['currency'] }}</span>
                                 <span class="text-success">{{ number_format($paid['amount']) }}</span>
-                                <span class="badge bg-success">{{ $paid['count'] }} فواتير</span>
+                                <span class="badge badge-success">{{ $paid['count'] }} فواتير</span>
                             </div>
                         @endforeach
                     </div>
@@ -101,7 +157,7 @@
                             <div class="d-flex justify-content-between align-items-center mb-2">
                                 <span>{{ $pending['currency'] }}</span>
                                 <span class="text-warning">{{ number_format($pending['amount']) }}</span>
-                                <span class="badge bg-warning">{{ $pending['count'] }} فواتير</span>
+                                <span class="badge badge-warning">{{ $pending['count'] }} فواتير</span>
                             </div>
                         @endforeach
                     </div>
@@ -120,7 +176,7 @@
                             <div class="d-flex justify-content-between align-items-center mb-2">
                                 <span>{{ $paid['currency'] }}</span>
                                 <span class="text-success">{{ number_format($paid['amount']) }}</span>
-                                <span class="badge bg-success">{{ $paid['count'] }} فواتير</span>
+                                <span class="badge badge-success">{{ $paid['count'] }} فواتير</span>
                             </div>
                         @endforeach
                     </div>
@@ -131,7 +187,7 @@
                             <div class="d-flex justify-content-between align-items-center mb-2">
                                 <span>{{ $pending['currency'] }}</span>
                                 <span class="text-warning">{{ number_format($pending['amount']) }}</span>
-                                <span class="badge bg-warning">{{ $pending['count'] }} فواتير</span>
+                                <span class="badge badge-warning">{{ $pending['count'] }} فواتير</span>
                             </div>
                         @endforeach
                     </div>
@@ -243,11 +299,18 @@
                             <tr>
                                 <td>{{ $quotation->quotation_number }}</td>
                                 <td>{{ $quotation->client->name }}</td>
-                                <td>{{ number_format($quotation->total_amount, 2) }} ريال</td>
                                 <td>
-                                    <span class="badge bg-{{ $quotation->status === 'approved' ? 'success' : ($quotation->status === 'pending' ? 'warning' : 'danger') }}">
-                                        {{ $quotation->status === 'approved' ? 'تمت الموافقة' : ($quotation->status === 'pending' ? 'قيد الانتظار' : 'مرفوض') }}
-                                    </span>
+                                    {{ number_format($quotation->total, 2) }}
+                                    {{ $quotation->currency->symbol ?? $quotation->currency->code }}
+                                </td>
+                                <td>
+                                    @if($quotation->status === 'accepted')
+                                        <span class="badge bg-success">مقبول</span>
+                                    @elseif($quotation->status === 'pending')
+                                        <span class="badge bg-warning">قيد الانتظار</span>
+                                    @else
+                                        <span class="badge bg-danger">مرفوض</span>
+                                    @endif
                                 </td>
                             </tr>
                             @endforeach
@@ -278,8 +341,8 @@
                             @foreach($topClients as $index => $client)
                             <tr>
                                 <td>{{ $index + 1 }}</td>
-                                <td>{{ $client->client->name }}</td>
-                                <td>{{ number_format($client->total, 2) }} ريال</td>
+                                <td>{{ $client->name }}</td>
+                                <td>{{ number_format($client->invoices_sum_total ?? 0, 2) }} ريال</td>
                             </tr>
                             @endforeach
                         </tbody>
@@ -290,26 +353,6 @@
     </div>
 </div>
 @endsection
-
-@push('styles')
-<style>
-.avatar {
-    width: 3rem;
-    height: 3rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.avatar-lg {
-    width: 3.5rem;
-    height: 3.5rem;
-}
-.avatar-xl {
-    width: 4rem;
-    height: 4rem;
-}
-</style>
-@endpush
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
