@@ -52,7 +52,7 @@ class ClientController extends Controller
             $latestClient = Client::latest()->first();
             $year = date('Y');
 
-            if ($latestClient && str_starts_with($latestClient->code, "CL-$year")) {
+            if ($latestClient && str_starts_with($latestClient->id, "CL-$year")) {
                 $number = (int)substr($latestClient->code, -4) + 1;
             } else {
                 $number = 1;
