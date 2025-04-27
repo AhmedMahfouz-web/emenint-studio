@@ -13,14 +13,14 @@ class ClientController extends Controller
     public function index(Request $request)
     {
         $query = Client::query();
-        
+
         if ($request->filled('search')) {
             $query->where(function($q) use ($request) {
                 $q->where('name', 'like', '%' . $request->search . '%')
                   ->orWhere('email', 'like', '%' . $request->search . '%');
             });
         }
-        
+
         $clients = $query->latest()->paginate(25);
         return view('back.clients.index', compact('clients'));
     }
@@ -48,17 +48,18 @@ class ClientController extends Controller
         ]);
 
         try {
-            // Generate client code (CL-YYYY-XXXX)
+            // Generate client code (CL-YYYY-MM-XXXX)
             $latestClient = Client::latest()->first();
             $year = date('Y');
+            $month = date('m');
 
-            if ($latestClient && str_starts_with($latestClient->id, "CL-$year")) {
-                $number = (int)substr($latestClient->code, -4) + 1;
+            if ($latestClient && str_starts_with($latestClient->id, "CL-$year-$month")) {
+                $number = (int)substr($latestClient->code, -6) + 1;
             } else {
                 $number = 1;
             }
 
-            $validated['code'] = sprintf("CL-%s-%04d", $year, $number);
+            $validated['code'] = sprintf("CL-%s-%06d", $year . '-' . $month, $number);
 
             $client = Client::create($validated);
 
