@@ -242,5 +242,6 @@
         };
     </script>
     @stack('scripts')
+    @stack('custom-scripts')
 </body>
 </html>

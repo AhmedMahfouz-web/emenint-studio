@@ -1,240 +1,166 @@
-// Function to get current currency symbol
-function getCurrentCurrencySymbol() {
-    const currencySelect = document.getElementById('currancy');
-    if (!currencySelect) return 'ج.م';
+// invoice.js - Robust dynamic calculation for invoices and quotations
+$(document).ready(function() {
+    // Get currency symbol from the selected currency
+    function getCurrentCurrencySymbol() {
+        var selectedCurrency = $('#currancy option:selected');
+        return selectedCurrency.data('symbol') || 'ج.م';
+    }
 
-    const selectedOption = currencySelect.options[currencySelect.selectedIndex];
-    if (!selectedOption) return 'ج.م';
-
-    return selectedOption.getAttribute('data-symbol') || 'ج.م';
-}
-
-// Function to update totals
-function updateTotals() {
-    let subtotal = 0;
-    const currencySymbol = getCurrentCurrencySymbol();
-
-    // Calculate subtotal from each item total
-    document.querySelectorAll('.item-total-display').forEach(span => {
-        const itemTotal = parseFloat(span.textContent.replace(/[^\d.-]/g, '')) || 0;
-        subtotal += itemTotal;
+    // Update currency symbol displays when currency changes
+    $('#currancy').on('change', function() {
+        var symbol = getCurrentCurrencySymbol();
+        $('.currency-symbol').text(symbol);
+        updateTotals(); // Refresh totals with new currency symbol
     });
 
-    // Get discount and calculate net before tax
-    const discount = parseFloat(document.getElementById('discount').value) || 0;
-    const netBeforeTax = subtotal - discount;
-
-    // Calculate tax
-    const taxRate = parseFloat(document.getElementById('tax_percentage').value) || 0;
-    const taxAmount = (netBeforeTax * taxRate) / 100;
-
-    // Calculate total
-    const total = netBeforeTax + taxAmount;
-
-    // Update display values with currency symbol
-    document.getElementById('subtotal').textContent = subtotal.toFixed(2) + ' ' + currencySymbol;
-    document.getElementById('discount-amount').textContent = discount.toFixed(2) + ' ' + currencySymbol;
-    document.getElementById('tax-amount').textContent = taxAmount.toFixed(2) + ' ' + currencySymbol;
-    document.getElementById('total').textContent = total.toFixed(2) + ' ' + currencySymbol;
-}
-
-// Ensure script only runs once
-if (!window.invoiceInitialized) {
-    document.addEventListener('DOMContentLoaded', function() {
-        // Set initialization flag
-        window.invoiceInitialized = true;
+    function updateItemTotal(row) {
+        console.log('Updating item total for row:', row);
+        var quantity = parseFloat($(row).find('.quantity').val()) || 0;
+        var unitPrice = parseFloat($(row).find('.unit-price').val()) || 0;
+        var total = quantity * unitPrice;
+        console.log('Quantity:', quantity, 'Unit Price:', unitPrice, 'Total:', total);
         
-        // Initialize item counter
-        let itemCounter = 0;
+        $(row).find('.item-total-display').text(total.toFixed(2));
+        $(row).find('input[name*="[total]"]').val(total.toFixed(2));
+        updateTotals();
+    }
 
-        // Initialize Select2
-        function initializeSelect2(element) {
-            $(element).select2({
-                theme: 'bootstrap-5',
-                dir: 'rtl',
-                width: '100%',
-                language: {
-                    noResults: function() {
-                        return "لا توجد نتائج";
-                    },
-                    searching: function() {
-                        return "جاري البحث...";
-                    }
-                },
-                placeholder: "اختر المنتج",
-                allowClear: true
-            });
-        }
-
-        // Function to update item total
-        function updateItemTotal(row) {
-            const quantity = parseFloat(row.querySelector('.quantity').value) || 0;
-            const unitPrice = parseFloat(row.querySelector('.unit-price').value) || 0;
-            const totalInput = row.querySelector('input[name$="[total]"]');
-            const totalDisplay = row.querySelector('.item-total-display');
-            const currencySymbol = getCurrentCurrencySymbol();
-            
-            const total = quantity * unitPrice;
-            totalInput.value = total.toFixed(2);
-            totalDisplay.textContent = total.toFixed(2) + ' ' + currencySymbol;
-            
-            updateTotals();
-        }
-
-        // Function to initialize item row event listeners
-        function initializeItemRow(row) {
-            const quantityInput = row.querySelector('.quantity');
-            const unitPriceInput = row.querySelector('.unit-price');
-            const removeButton = row.querySelector('.remove-item');
-            const select = row.querySelector('select.select2-searchable');
-
-            if (quantityInput) {
-                quantityInput.addEventListener('input', () => updateItemTotal(row));
-            }
-
-            if (unitPriceInput) {
-                unitPriceInput.addEventListener('input', () => updateItemTotal(row));
-            }
-
-            if (removeButton) {
-                removeButton.addEventListener('click', () => {
-                    if (document.querySelectorAll('.invoice-item').length > 1) {
-                        row.remove();
-                        updateTotals();
-                    }
-                });
-            }
-
-            if (select) {
-                initializeSelect2(select);
-                select.addEventListener('change', function() {
-                    const selectedOption = this.options[this.selectedIndex];
-                    if (selectedOption && selectedOption.dataset.unitPrice) {
-                        const priceInput = row.querySelector('.unit-price');
-                        if (priceInput) {
-                            priceInput.value = selectedOption.dataset.unitPrice;
-                            updateItemTotal(row);
-                        }
-                    }
-                });
-            }
-
-            // Calculate initial total for this row
-            updateItemTotal(row);
-        }
-
-        // Function to add new item row
-        function addItemRow() {
-            const tbody = document.querySelector('#invoice-items tbody');
-            const newRow = document.createElement('tr');
-            newRow.className = 'invoice-item';
-            const currencySymbol = getCurrentCurrencySymbol();
-            
-            newRow.innerHTML = `
-                <td data-label="المنتج">
-                    <select class="form-select select2-searchable" name="items[${itemCounter}][product_id]" required>
-                        ${window.productOptions}
-                    </select>
-                </td>
-                <td data-label="الوصف">
-                    <input type="text" class="form-control" name="items[${itemCounter}][description]">
-                </td>
-                <td data-label="الكمية">
-                    <input type="number" class="form-control quantity" name="items[${itemCounter}][quantity]" value="1" min="1" required>
-                </td>
-                <td data-label="السعر">
-                    <input type="number" class="form-control unit-price" name="items[${itemCounter}][unit_price]" value="0.00" min="0" step="0.01" required>
-                </td>
-                <td data-label="المجموع">
-                    <input type="hidden" name="items[${itemCounter}][total]" value="0.00">
-                    <span class="item-total-display">0.00 ${currencySymbol}</span>
-                </td>
-                <td data-label="العمليات">
-                    <button type="button" class="btn btn-danger btn-sm remove-item">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </td>
-            `;
-
-            tbody.appendChild(newRow);
-            initializeItemRow(newRow);
-            itemCounter++;
-            updateItemTotal(newRow);
-        }
-
-        // Initialize existing rows and calculate totals
-        document.querySelectorAll('.invoice-item').forEach(row => {
-            initializeItemRow(row);
-            itemCounter++;
+    function updateTotals() {
+        var subtotal = 0;
+        var currencySymbol = getCurrentCurrencySymbol();
+        
+        // Calculate subtotal from each item
+        $('.invoice-item').each(function() {
+            var quantity = parseFloat($(this).find('.quantity').val()) || 0;
+            var unitPrice = parseFloat($(this).find('.unit-price').val()) || 0;
+            var itemTotal = quantity * unitPrice;
+            subtotal += itemTotal;
         });
-
-        // Update totals after all rows are initialized
-        updateTotals();
-
-        // Add event listener to "Add Item" button
-        const addItemButton = document.getElementById('add-item');
-        if (addItemButton) {
-            // Remove any existing listeners
-            const newAddItemButton = addItemButton.cloneNode(true);
-            addItemButton.parentNode.replaceChild(newAddItemButton, addItemButton);
-            
-            newAddItemButton.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                addItemRow();
-            });
-        }
-
-        // Add event listeners to discount and tax rate inputs
-        const discountInput = document.getElementById('discount');
-        const taxRateInput = document.getElementById('tax_percentage');
         
-        if (discountInput) {
-            discountInput.addEventListener('input', updateTotals);
+        console.log('Calculated subtotal:', subtotal);
+        
+        $('#subtotal').text(subtotal.toFixed(2) + ' ' + currencySymbol);
+        
+        var discount = parseFloat($('#discount').val()) || 0;
+        $('#discount-amount').text(discount.toFixed(2) + ' ' + currencySymbol);
+        
+        var netBeforeTax = subtotal - discount;
+        var taxRate = parseFloat($('#tax_percentage').val()) || 0;
+        var taxAmount = netBeforeTax * (taxRate / 100);
+        
+        $('#tax-amount').text(taxAmount.toFixed(2) + ' ' + currencySymbol);
+        
+        var total = netBeforeTax + taxAmount;
+        $('#total').text(total.toFixed(2) + ' ' + currencySymbol);
+        
+        console.log('Final total:', total);
+    }
+
+    function initializeItemRow(row) {
+        console.log('Initializing row:', row);
+        
+        // Store the currently selected value before initializing Select2
+        var select = $(row).find('select[name*="[product_id]"]');
+        var selectedValue = select.val();
+        var selectedText = select.find('option:selected').text();
+        console.log('Selected value before init:', selectedValue, 'text:', selectedText);
+        
+        // Initialize Select2 for the product dropdown
+        select.select2({
+            width: '100%',
+            dir: 'rtl',
+            dropdownParent: $(row).closest('table'),
+            templateResult: formatProduct,
+            templateSelection: formatProductSelection
+        });
+        
+        // Make sure the selected value is preserved after initialization
+        if (selectedValue && selectedValue !== '') {
+            select.val(selectedValue).trigger('change.select2');
         }
         
-        if (taxRateInput) {
-            taxRateInput.addEventListener('input', updateTotals);
+        // Product selection change handler
+        select.off('change').on('change', function() {
+            var selectedOption = $(this).find('option:selected');
+            var price = selectedOption.data('unit-price') || 0;
+            console.log('Selected product with price:', price);
+            $(row).find('.unit-price').val(price);
+            updateItemTotal(row);
+        });
+        
+        // On page load: if a product is already selected, set unit price
+        var selectedOption = select.find('option:selected');
+        if (selectedOption.length && selectedOption.val()) {
+            var price = selectedOption.data('unit-price') || 0;
+            console.log('Initial product selected with price:', price);
+            $(row).find('.unit-price').val(price);
         }
-
-        // Add event listener for currency change
-        const currencySelect = document.getElementById('currancy');
-        if (currencySelect) {
-            currencySelect.addEventListener('change', function() {
-                // Update all item totals with new currency
-                document.querySelectorAll('.invoice-item').forEach(row => {
-                    updateItemTotal(row);
-                });
-                // Update main totals
-                updateTotals();
-            });
+        
+        // Listeners for quantity/unit price changes
+        $(row).find('.quantity, .unit-price').off('input').on('input', function() {
+            updateItemTotal(row);
+        });
+        
+        // Remove row button handler
+        $(row).find('.remove-item').off('click').on('click', function() {
+            $(row).remove();
+            updateTotals();
+        });
+        
+        // Initial calculation for this row
+        updateItemTotal(row);
+    }
+    
+    // Format product options in the dropdown
+    function formatProduct(product) {
+        if (!product.id) {
+            return product.text;
         }
-
-        // Initialize with first row if there are no items
-        if (!document.querySelector('.invoice-item')) {
-            addItemRow();
+        return $('<span>' + product.text + '</span>');
+    }
+    
+    // Format the selected product in the select box
+    function formatProductSelection(product) {
+        if (!product.id) {
+            return product.text;
         }
+        return product.text;
+    }
 
-        // Calculate initial totals
+    // Initialize all existing rows on page load
+    $('#invoice-items tbody .invoice-item').each(function() {
+        initializeItemRow(this);
+    });
+
+    // Add new item row button handler
+    $('#add-item').on('click', function() {
+        var index = $('#invoice-items tbody .invoice-item').length;
+        var template = $('#item-template').html().replace(/{index}/g, index);
+        var $row = $(template);
+        $('#invoice-items tbody').append($row);
+        initializeItemRow($row);
+    });
+
+    // Listen for discount/tax changes
+    $('#discount, #tax_percentage').on('input', function() {
         updateTotals();
     });
-}
 
-// Function to show toast
-function showToast(message) {
-    const toast = document.createElement('div');
-    toast.className = 'toast show position-fixed bottom-0 end-0 m-3';
-    toast.setAttribute('role', 'alert');
-    toast.innerHTML = `
-        <div class="toast-header">
-            <strong class="me-auto">تنبيه</strong>
-            <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
-        </div>
-        <div class="toast-body">${message}</div>
-    `;
-    document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 3000);
-}
-
-// Initial call to update totals on page load
-updateTotals();
+    // Initial totals calculation
+    updateTotals();
+    
+    // Fallback: ensure totals are recalculated on form submit
+    const invoiceForm = $('#invoiceForm, #quotationForm');
+    if (invoiceForm.length) {
+        invoiceForm.on('submit', function(e) {
+            updateTotals();
+            // Check if total is 0 and show a warning
+            const totalText = $('#total').text() || '';
+            if (parseFloat(totalText.replace(/[^\d.-]/g, '')) === 0) {
+                alert('⚠️ الإجمالي صفر. يرجى التأكد من إدخال الكميات والأسعار بشكل صحيح.');
+                // Optionally prevent submit:
+                // e.preventDefault();
+            }
+        });
+    }
+});

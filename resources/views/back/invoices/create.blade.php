@@ -75,7 +75,7 @@
                         <label for="currancy" class="form-label fw-bold">العملة</label>
                         <select class="form-select" name="currency_id" id="currancy" required>
                             @foreach($currencies as $currency)
-                                <option value="{{ $currency->id }}" 
+                                <option value="{{ $currency->id }}"
                                     {{ $currency->is_default ? 'selected' : '' }}
                                     data-symbol="{{ $currency->symbol }}">
                                     {{ $currency->code }} - {{ $currency->name }}
@@ -155,7 +155,7 @@
                                                 <select class="form-select select2-searchable" name="items[{{ $loop->index }}][product_id]" required>
                                                     <option value="">اختر المنتج</option>
                                                     @foreach($products as $product)
-                                                        <option value="{{ $product->id }}" 
+                                                        <option value="{{ $product->id }}"
                                                             {{ $item->product_id == $product->id ? 'selected' : '' }}
                                                             data-unit-price="{{ $product->price }}"
                                                             data-code="{{ $product->code }}">
@@ -165,15 +165,15 @@
                                                 </select>
                                             </td>
                                             <td data-label="الوصف">
-                                                <input type="text" class="form-control" name="items[{{ $loop->index }}][description]" 
+                                                <input type="text" class="form-control" name="items[{{ $loop->index }}][description]"
                                                     value="{{ $item->description }}">
                                             </td>
                                             <td data-label="الكمية">
-                                                <input type="number" class="form-control quantity" name="items[{{ $loop->index }}][quantity]" 
+                                                <input type="number" class="form-control quantity" name="items[{{ $loop->index }}][quantity]"
                                                     value="{{ $item->quantity }}" min="1" required>
                                             </td>
                                             <td data-label="السعر">
-                                                <input type="number" class="form-control unit-price" name="items[{{ $loop->index }}][unit_price]" 
+                                                <input type="number" class="form-control unit-price" name="items[{{ $loop->index }}][unit_price]"
                                                     value="{{ $item->unit_price }}" min="0" step="0.01" required>
                                             </td>
                                             <td data-label="المجموع">
@@ -310,42 +310,89 @@
 @endpush
 
 <style>
+    /* Custom styling for invoice table */
+    /* Make product select wider */
+    td[data-label="المنتج"] .select2-container {
+        min-width: 300px !important;
+    }
+
+    /* Make quantity and price inputs narrower */
+    td[data-label="الكمية"] .form-control,
+    td[data-label="السعر"] .form-control {
+        max-width: 100px;
+        display: inline-block;
+    }
+
+    /* Style select2 to match other form controls */
+    .select2-container--default .select2-selection--single {
+        height: 38px;
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+        padding: 0.375rem 0.75rem;
+        background-color: #fff;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        line-height: 24px;
+        color: #212529;
+        padding-left: 0;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: 36px;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__placeholder {
+        color: #6c757d;
+    }
+
+    .select2-dropdown {
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+    }
+
+    .select2-results__option {
+        padding: 0.375rem 0.75rem;
+    }
+
+    .select2-container--default .select2-results__option--highlighted[aria-selected] {
+        background-color: #0d6efd;
+    }
+
+    /* Mobile responsive styles */
     @media (max-width: 768px) {
-        .table-responsive {
+        table.table {
             border: 0;
         }
 
-        .table-responsive table thead {
+        table.table thead {
             display: none;
         }
 
-        .table-responsive table tbody tr {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 0.5rem;
+        table.table tr {
             margin-bottom: 1rem;
-            padding: 1rem;
+            display: block;
             border: 1px solid #ddd;
-            border-radius: 0.5rem;
-            background-color: #fff;
+            border-radius: 0.25rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
-        .table-responsive table td {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            align-items: center;
-            padding: 0.5rem;
-            border: none;
+        table.table td {
+            display: block;
+            text-align: right;
+            padding: 0.75rem;
+            border-bottom: 1px solid #ddd;
         }
 
-        .table-responsive table td::before {
+        table.table td:last-child {
+            border-bottom: 0;
+        }
+
+        table.table td::before {
             content: attr(data-label);
+            float: right;
             font-weight: bold;
             margin-left: 0.5rem;
-        }
-
-        .select2-container {
-            width: 100% !important;
         }
 
         .form-control {
@@ -364,6 +411,18 @@
         .invoice-item {
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
+
+        /* Ensure select2 is full width on mobile */
+        td[data-label="المنتج"] .select2-container {
+            width: 100% !important;
+            min-width: unset !important;
+        }
+
+        /* Reset max-width for mobile */
+        td[data-label="الكمية"] .form-control,
+        td[data-label="السعر"] .form-control {
+            max-width: 100%;
+        }
     }
 </style>
 
@@ -377,14 +436,14 @@
             <option value="">اختر المنتج</option>
             @foreach($products as $product)
                 <option value="{{ $product->id }}"
-                    data-unit-price="{{ $product->price }}"
-                    data-code="{{ $product->code }}">
-                    {{ $product->code }} - {{ $product->name }}
-                </option>
+    data-unit-price="{{ $product->price }}"
+    data-code="{{ $product->code }}">
+    {{ $product->code }} - {{ $product->name }} (Price: {{ $product->price }})
+</option>
             @endforeach
         `;
     </script>
-    <script src="{{ asset('js/invoice.js') }}" defer></script>
+
 @endpush
 
 @push('modals')
@@ -400,4 +459,7 @@
         </ul>
     </div>
 @endif
+@push('custom-scripts')
+    <script src="{{ asset('js/invoice.js') }}"></script>
+@endpush
 @endsection

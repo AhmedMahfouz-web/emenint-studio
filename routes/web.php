@@ -3,14 +3,15 @@
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\CurrencyController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\ProductController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\mailController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\QuotationController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\CurrencyController;
+use App\Http\Controllers\UserManagementController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -135,6 +136,10 @@ Route::group(['prefix' => 'invoice'], function () {
         Route::resource('products', ProductController::class);
         Route::resource('currencies', CurrencyController::class);
         Route::post('currencies/{currency}/set-default', [CurrencyController::class, 'setDefault'])->name('currencies.set-default');
+
+        // User management routes
+        Route::resource('users', UserManagementController::class);
+        Route::get('roles', [UserManagementController::class, 'roles'])->name('roles.index');
 
 
     Route::get('/invoice-view', function () {

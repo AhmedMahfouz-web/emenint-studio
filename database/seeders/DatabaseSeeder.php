@@ -14,6 +14,9 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
+        // Seed roles and permissions first
+        $this->call(RoleAndPermissionSeeder::class);
+        
         // Create 50 clients
         $clients = Client::factory(50)->create();
 
