@@ -140,7 +140,7 @@ Route::group(['prefix' => 'invoice', 'middleware' => 'auth'], function () {
     // User management routes
     Route::resource('users', UserManagementController::class);
 
-    Route::get('logout', [UserController::class, 'logout'])->name('logout');
+    Route::post('logout', [UserController::class, 'logout'])->name('logout');
 
     Route::get('profile', [UserManagementController::class, 'profile'])->name('profile');
     Route::get('profile/edit', [UserManagementController::class, 'editProfile'])->name('profile.edit');
