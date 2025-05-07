@@ -128,19 +128,35 @@ Route::group(['prefix' => 'admin'], function () {
 });
 
 // Dashboard as home page
-Route::group(['prefix' => 'invoice'], function () {
-        Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
-        Route::resource('invoices', InvoiceController::class);
-        Route::resource('quotations', QuotationController::class);
-        Route::resource('clients', ClientController::class);
-        Route::resource('products', ProductController::class);
-        Route::resource('currencies', CurrencyController::class);
-        Route::post('currencies/{currency}/set-default', [CurrencyController::class, 'setDefault'])->name('currencies.set-default');
+Route::group(['prefix' => 'invoice', 'middleware' => 'auth'], function () {
+    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+    Route::resource('invoices', InvoiceController::class);
+    Route::resource('quotations', QuotationController::class);
+    Route::resource('clients', ClientController::class);
+    Route::resource('products', ProductController::class);
+    Route::resource('currencies', CurrencyController::class);
+    Route::post('currencies/{currency}/set-default', [CurrencyController::class, 'setDefault'])->name('currencies.set-default');
 
-        // User management routes
-        Route::resource('users', UserManagementController::class);
-        Route::get('roles', [UserManagementController::class, 'roles'])->name('roles.index');
+    // User management routes
+    Route::resource('users', UserManagementController::class);
 
+    Route::get('logout', [UserController::class, 'logout'])->name('logout');
+
+    Route::get('profile', [UserManagementController::class, 'profile'])->name('profile');
+    Route::get('profile/edit', [UserManagementController::class, 'editProfile'])->name('profile.edit');
+    Route::put('profile', [UserManagementController::class, 'updateProfile'])->name('profile.update');
+
+    // Role management routes
+    Route::get('roles', [UserManagementController::class, 'roles'])->name('roles.index');
+    Route::post('roles', [UserManagementController::class, 'storeRole'])->name('roles.store');
+    Route::get('roles/{role}/edit', [UserManagementController::class, 'editRole'])->name('roles.edit');
+    Route::put('roles/{role}', [UserManagementController::class, 'updateRole'])->name('roles.update');
+    Route::delete('roles/{role}', [UserManagementController::class, 'destroyRole'])->name('roles.destroy');
+
+    // Permission management routes
+    Route::get('permissions', [UserManagementController::class, 'permissions'])->name('permissions.index');
+    Route::post('permissions', [UserManagementController::class, 'storePermission'])->name('permissions.store');
+    Route::delete('permissions/{permission}', [UserManagementController::class, 'destroyPermission'])->name('permissions.destroy');
 
     Route::get('/invoice-view', function () {
         return view('back.invoices.pdf');
@@ -153,6 +169,7 @@ Route::group(['prefix' => 'invoice'], function () {
 
     Route::get('quotations/{quotation}/download', [QuotationController::class, 'download'])->name('quotations.download');
     Route::get('invoices/{invoice}/download', [InvoiceController::class, 'download'])->name('invoices.download');
+
     Route::get('reports', [ReportController::class, 'index'])->name('reports.index');
     Route::post('reports/generate', [ReportController::class, 'generate'])->name('reports.generate');
 });
