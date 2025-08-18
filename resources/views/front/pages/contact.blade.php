@@ -1,7 +1,17 @@
 @extends('layouts.front')
 
 @section('css')
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <style>
+        #map {
+            height: 500px;
+            width: 70%;
+            margin: auto;
+        }
+
         form {
             width: 50%;
             margin: 40px auto 80px;
@@ -11,6 +21,12 @@
         @media(max-width: 480px) {
             form {
                 width: 80%;
+            }
+
+            #map {
+                height: 300px;
+                width: 95%;
+                margin: auto;
             }
         }
 
@@ -95,8 +111,8 @@
             <div class="svgh-bh">
                 <div id="svg-animaiotn" class="inview flex flex--bottom">
                     <div class="js-parallaxheader">
-                        <svg class="deaw studio contact" id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 383.19 391.63">
+                        <svg class="deaw studio contact" id="Layer_1" data-name="Layer 1"
+                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 383.19 391.63">
                             <defs>
                                 <style>
                                     .cls-1 {
@@ -145,6 +161,7 @@
                         <path d="M7.293 4.707 14.586 12l-7.293 7.293 1.414 1.414L17.414 12 8.707 3.293 7.293 4.707z" />
                     </svg></button>
             </form>
+
         </section>
 
         <section class="kontakt-wrapper">
@@ -186,8 +203,11 @@
                     </div>
                 </div>
             </div>
+
         </section>
 
+        <div id="map">
+        </div>
         <section class="awards">
             <div class="grid-width text-center">
                 <div class="h3 inview inview--up">
@@ -5213,7 +5233,7 @@
                     <div class="awards-wrap--image">
                         <div class="inview inview--up">
 
-                            <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
+                            {{-- <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
                                 xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 1276.62 124.71"
                                 style="enable-background:new 0 0 1276.62 124.71;" xml:space="preserve"
                                 class="lazyload partners">
@@ -5253,7 +5273,7 @@
                                         </g>
                                     </g>
                                 </g>
-                            </svg>
+                            </svg> --}}
 
                         </div>
                     </div>
@@ -5264,6 +5284,22 @@
 @endsection
 
 @section('js')
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        const map = new L.Map('map').setView([30.1004118, 31.3404542], 15);
+        const tiles = new L.TileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(map);
+        var marker = L.marker([30.1004118, 31.3404542], {
+            color: 'red',
+            title: 'Eminent Studio',
+        }).addTo(map);
+
+        marker.bindPopup(
+            "<div class='popup-content'><b>Eminent Studio</b></div><p>33 Mohamed Bek Ramzy Street – Triumph Square – Heliopolis, Cairo Governorate 11757</p>"
+        ).openPopup();
+    </script>
     <script>
         let checkInput = function(input) {
             if (input.value.length > 0) {

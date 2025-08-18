@@ -94,10 +94,14 @@
                         </ul>
                     </div>
                     <div class="menu">
+                        <a class="nopagechange" target="_blank" href="https://maps.app.goo.gl/2Xa9at38bsPmXdWC9">33
+                            Mohamed Bek Ramzy
+                            Street – Triumph Square – Heliopolis, Cairo Governorate 11757</a><br />
+                        <a class="nopagechange" href="tel:+20 103 373 9707">+20 103 373 9707</a><br />
                         <a class="nopagechange"
                             href="mailto:hello(at)eminent-studio(dot)com">hello(at)eminent-studio(dot)com</a><br />
-                        <a class="nopagechange" href="tel:+20 103 373 9707">+20 103 373 9707</a><br />
                         <a class="nopagechange" target="_blank" href="https://wa.me/201033739707">WhatsApp</a><br />
+
 
                         @if (Request::is('studio'))
                             <div class="social-wrapper flex ">
