@@ -79,6 +79,16 @@ class InvoiceResource extends Resource
                     ->schema([
                         Forms\Components\Repeater::make('items')
                             ->relationship()
+                            ->live()
+                            ->afterStateUpdated(function (Forms\Get $get, Forms\Set $set) {
+                                self::updateTotals($get, $set);
+                            })
+                            ->deleteAction(
+                                fn($action) => $action->after(fn(Forms\Get $get, Forms\Set $set) => self::updateTotals($get, $set))
+                            )
+                            ->addAction(
+                                fn($action) => $action->after(fn(Forms\Get $get, Forms\Set $set) => self::updateTotals($get, $set))
+                            )
                             ->schema([
                                 Forms\Components\Select::make('product_id')
                                     ->label('Product')
@@ -98,24 +108,38 @@ class InvoiceResource extends Resource
                                     ->required()
                                     ->numeric()
                                     ->default(1)
-                                    ->live()
+                                    ->live(onBlur: true)
                                     ->afterStateUpdated(function ($state, Get $get, Set $set) {
-                                        $set('total', $state * $get('unit_price'));
+                                        $quantity = (float) ($state ?? 0);
+                                        $unitPrice = (float) ($get('unit_price') ?? 0);
+                                        $total = $quantity * $unitPrice;
+                                        $set('total', $total);
+                                        self::updateTotals($get, $set);
                                     }),
                                 Forms\Components\TextInput::make('unit_price')
                                     ->required()
                                     ->numeric()
+                                    ->default(0)
                                     ->step(0.01)
-                                    ->live()
+                                    ->live(onBlur: true)
                                     ->afterStateUpdated(function ($state, Get $get, Set $set) {
-                                        $set('total', $state * $get('quantity'));
+                                        $unitPrice = (float) ($state ?? 0);
+                                        $quantity = (float) ($get('quantity') ?? 0);
+                                        $total = $quantity * $unitPrice;
+                                        $set('total', $total);
+                                        self::updateTotals($get, $set);
                                     }),
                                 Forms\Components\TextInput::make('total')
+                                    ->label('Total')
                                     ->required()
                                     ->numeric()
                                     ->step(0.01)
-                                    ->disabled()
-                                    ->dehydrated(),
+                                    ->disabled(fn() => true) // display as readonly
+                                    ->dehydrated(true)        // still save to DB
+                                    ->live()
+                                    ->afterStateUpdated(function (Forms\Get $get, Forms\Set $set) {
+                                        self::updateTotals($get, $set);
+                                    }),
                             ])
                             ->columns(5)
                             ->defaultItems(1)
@@ -127,27 +151,42 @@ class InvoiceResource extends Resource
                     ->schema([
                         Forms\Components\TextInput::make('subtotal')
                             ->numeric()
+                            ->default(0)
                             ->step(0.01)
-                            ->disabled()
-                            ->dehydrated(),
+                            ->disabled(fn() => true)
+                            ->dehydrated()
+                            ->live()
+                            ->afterStateHydrated(function (Forms\Get $get, Forms\Set $set) {
+                                self::updateTotals($get, $set);
+                            }),
                         Forms\Components\TextInput::make('discount')
                             ->numeric()
                             ->step(0.01)
-                            ->default(0),
+                            ->default(0)
+                            ->live()
+                            ->afterStateUpdated(function (Forms\Get $get, Forms\Set $set) {
+                                self::updateTotals($get, $set);
+                            }),
                         Forms\Components\TextInput::make('tax_percentage')
                             ->numeric()
                             ->step(0.01)
                             ->suffix('%')
-                            ->default(0),
+                            ->default(0)
+                            ->live()
+                            ->afterStateUpdated(function (Forms\Get $get, Forms\Set $set) {
+                                self::updateTotals($get, $set);
+                            }),
                         Forms\Components\TextInput::make('tax_amount')
                             ->numeric()
+                            ->default(0)
                             ->step(0.01)
-                            ->disabled()
+                            ->disabled(fn() => true)
                             ->dehydrated(),
                         Forms\Components\TextInput::make('total')
                             ->numeric()
+                            ->default(0)
                             ->step(0.01)
-                            ->disabled()
+                            ->disabled(fn() => true)
                             ->dehydrated(),
                         Forms\Components\Textarea::make('first_note')
                             ->label('First Note')
@@ -247,5 +286,35 @@ class InvoiceResource extends Resource
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
             ]);
+    }
+
+    public static function updateTotals(Get $get, Set $set): void
+    {
+        // Get all items and calculate subtotal
+        $items = $get('items') ?? [];
+        $subtotal = 0;
+
+        // Calculate subtotal from items
+        foreach ($items as $index => $item) {
+            if (isset($item['total'])) {
+                $item['total'] = ((float) $item['quantity'] * (float) $item['unit_price']);
+                $subtotal += (float) $item['total'];
+            }
+            $set("items.{$index}.total", round($item['total'], 2));
+        }
+
+        // Get discount and tax percentage
+        $discount = (float) ($get('discount') ?? 0);
+        $taxPercentage = (float) ($get('tax_percentage') ?? 0);
+
+        // Calculate totals
+        $afterDiscount = $subtotal - $discount;
+        $taxAmount = ($afterDiscount * $taxPercentage) / 100;
+        $total = $afterDiscount + $taxAmount;
+
+        // Set the calculated values
+        $set('subtotal', round($subtotal, 2));
+        $set('tax_amount', round($taxAmount, 2));
+        $set('total', round($total, 2));
     }
 }
