@@ -13,7 +13,7 @@ class CreateQuotation extends CreateRecord
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         // Calculate totals
-        $subtotal = collect($data['items'])->sum('total');
+        $subtotal = collect($data['items'] ?? [])->sum('total');
         $discount = $data['discount'] ?? 0;
         $taxPercentage = $data['tax_percentage'] ?? 0;
         

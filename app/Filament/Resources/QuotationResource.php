@@ -73,6 +73,13 @@ class QuotationResource extends Resource
                     ->schema([
                         Forms\Components\Repeater::make('items')
                             ->relationship()
+                            ->live()
+                            ->afterStateUpdated(function (Forms\Get $get, Forms\Set $set) {
+                                self::updateTotals($get, $set);
+                            })
+                            ->deleteAction(
+                                fn ($action) => $action->after(fn (Forms\Get $get, Forms\Set $set) => self::updateTotals($get, $set))
+                            )
                             ->schema([
                                 Forms\Components\Select::make('product_id')
                                     ->label('Product')
@@ -92,17 +99,19 @@ class QuotationResource extends Resource
                                     ->required()
                                     ->numeric()
                                     ->default(1)
-                                    ->reactive()
+                                    ->live()
                                     ->afterStateUpdated(function ($state, Forms\Get $get, Forms\Set $set) {
                                         $set('total', $state * $get('unit_price'));
+                                        self::updateTotals($get, $set);
                                     }),
                                 Forms\Components\TextInput::make('unit_price')
                                     ->required()
                                     ->numeric()
                                     ->step(0.01)
-                                    ->reactive()
+                                    ->live()
                                     ->afterStateUpdated(function ($state, Forms\Get $get, Forms\Set $set) {
                                         $set('total', $state * $get('quantity'));
+                                        self::updateTotals($get, $set);
                                     }),
                                 Forms\Components\TextInput::make('total')
                                     ->required()
@@ -123,16 +132,28 @@ class QuotationResource extends Resource
                             ->numeric()
                             ->step(0.01)
                             ->disabled()
-                            ->dehydrated(),
+                            ->dehydrated()
+                            ->live()
+                            ->afterStateHydrated(function (Forms\Get $get, Forms\Set $set) {
+                                self::updateTotals($get, $set);
+                            }),
                         Forms\Components\TextInput::make('discount')
                             ->numeric()
                             ->step(0.01)
-                            ->default(0),
+                            ->default(0)
+                            ->live()
+                            ->afterStateUpdated(function (Forms\Get $get, Forms\Set $set) {
+                                self::updateTotals($get, $set);
+                            }),
                         Forms\Components\TextInput::make('tax_percentage')
                             ->numeric()
                             ->step(0.01)
                             ->suffix('%')
-                            ->default(0),
+                            ->default(0)
+                            ->live()
+                            ->afterStateUpdated(function (Forms\Get $get, Forms\Set $set) {
+                                self::updateTotals($get, $set);
+                            }),
                         Forms\Components\TextInput::make('tax_amount')
                             ->numeric()
                             ->step(0.01)
@@ -243,5 +264,26 @@ class QuotationResource extends Resource
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
             ]);
+    }
+
+    public static function updateTotals(Get $get, Set $set): void
+    {
+        // Get all items and calculate subtotal
+        $items = $get('items') ?? [];
+        $subtotal = collect($items)->sum('total');
+        
+        // Get discount and tax percentage
+        $discount = (float) ($get('discount') ?? 0);
+        $taxPercentage = (float) ($get('tax_percentage') ?? 0);
+        
+        // Calculate totals
+        $afterDiscount = $subtotal - $discount;
+        $taxAmount = ($afterDiscount * $taxPercentage) / 100;
+        $total = $afterDiscount + $taxAmount;
+        
+        // Set the calculated values
+        $set('subtotal', number_format($subtotal, 2, '.', ''));
+        $set('tax_amount', number_format($taxAmount, 2, '.', ''));
+        $set('total', number_format($total, 2, '.', ''));
     }
 }
