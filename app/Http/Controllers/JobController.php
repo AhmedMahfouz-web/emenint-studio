@@ -14,7 +14,7 @@ class JobController extends Controller
             ->latest()
             ->get();
 
-        return view('front.pages.career.index', compact('jobs'));
+        return view('front.pages.career', compact('jobs'));
     }
 
     public function show(Job $job)

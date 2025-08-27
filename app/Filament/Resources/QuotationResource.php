@@ -37,11 +37,17 @@ class QuotationResource extends Resource
                             ->label('Client')
                             ->options(Client::all()->pluck('name', 'id'))
                             ->required()
-                            ->searchable(),
+                            ->searchable()
+                            ->createOptionForm([
+                                Forms\Components\TextInput::make('name')->required(),
+                                Forms\Components\TextInput::make('email')->email(),
+                                Forms\Components\TextInput::make('phone'),
+                                Forms\Components\TextInput::make('company'),
+                            ]),
                         Forms\Components\TextInput::make('quotation_number')
                             ->required()
                             ->unique(ignoreRecord: true)
-                            ->default(fn () => 'QUO-' . str_pad((Quotation::max('id') ?? 0) + 1, 6, '0', STR_PAD_LEFT)),
+                            ->default(fn() => 'QUO-' . str_pad((Quotation::max('id') ?? 0) + 1, 6, '0', STR_PAD_LEFT)),
                         Forms\Components\DatePicker::make('quotation_date')
                             ->required()
                             ->default(now()),
@@ -49,7 +55,7 @@ class QuotationResource extends Resource
                             ->label('Currency')
                             ->options(Currency::all()->pluck('name', 'id'))
                             ->required()
-                            ->default(fn () => Currency::where('is_default', true)->first()?->id),
+                            ->default(fn() => Currency::where('is_default', true)->first()?->id),
                         Forms\Components\Select::make('status')
                             ->options([
                                 'draft' => 'Draft',
@@ -171,7 +177,7 @@ class QuotationResource extends Resource
                     ->label('Currency'),
                 Tables\Columns\TextColumn::make('status')
                     ->badge()
-                    ->color(fn (string $state): string => match ($state) {
+                    ->color(fn(string $state): string => match ($state) {
                         'draft' => 'gray',
                         'sent' => 'warning',
                         'accepted' => 'success',
@@ -202,7 +208,7 @@ class QuotationResource extends Resource
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\Action::make('download')
                     ->icon('heroicon-o-arrow-down-tray')
-                    ->url(fn (Quotation $record): string => route('quotations.download', $record)),
+                    ->url(fn(Quotation $record): string => route('quotations.download', $record)),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
