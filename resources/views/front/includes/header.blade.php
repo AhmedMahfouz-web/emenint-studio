@@ -87,6 +87,7 @@
                     <li><a href="{{ route('about') }}"><span>.&nbsp;Studio</span><span>.&nbsp;Studio</span></a></li>
                     <li><a href="{{ route('contact') }}"><span>.&nbsp;Contact us</span><span>.&nbsp;Contact
                                 us</span></a></li>
+                    <li><a href="{{ route('career') }}"><span>.&nbsp;Career</span><span>.&nbsp;Career</span></a></li>
                 </ul>
             </div>
         </nav>
@@ -116,6 +117,7 @@
                             </li>
                             <li><a href="{{ route('about') }}">Studio</a></li>
                             <li><a href="{{ route('contact') }}">Contact us</a></li>
+                            <li><a href="{{ route('career') }}">Career</a></li>
                         </ul>
                     </div>
                 </nav>

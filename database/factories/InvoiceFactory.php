@@ -17,12 +17,15 @@ class InvoiceFactory extends Factory
 
         return [
             'client_id' => Client::factory(),
+            'currency_id' => 1, // Assuming currency with ID 1 exists
+            'payment_method' => 'Bank Transfer',
             'invoice_number' => 'INV-' . $this->faker->unique()->numberBetween(1000, 999999),
             'invoice_date' => $this->faker->dateTimeBetween('-1 year', 'now'),
             'subtotal' => $subtotal,
             'tax_amount' => $taxAmount,
             'total' => $total,
-            'notes' => $this->faker->optional()->sentence(),
+            'first_note' => $this->faker->optional()->sentence(),
+            'second_note' => $this->faker->optional()->sentence(),
         ];
     }
 }

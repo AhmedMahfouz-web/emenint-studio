@@ -102,6 +102,15 @@
             padding: 0;
 
         }
+
+        .message-send svg {
+            transition: all 0.2s ease-in;
+            transform: translateX(-2px);
+        }
+
+        .message-send:hover svg {
+            transform: translateX(2px);
+        }
     </style>
 @endsection
 
@@ -180,7 +189,7 @@
                     </div>
                     <div class="kontakt-wrapper--text">
                         <div class="subline inview inview--up">
-                            (Apply)
+                            <a href="{{ route('jobs apply') }}">(Apply)</a>
                         </div>
                         <div class="inview inview--up">
                             <a class="nopagechange" href="mailto:jobs@eminent-studio.com">jobs(at)eminent-studio(dot)com</a>
@@ -5233,7 +5242,7 @@
                     <div class="awards-wrap--image">
                         <div class="inview inview--up">
 
-                            {{-- <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
+                            <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
                                 xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 1276.62 124.71"
                                 style="enable-background:new 0 0 1276.62 124.71;" xml:space="preserve"
                                 class="lazyload partners">
@@ -5273,7 +5282,7 @@
                                         </g>
                                     </g>
                                 </g>
-                            </svg> --}}
+                            </svg>
 
                         </div>
                     </div>

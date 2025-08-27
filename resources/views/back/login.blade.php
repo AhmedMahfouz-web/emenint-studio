@@ -19,15 +19,12 @@
     <!-- START : Theme Config js-->
     <script src="{{ asset('js/settings.js') }}" sync></script>
     <!-- END : Theme Config js-->
+
+    <!-- Livewire Styles -->
+    @livewireStyles
 </head>
 
-<body class=" font-inter skin-default">
-    <!-- [if IE]> <p class="browserupgrade">
-            You are using an <strong>outdated</strong> browser. Please
-            <a href="https://browsehappy.com/">upgrade your browser</a> to improve
-            your experience and security.
-        </p> <![endif] -->
-
+<body class="font-inter skin-default">
     <div class="loginwrapper">
         <div class="lg-inner-column">
             <div class="right-column relative">
@@ -55,22 +52,25 @@
                             <h4 class="font-medium">Sign in</h4>
                         </div>
                         <!-- BEGIN: Login Form -->
-                        <form class="space-y-4" action='{{ route('post login') }}' method="POST">
-                            @csrf
+                        <form class="space-y-4" wire:submit="authenticate">
                             <div class="fromGroup">
                                 <label class="block capitalize form-label">email</label>
-                                <div class="relative ">
-                                    <input type="email" name="email" class="  form-control py-2"
-                                        placeholder="example@example.com">
+                                <div class="relative">
+                                    <input type="email" wire:model.defer="data.email" name="data.email"
+                                        class="form-control py-2" placeholder="example@example.com" required>
+                                </div>
+                                @error('data.email')
+                                    <p class="text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+                            <div class="fromGroup">
+                                <label class="block capitalize form-label">password</label>
+                                <div class="relative">
+                                    <input type="password" wire:model.defer="data.password" name="data.password"
+                                        class="form-control py-2" placeholder="************" required>
                                 </div>
                             </div>
-                            <div class="fromGroup       ">
-                                <label class="block capitalize form-label  ">passwrod</label>
-                                <div class="relative "><input type="password" name="password"
-                                        class="  form-control py-2   " placeholder="************">
-                                </div>
-                            </div>
-                            <button class="btn btn-primary block w-full text-center">Sign in</button>
+                            <button type="submit" class="btn btn-primary block w-full text-center">Sign in</button>
                         </form>
                         <!-- END: Login Form -->
 
@@ -80,8 +80,7 @@
                     </div>
                 </div>
             </div>
-            <div class="left-column bg-cover bg-no-repeat bg-center "
-                style="background: #003bf4;">
+            <div class="left-column bg-cover bg-no-repeat bg-center " style="background: #003bf4;">
                 <div class="flex flex-col h-full justify-center">
                     <div class="flex-1 flex flex-col justify-center items-center">
                         <a href="/">
@@ -119,7 +118,10 @@
     <!-- scripts -->
     <script src="{{ asset('js/jquery-3.6.0.min.js') }}"></script>
     <script src="{{ asset('js/rt-plugins.js') }}"></script>
-    <script src="{{ asset('js/app.js') }}   "></script>
+    <script src="{{ asset('js/app.js') }}"></script>
+
+    <!-- Livewire Scripts -->
+    @livewireScripts
 </body>
 
 </html>

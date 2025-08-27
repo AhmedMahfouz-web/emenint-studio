@@ -1,0 +1,20 @@
+@import '@filament/filament/resources/css/app.css';
+@import '@filament/filament/resources/css/theme.css';
+
+@config './tailwind.config.js';
+
+@layer utilities {
+    :root {
+        --primary-50: 240 248 255;
+        --primary-100: 219 234 254;
+        --primary-200: 191 219 254;
+        --primary-300: 147 197 253;
+        --primary-400: 96 165 250;
+        --primary-500: 0 59 244; /* #003bf4 */
+        --primary-600: 0 47 195;
+        --primary-700: 0 38 156;
+        --primary-800: 0 31 128;
+        --primary-900: 0 25 102;
+        --primary-950: 0 15 61;
+    }
+}

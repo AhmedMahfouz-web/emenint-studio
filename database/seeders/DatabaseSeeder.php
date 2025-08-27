@@ -14,17 +14,31 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
+        // User::factory(10)->create();
+
+        // User::factory()->create([
+        //     'name' => 'Test User',
+        //     'email' => 'test@example.com',
+        // ]);
+
+        $this->call([
+            ServiceCategorySeeder::class,
+            TemplateBlockSeeder::class,
+            JobSeeder::class,
+            JobApplicationSeeder::class,
+        ]);
+
         // Seed roles and permissions first
-        $this->call(RoleAndPermissionSeeder::class);
-        
+        $this->call([RoleAndPermissionSeeder::class, UserSeeder::class]);
+
         // Create 50 clients
-        $clients = Client::factory(50)->create();
+        Client::factory(50)->create();
 
         // Create 100 products
         $products = Product::factory(100)->create();
 
         // Create 200 invoices with 1-5 items each
-        $clients->each(function ($client) use ($products) {
+        Client::factory(50)->create()->each(function ($client) use ($products) {
             // Create 4 invoices per client (200 total)
             Invoice::factory(4)->create([
                 'client_id' => $client->id,
@@ -34,12 +48,14 @@ class DatabaseSeeder extends Seeder
                 $randomProducts = $products->random($numItems);
 
                 foreach ($randomProducts as $product) {
+                    $quantity = rand(1, 5);
                     InvoiceItem::create([
                         'invoice_id' => $invoice->id,
                         'product_id' => $product->id,
-                        'quantity' => rand(1, 10),
+                        'description' => $product->name,
+                        'quantity' => $quantity,
                         'price' => $product->price,
-                        'total' => $product->price * rand(1, 10),
+                        'total' => $product->price * $quantity,
                     ]);
                 }
 

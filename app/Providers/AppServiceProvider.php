@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Routing\UrlGenerator;
+use App\Models\Project;
+use App\Observers\ProjectObserver;
+use Illuminate\Support\Facades\URL;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -20,6 +22,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // UrlGenerator::forceScheme('HTTPS');
+        Project::observe(ProjectObserver::class);
+        if ($this->app->environment('production')) {
+            URL::forceScheme('https');
+        }
     }
 }

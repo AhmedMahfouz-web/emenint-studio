@@ -18,6 +18,7 @@ class InvoiceItemFactory extends Factory
         return [
             'invoice_id' => Invoice::factory(),
             'product_id' => $product->id,
+            'description' => $product->name,
             'quantity' => $quantity,
             'price' => $price,
             'total' => $total,

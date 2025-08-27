@@ -1,5 +1,6 @@
 <?php
 
+use App\Filament\Pages\Auth\Login;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\Controller;
@@ -12,6 +13,7 @@ use App\Http\Controllers\QuotationController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserManagementController;
+use App\Http\Controllers\JobController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -65,21 +67,22 @@ Route::get('/contact-us', function () {
     return view('front.pages.contact');
 })->name('contact');
 
-Route::get('/project/loja', function () {
-    return view('front.pages.projects.loja');
-})->name('loja');
 
-Route::get('/project/zenda', function () {
-    return view('front.pages.projects.zenda');
-})->name('zenda');
+Route::get('/projects', [App\Http\Controllers\ProjectController::class, 'index'])->name('projects.index');
+Route::get('/projects/category/{categorySlug}', [App\Http\Controllers\ProjectController::class, 'category'])->name('projects.category');
+Route::get('/projects/{slug}', [App\Http\Controllers\ProjectController::class, 'show'])->name('projects.show');
 
-Route::get('/project/plaza_gardens', function () {
-    return view('front.pages.projects.plaza_gardens');
-})->name('plaza_gardens');
+Route::get('/project/artal', function () {
+    return view('front.pages.projects.artal');
+})->name('artal');
 
 Route::get('/project/esomo', function () {
     return view('front.pages.projects.esomo');
 })->name('esomo');
+
+Route::get('/project/loja', function () {
+    return view('front.pages.projects.loja');
+})->name('loja');
 
 Route::get('/project/mawish_elmasey', function () {
     return view('front.pages.projects.mawish_elmasey');
@@ -97,79 +100,54 @@ Route::get('/project/oracal', function () {
     return view('front.pages.projects.oracal');
 })->name('oracal');
 
-Route::get('/project/regal', function () {
-    return view('front.pages.projects.regal');
-})->name('regal');
-
 Route::get('/project/ouda_w_sala', function () {
     return view('front.pages.projects.ouda_w_sala');
 })->name('ouda_w_sala');
+
+Route::get('/project/plaza_gardens', function () {
+    return view('front.pages.projects.plaza_gardens');
+})->name('plaza_gardens');
 
 Route::get('/project/profit', function () {
     return view('front.pages.projects.profit');
 })->name('profit');
 
-Route::get('/project/artal', function () {
-    return view('front.pages.projects.artal');
-})->name('artal');
+Route::get('/project/regal', function () {
+    return view('front.pages.projects.regal');
+})->name('regal');
+
+Route::get('/project/zenda', function () {
+    return view('front.pages.projects.zenda');
+})->name('zenda');
 
 Route::post('/send_mail', [mailController::class, 'send_mail'])->name('send mail');
 
-Route::group(['prefix' => 'admin'], function () {
-    Route::get('login', [UserController::class, 'get_login'])->name('get login');
-    Route::post('login', [UserController::class, 'post_login'])->name('post login');
+// Jobs routes
+Route::get('/career', [JobController::class, 'index'])->name('career');
+// Route::get('/career/{job:slug}', [JobController::class, 'show'])->name('career');
+Route::post('/career/apply', [JobController::class, 'apply'])->name('jobs apply');
 
-    Route::group(['middleware' => 'auth'], function () {
-        Route::get('/', [Controller::class, 'index'])->name('admin_home');
+// Route::group(['prefix' => 'admin'], function () {
+//     Route::get('login', [UserController::class, 'get_login'])->name('get login');
+//     Route::post('login', [UserController::class, 'post_login'])->name('post login');
 
-        Route::get('/blog', [BlogController::class, 'index'])->name('blogs');
-        Route::post('/blog', [BlogController::class, 'store'])->name('add blog');
-    });
-});
+//     Route::group(['middleware' => 'auth'], function () {
+//         Route::get('/blog', [BlogController::class, 'index'])->name('blogs');
+//         Route::post('/blog', [BlogController::class, 'store'])->name('add blog');
+//     });
+// });
+// Route::get('/admin/login', Login::class)->name('filament.admin.auth.login');
 
-// Dashboard as home page
+// Redirect old dashboard routes to Filament
 Route::group(['prefix' => 'invoice', 'middleware' => 'auth'], function () {
-    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
-    Route::resource('invoices', InvoiceController::class);
-    Route::resource('quotations', QuotationController::class);
-    Route::resource('clients', ClientController::class);
-    Route::resource('products', ProductController::class);
-    Route::resource('currencies', CurrencyController::class);
-    Route::post('currencies/{currency}/set-default', [CurrencyController::class, 'setDefault'])->name('currencies.set-default');
+    Route::get('/', function () {
+        return redirect('/admin');
+    })->name('dashboard');
 
-    // User management routes
-    Route::resource('users', UserManagementController::class);
-
-    Route::post('logout', [UserController::class, 'logout'])->name('logout');
-
-    Route::get('profile', [UserManagementController::class, 'profile'])->name('profile');
-    Route::get('profile/edit', [UserManagementController::class, 'editProfile'])->name('profile.edit');
-    Route::put('profile', [UserManagementController::class, 'updateProfile'])->name('profile.update');
-
-    // Role management routes
-    Route::get('roles', [UserManagementController::class, 'roles'])->name('roles.index');
-    Route::post('roles', [UserManagementController::class, 'storeRole'])->name('roles.store');
-    Route::get('roles/{role}/edit', [UserManagementController::class, 'editRole'])->name('roles.edit');
-    Route::put('roles/{role}', [UserManagementController::class, 'updateRole'])->name('roles.update');
-    Route::delete('roles/{role}', [UserManagementController::class, 'destroyRole'])->name('roles.destroy');
-
-    // Permission management routes
-    Route::get('permissions', [UserManagementController::class, 'permissions'])->name('permissions.index');
-    Route::post('permissions', [UserManagementController::class, 'storePermission'])->name('permissions.store');
-    Route::delete('permissions/{permission}', [UserManagementController::class, 'destroyPermission'])->name('permissions.destroy');
-
-    Route::get('/invoice-view', function () {
-        return view('back.invoices.pdf');
-    });
-
-    Route::get('invoices/bulk', function () {
-        return view('invoices.bulk_download');
-    })->name('invoices.bulk.download');
-    Route::post('/invoices/bulk-download', [InvoiceController::class, 'bulkDownload'])->name('invoices.bulk-download');
-
+    // Keep PDF download routes for backward compatibility
     Route::get('quotations/{quotation}/download', [QuotationController::class, 'download'])->name('quotations.download');
     Route::get('invoices/{invoice}/download', [InvoiceController::class, 'download'])->name('invoices.download');
+    Route::post('/invoices/bulk-download', [InvoiceController::class, 'bulkDownload'])->name('invoices.bulk-download');
 
-    Route::get('reports', [ReportController::class, 'index'])->name('reports.index');
-    Route::post('reports/generate', [ReportController::class, 'generate'])->name('reports.generate');
+    Route::post('logout', [UserController::class, 'logout'])->name('logout');
 });

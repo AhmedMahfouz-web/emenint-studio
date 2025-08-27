@@ -1,11 +1,21 @@
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
+import path from 'path';
 
 export default defineConfig({
     plugins: [
         laravel({
-            input: ['resources/css/app.css', 'resources/js/app.js', 'resources/js/invoice.js'],
+            input: [
+                'resources/css/app.css', 
+                'resources/js/app.js', 
+                'resources/js/invoice.js',
+            ],
             refresh: true,
         }),
     ],
+    resolve: {
+        alias: {
+            '@filament': path.resolve(__dirname, 'vendor/filament/filament/resources'),
+        },
+    },
 });
