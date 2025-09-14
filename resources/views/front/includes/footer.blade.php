@@ -114,6 +114,15 @@
                                     </svg>
                                 </a><br />
                                 <a class="nopagechange icon-social flex" target="_blank"
+                                    href="https://x.com/eminentstudioSA">
+                                    <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="13"
+                                        height="13" viewBox="0 0 30 30">
+                                        <path
+                                            d="M26.37,26l-8.795-12.822l0.015,0.012L25.52,4h-2.65l-6.46,7.48L11.28,4H4.33l8.211,11.971L12.54,15.97L3.88,26h2.65 l7.182-8.322L19.42,26H26.37z M10.23,6l12.34,18h-2.1L8.12,6H10.23z">
+                                        </path>
+                                    </svg>
+                                </a>
+                                <a class="nopagechange icon-social flex" target="_blank"
                                     href="https://www.instagram.com/eminent.studio/">
                                     <svg viewBox="0 0 13 13" width="13" height="13">
                                         <path class="cls-2"
@@ -141,15 +150,6 @@
                                         <path class="cls-2" d="M8,2.8h3.9v1H8V2.8z" />
                                     </svg>
                                 </a>
-                                <a class="nopagechange icon-social flex" target="_blank"
-                                    href="https://x.com/eminentstudioSA">
-                                    <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="13"
-                                        height="13" viewBox="0 0 30 30">
-                                        <path
-                                            d="M26.37,26l-8.795-12.822l0.015,0.012L25.52,4h-2.65l-6.46,7.48L11.28,4H4.33l8.211,11.971L12.54,15.97L3.88,26h2.65 l7.182-8.322L19.42,26H26.37z M10.23,6l12.34,18h-2.1L8.12,6H10.23z">
-                                        </path>
-                                    </svg>
-                                </a>
                             </div>
                         @else
                             <div class="social-wrapper flex ">
@@ -158,6 +158,15 @@
                                     <svg viewBox="0 0 7 13" width="7" height="13" class="lazyload">
                                         <path
                                             d="M2.1,13h2.6V7.2h1.9l0.4-2.3H4.7V3.1c0-0.7,0.6-1,1.2-1H7v-2L5.1,0c-1.9-0.1-3,1.4-3,3.1v1.8H0v2.3h2.1V13z" />
+                                    </svg>
+                                </a><br />
+                                <a class="nopagechange icon-social flex" target="_blank"
+                                    href="https://x.com/eminentstudioSA">
+                                    <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="13"
+                                        height="13" viewBox="0 0 30 30">
+                                        <path
+                                            d="M26.37,26l-8.795-12.822l0.015,0.012L25.52,4h-2.65l-6.46,7.48L11.28,4H4.33l8.211,11.971L12.54,15.97L3.88,26h2.65 l7.182-8.322L19.42,26H26.37z M10.23,6l12.34,18h-2.1L8.12,6H10.23z">
+                                        </path>
                                     </svg>
                                 </a><br />
                                 <a class="nopagechange icon-social flex" target="_blank"
@@ -186,15 +195,6 @@
                                         <path
                                             d="M10,10.6c-0.5,0-0.9-0.1-1.3-0.2C8,10,7.4,9.5,7.1,8.7C7,8.4,6.9,8,6.9,7.6c0-0.4,0.1-0.8,0.2-1.2C7.4,5.6,8,5.1,8.7,4.8C9.1,4.6,9.5,4.6,10,4.6s0.9,0.1,1.3,0.2c1.2,0.5,1.8,1.7,1.8,3C13,7.9,13,8,13,8H8.5c0,0.2,0.1,0.4,0.2,0.6C8.7,8.8,8.9,8.9,9,9.1c0.1,0.1,0.3,0.2,0.5,0.3C9.6,9.4,9.8,9.5,10,9.5c0.3,0,0.6-0.1,0.8-0.2c0.3-0.1,0.4-0.3,0.5-0.6L12.7,9c-0.2,0.4-0.6,0.8-1,1.1C11.2,10.4,10.6,10.6,10,10.6z M11.5,7.1c0-0.4-0.2-0.8-0.5-1c-0.3-0.3-0.6-0.4-1-0.4c-0.2,0-0.4,0-0.6,0.1C9.2,5.8,9.1,5.9,8.9,6C8.8,6.2,8.7,6.3,8.6,6.5S8.5,6.8,8.4,7.1H11.5L11.5,7.1z" />
                                         <path d="M8,2.8h3.9v1H8V2.8z" />
-                                    </svg>
-                                </a>
-                                <a class="nopagechange icon-social flex" target="_blank"
-                                    href="https://x.com/eminentstudioSA">
-                                    <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="13"
-                                        height="13" viewBox="0 0 30 30">
-                                        <path
-                                            d="M26.37,26l-8.795-12.822l0.015,0.012L25.52,4h-2.65l-6.46,7.48L11.28,4H4.33l8.211,11.971L12.54,15.97L3.88,26h2.65 l7.182-8.322L19.42,26H26.37z M10.23,6l12.34,18h-2.1L8.12,6H10.23z">
-                                        </path>
                                     </svg>
                                 </a>
                             </div>
