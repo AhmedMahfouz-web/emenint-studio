@@ -51,7 +51,7 @@
                 border-bottom: solid 1px #010101;
                 background-color: transparent;
                 transition: all 0.2s ease-in;
-                font-weight: 600;
+                font-weight: 400;
 
                 +label {
                     left: 10px;
