@@ -5319,27 +5319,101 @@
         }
     </script> --}}
     
-    {{-- Leaflet Map with Black and White Style --}}
+    {{-- Leaflet Map with Rich Black, White and Gray Styling --}}
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
         const map = new L.Map('map').setView([30.1004118, 31.3404542], 15);
         
-        // Black and white tile layer using CartoDB Positron (light theme)
-        const tiles = new L.TileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+        // Use OpenStreetMap for better detail, then apply custom styling
+        const tiles = new L.TileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
         
-        // Apply CSS filter to make it more black and white
-        map.getContainer().style.filter = 'grayscale(100%) contrast(120%) brightness(95%)';
+        // Apply sophisticated black/white/gray filter with good contrast
+        map.getContainer().style.filter = 'grayscale(100%) contrast(130%) brightness(90%) invert(0%) sepia(0%)';
+        
+        // Add custom CSS for additional styling
+        const mapContainer = map.getContainer();
+        mapContainer.style.borderRadius = '12px';
+        mapContainer.style.overflow = 'hidden';
+        mapContainer.style.boxShadow = '0 4px 20px rgba(0,0,0,0.15)';
+        
+        // Create a more sophisticated custom marker with lighter blacks
+        var customIcon = L.divIcon({
+            className: 'custom-marker',
+            html: `
+                <div style="
+                    position: relative;
+                    width: 30px; 
+                    height: 30px;
+                ">
+                    <div style="
+                        background: linear-gradient(135deg, #4a4a4a 0%, #333333 100%);
+                        width: 24px; 
+                        height: 24px; 
+                        border-radius: 50%; 
+                        border: 4px solid white; 
+                        box-shadow: 0 3px 12px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.2);
+                        position: absolute;
+                        top: 3px;
+                        left: 3px;
+                    "></div>
+                    <div style="
+                        width: 8px;
+                        height: 8px;
+                        background: white;
+                        border-radius: 50%;
+                        position: absolute;
+                        top: 11px;
+                        left: 11px;
+                        box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+                    "></div>
+                </div>
+            `,
+            iconSize: [30, 30],
+            iconAnchor: [15, 15]
+        });
         
         var marker = L.marker([30.1004118, 31.3404542], {
             title: 'Eminent Studio',
+            icon: customIcon
         }).addTo(map);
 
-        marker.bindPopup(
-            "<div class='popup-content'><b>Eminent Studio</b></div><p>33 Mohamed Bek Ramzy Street – Triumph Square – Heliopolis, Cairo Governorate 11757</p>"
-        ).openPopup();
+        // Enhanced popup with better styling
+        marker.bindPopup(`
+            <div style="
+                padding: 20px; 
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+                max-width: 280px;
+                background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            ">
+                <h3 style="
+                    margin: 0 0 12px 0; 
+                    color: #333333; 
+                    font-size: 18px; 
+                    font-weight: 600;
+                    text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+                ">Eminent Studio</h3>
+                <p style="
+                    margin: 0; 
+                    color: #555555; 
+                    line-height: 1.5; 
+                    font-size: 14px;
+                    text-shadow: 0 1px 1px rgba(255,255,255,0.8);
+                ">33 Mohamed Bek Ramzy Street – Triumph Square – Heliopolis, Cairo Governorate 11757</p>
+            </div>
+        `).openPopup();
+        
+        // Add a subtle overlay to enhance the black/white/gray effect
+        setTimeout(() => {
+            const mapPane = map.getPane('mapPane');
+            if (mapPane) {
+                mapPane.style.mixBlendMode = 'luminosity';
+            }
+        }, 1000);
     </script>
     <script>
         let checkInput = function(input) {

@@ -298,7 +298,7 @@
                     </div>
                     <div class="inview inview--up">
                         <div class="magnet">
-                            <a class="btn nopagechange" target="_blank" href="https://wa.me/201033739707">
+                            <a class="btn nopagechange" target="_blank" href="https://wa.me/201031375777">
                                 <span class="flex">
                                     WhatsApp </span>
                             </a>
