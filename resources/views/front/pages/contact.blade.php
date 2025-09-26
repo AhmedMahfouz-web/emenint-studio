@@ -1,10 +1,11 @@
 @extends('layouts.front')
 
 @section('css')
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    {{-- Commented out Leaflet map --}}
+    {{-- <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script> --}}
     <style>
         #map {
             height: 500px;
@@ -5310,7 +5311,8 @@
 @endsection
 
 @section('js')
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    {{-- Commented out Leaflet map --}}
+    {{-- <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
         const map = new L.Map('map').setView([30.1004118, 31.3404542], 15);
         const tiles = new L.TileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -5325,6 +5327,213 @@
         marker.bindPopup(
             "<div class='popup-content'><b>Eminent Studio</b></div><p>33 Mohamed Bek Ramzy Street – Triumph Square – Heliopolis, Cairo Governorate 11757</p>"
         ).openPopup();
+    </script> --}}
+    
+    {{-- Google Maps with Black and White Style --}}
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB36QcSLhdeV8gPQoK7Wv1nOghjKq4WkSY&callback=initMap"></script>
+    <script>
+        function initMap() {
+            // Eminent Studio location coordinates
+            const eminentStudio = { lat: 30.1004118, lng: 31.3404542 };
+            
+            // Black and white map style
+            const blackWhiteStyle = [
+                {
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "color": "#f5f5f5"
+                        }
+                    ]
+                },
+                {
+                    "elementType": "labels.icon",
+                    "stylers": [
+                        {
+                            "visibility": "off"
+                        }
+                    ]
+                },
+                {
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#616161"
+                        }
+                    ]
+                },
+                {
+                    "elementType": "labels.text.stroke",
+                    "stylers": [
+                        {
+                            "color": "#f5f5f5"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "administrative.land_parcel",
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#bdbdbd"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "poi",
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "color": "#eeeeee"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "poi",
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#757575"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "poi.park",
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "color": "#e5e5e5"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "poi.park",
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#9e9e9e"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road",
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "color": "#ffffff"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road.arterial",
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#757575"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road.highway",
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "color": "#dadada"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road.highway",
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#616161"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road.local",
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#9e9e9e"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "transit.line",
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "color": "#e5e5e5"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "transit.station",
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "color": "#eeeeee"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "water",
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "color": "#c9c9c9"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "water",
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#9e9e9e"
+                        }
+                    ]
+                }
+            ];
+            
+            // Create the map
+            const map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 15,
+                center: eminentStudio,
+                styles: blackWhiteStyle,
+                mapTypeControl: false,
+                streetViewControl: false,
+                fullscreenControl: true
+            });
+            
+            // Create marker
+            const marker = new google.maps.Marker({
+                position: eminentStudio,
+                map: map,
+                title: 'Eminent Studio',
+                animation: google.maps.Animation.DROP
+            });
+            
+            // Create info window
+            const infoWindow = new google.maps.InfoWindow({
+                content: `
+                    <div style="padding: 10px; font-family: Arial, sans-serif;">
+                        <h3 style="margin: 0 0 10px 0; color: #333;">Eminent Studio</h3>
+                        <p style="margin: 0; color: #666; line-height: 1.4;">33 Mohamed Bek Ramzy Street – Triumph Square – Heliopolis, Cairo Governorate 11757</p>
+                    </div>
+                `
+            });
+            
+            // Open info window on marker click
+            marker.addListener('click', function() {
+                infoWindow.open(map, marker);
+            });
+            
+            // Open info window by default
+            infoWindow.open(map, marker);
+        }
     </script>
     <script>
         let checkInput = function(input) {
