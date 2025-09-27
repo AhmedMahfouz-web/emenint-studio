@@ -5430,7 +5430,7 @@
             const map = new google.maps.Map(document.getElementById('map'), {
                 zoom: 15,
                 center: eminentStudio,
-                styles: blackWhiteStyle,
+                mapId: mapStyleId,
                 mapTypeControl: false,
                 streetViewControl: false,
                 fullscreenControl: true,
@@ -5450,14 +5450,14 @@
                 title: 'Eminent Studio',
                 animation: google.maps.Animation.DROP
             });
-            
+
 
             // Create info window with styled content
             const infoWindow = new google.maps.InfoWindow({
                 content: `
                     <div style="
                         padding: 20px;
-                        font-family: 'IBMPlexSans-Regular;
+                        font-family: 'IBMPlexSans-Regular', sans-serif;
                         max-width: 280px;
                         background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
                         border-radius: 8px;
