@@ -594,7 +594,7 @@
                                style="
                                    display: inline-block;
                                    padding: 8px 16px;
-                                   background: #030cfc;
+                                   background: #003cfc;
                                    color: white;
                                    text-decoration: none;
                                    border-radius: 4px;
