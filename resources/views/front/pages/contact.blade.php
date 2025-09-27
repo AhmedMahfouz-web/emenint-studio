@@ -111,6 +111,29 @@
         .message-send:hover svg {
             transform: translateX(2px);
         }
+
+        /* Custom Google Maps Info Window Styling */
+        .gm-style .gm-style-iw {
+            padding: 0 !important;
+        }
+
+        .gm-style .gm-style-iw-d {
+            overflow: visible !important;
+        }
+
+        .gm-style .gm-style-iw-c {
+            padding: 0 !important;
+            border-radius: 8px !important;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+        }
+
+        .gm-style .gm-style-iw-tc {
+            display: none !important;
+        }
+
+        .gm-style .gm-style-iw button {
+            display: none !important;
+        }
     </style>
 @endsection
 
@@ -563,23 +586,43 @@
                 animation: google.maps.Animation.DROP
             });
 
-            // Create info window with styled content
+            // Create info window with styled content and custom close button
             const infoWindow = new google.maps.InfoWindow({
                 content: `
                     <div style="
+                        position: relative;
                         padding: 20px;
                         font-family: 'IBMPlexSans-Regular', sans-serif;
                         max-width: 280px;
                         background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
                         border-radius: 8px;
                         box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                        margin: 0;
                     ">
+                        <button onclick="closeInfoWindow()" style="
+                            position: absolute;
+                            top: 8px;
+                            right: 8px;
+                            background: none;
+                            border: none;
+                            font-size: 20px;
+                            cursor: pointer;
+                            color: #666;
+                            width: 24px;
+                            height: 24px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            border-radius: 50%;
+                            transition: background-color 0.2s;
+                        " onmouseover="this.style.backgroundColor='#f0f0f0'" onmouseout="this.style.backgroundColor='transparent'">×</button>
                         <h3 style="
                             margin: 0 0 12px 0;
                             color: #333333;
                             font-size: 18px;
                             font-weight: 600;
                             text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+                            padding-right: 30px;
                         ">Eminent Studio</h3>
                         <p style="
                             margin: 0;
@@ -603,7 +646,8 @@
                                ">Get Directions</a>
                         </div>
                     </div>
-                `
+                `,
+                disableAutoPan: false
             });
 
             // Open info window on marker click
@@ -613,6 +657,11 @@
 
             // Open info window by default
             infoWindow.open(map, marker);
+
+            // Global function to close info window
+            window.closeInfoWindow = function() {
+                infoWindow.close();
+            };
         }
     </script>
     <script>
