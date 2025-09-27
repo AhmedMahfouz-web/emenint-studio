@@ -5422,8 +5422,6 @@
         function initMap() {
             // Eminent Studio location coordinates
             const eminentStudio = { lat: 30.1004118, lng: 31.3404542 };
-
-            // Use Google Maps Style ID: 3f0d830b01d8786d76c1043e
             const mapStyleId = '3f0d830b01d8786d76c1043e';
 
             // Create the map with custom styling
@@ -5431,8 +5429,8 @@
                 zoom: 15,
                 center: eminentStudio,
                 mapId: mapStyleId,
-                mapTypeControl: false,
-                streetViewControl: false,
+                mapTypeControl: true,
+                streetViewControl: true,
                 fullscreenControl: true,
                 zoomControl: true
             });
@@ -5446,6 +5444,7 @@
             // Create custom marker
             const marker = new google.maps.Marker({
                 position: eminentStudio,
+                style: mapStyleId,
                 map: map,
                 title: 'Eminent Studio',
                 animation: google.maps.Animation.DROP
