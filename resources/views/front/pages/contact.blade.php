@@ -5310,7 +5310,7 @@
 @endsection
 
 @section('js')
-    
+
     {{-- Commented out Google Maps --}}
     {{-- <script async defer src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY', 'AIzaSyB36QcSLhdeV8gPQoK7Wv1nOghjKq4WkSY') }}&callback=initMap"></script>
     <script>
@@ -5318,42 +5318,42 @@
             // Google Maps implementation commented out
         }
     </script> --}}
-    
-    {{-- Leaflet Map with Rich Black, White and Gray Styling --}}
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    {{-- Commented out Leaflet Map --}}
+    {{-- <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
         const map = new L.Map('map').setView([30.1004118, 31.3404542], 15);
-        
+
         // Use OpenStreetMap for better detail, then apply custom styling
         const tiles = new L.TileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
-        
+
         // Apply sophisticated black/white/gray filter with good contrast
         map.getContainer().style.filter = 'grayscale(100%) contrast(130%) brightness(90%) invert(0%) sepia(0%)';
-        
+
         // Add custom CSS for additional styling
         const mapContainer = map.getContainer();
         mapContainer.style.borderRadius = '12px';
         mapContainer.style.overflow = 'hidden';
         mapContainer.style.boxShadow = '0 4px 20px rgba(0,0,0,0.15)';
-        
+
         // Create a more sophisticated custom marker with lighter blacks
         var customIcon = L.divIcon({
             className: 'custom-marker',
             html: `
                 <div style="
                     position: relative;
-                    width: 30px; 
+                    width: 30px;
                     height: 30px;
                 ">
                     <div style="
                         background: linear-gradient(135deg, #4a4a4a 0%, #333333 100%);
-                        width: 24px; 
-                        height: 24px; 
-                        border-radius: 50%; 
-                        border: 4px solid white; 
+                        width: 24px;
+                        height: 24px;
+                        border-radius: 50%;
+                        border: 4px solid white;
                         box-shadow: 0 3px 12px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.2);
                         position: absolute;
                         top: 3px;
@@ -5374,7 +5374,7 @@
             iconSize: [30, 30],
             iconAnchor: [15, 15]
         });
-        
+
         var marker = L.marker([30.1004118, 31.3404542], {
             title: 'Eminent Studio',
             icon: customIcon
@@ -5383,30 +5383,30 @@
         // Enhanced popup with better styling
         marker.bindPopup(`
             <div style="
-                padding: 20px; 
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+                padding: 20px;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
                 max-width: 280px;
                 background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
                 border-radius: 8px;
                 box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             ">
                 <h3 style="
-                    margin: 0 0 12px 0; 
-                    color: #333333; 
-                    font-size: 18px; 
+                    margin: 0 0 12px 0;
+                    color: #333333;
+                    font-size: 18px;
                     font-weight: 600;
                     text-shadow: 0 1px 2px rgba(0,0,0,0.1);
                 ">Eminent Studio</h3>
                 <p style="
-                    margin: 0; 
-                    color: #555555; 
-                    line-height: 1.5; 
+                    margin: 0;
+                    color: #555555;
+                    line-height: 1.5;
                     font-size: 14px;
                     text-shadow: 0 1px 1px rgba(255,255,255,0.8);
                 ">33 Mohamed Bek Ramzy Street – Triumph Square – Heliopolis, Cairo Governorate 11757</p>
             </div>
         `).openPopup();
-        
+
         // Add a subtle overlay to enhance the black/white/gray effect
         setTimeout(() => {
             const mapPane = map.getPane('mapPane');
@@ -5414,6 +5414,81 @@
                 mapPane.style.mixBlendMode = 'luminosity';
             }
         }, 1000);
+    </script> --}}
+
+    {{-- Google Maps with Black and White Style --}}
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&callback=initMap"></script>
+    <script>
+        function initMap() {
+            // Eminent Studio location coordinates
+            const eminentStudio = { lat: 30.1004118, lng: 31.3404542 };
+
+            // Use Google Maps Style ID: 3f0d830b01d8786d76c1043e
+            const mapStyleId = '3f0d830b01d8786d76c1043e';
+
+            // Create the map with custom styling
+            const map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 15,
+                center: eminentStudio,
+                styles: blackWhiteStyle,
+                mapTypeControl: false,
+                streetViewControl: false,
+                fullscreenControl: true,
+                zoomControl: true
+            });
+
+            // Add custom styling to map container
+            const mapContainer = document.getElementById('map');
+            mapContainer.style.borderRadius = '12px';
+            mapContainer.style.overflow = 'hidden';
+            mapContainer.style.boxShadow = '0 4px 20px rgba(0,0,0,0.15)';
+
+            // Create custom marker
+            const marker = new google.maps.Marker({
+                position: eminentStudio,
+                map: map,
+                title: 'Eminent Studio',
+                animation: google.maps.Animation.DROP
+            });
+            
+
+            // Create info window with styled content
+            const infoWindow = new google.maps.InfoWindow({
+                content: `
+                    <div style="
+                        padding: 20px;
+                        font-family: 'IBMPlexSans-Regular;
+                        max-width: 280px;
+                        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+                        border-radius: 8px;
+                        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                    ">
+                        <h3 style="
+                            margin: 0 0 12px 0;
+                            color: #333333;
+                            font-size: 18px;
+                            font-weight: 600;
+                            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+                        ">Eminent Studio</h3>
+                        <p style="
+                            margin: 0;
+                            color: #555555;
+                            line-height: 1.5;
+                            font-size: 14px;
+                            text-shadow: 0 1px 1px rgba(255,255,255,0.8);
+                        ">33 Mohamed Bek Ramzy Street – Triumph Square – Heliopolis, Cairo Governorate 11757</p>
+                    </div>
+                `
+            });
+
+            // Open info window on marker click
+            marker.addListener('click', function() {
+                infoWindow.open(map, marker);
+            });
+
+            // Open info window by default
+            infoWindow.open(map, marker);
+        }
     </script>
     <script>
         let checkInput = function(input) {
