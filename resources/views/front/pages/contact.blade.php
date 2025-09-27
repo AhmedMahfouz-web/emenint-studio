@@ -215,6 +215,17 @@
 
         </section>
 
+        <div style="text-align: center; margin: 40px auto; max-width: 400px;">
+            <div class="input-group">
+                <input type="text" id="start-address" onblur="checkInput(this)">
+                <label for="start-address">Enter Your Location</label>
+            </div>
+            <button id="get-directions-btn" class="message-send" style="float: none; margin-top: 10px;">Get Directions <svg style="margin-top: -3px; margin-left:5px"
+                    xmlns="http://www.w3.org/2000/svg" width="24" height="24">
+                    <path d="M7.293 4.707 14.586 12l-7.293 7.293 1.414 1.414L17.414 12 8.707 3.293 7.293 4.707z" />
+                </svg></button>
+        </div>
+
         <div id="map">
         </div>
         <section class="awards">
@@ -417,12 +428,10 @@
             // Create custom marker
             const marker = new google.maps.Marker({
                 position: eminentStudio,
-                style: mapStyleId,
                 map: map,
                 title: 'Eminent Studio',
                 animation: google.maps.Animation.DROP
             });
-
 
             // Create info window with styled content
             const infoWindow = new google.maps.InfoWindow({
@@ -458,8 +467,31 @@
                 infoWindow.open(map, marker);
             });
 
-            // Open info window by default
-            infoWindow.open(map, marker);
+            // Function to calculate and display route
+            function calculateAndDisplayRoute() {
+                const startAddress = document.getElementById('start-address').value;
+                if (!startAddress) {
+                    alert('Please enter a starting location.');
+                    return;
+                }
+
+                directionsService.route({
+                    origin: startAddress,
+                    destination: eminentStudio,
+                    travelMode: google.maps.TravelMode.DRIVING
+                }, (response, status) => {
+                    if (status === 'OK') {
+                        directionsRenderer.setDirections(response);
+                        marker.setVisible(false); // Hide the original marker
+                        infoWindow.close(); // Close info window if open
+                    } else {
+                        window.alert('Directions request failed due to ' + status);
+                    }
+                });
+            }
+
+            // Add event listener for the directions button
+            document.getElementById('get-directions-btn').addEventListener('click', calculateAndDisplayRoute);
         }
     </script>
     <script>
