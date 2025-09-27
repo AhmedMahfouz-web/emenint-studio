@@ -215,17 +215,6 @@
 
         </section>
 
-        <div style="text-align: center; margin: 40px auto; max-width: 400px;">
-            <div class="input-group">
-                <input type="text" id="start-address" onblur="checkInput(this)">
-                <label for="start-address">Enter Your Location</label>
-            </div>
-            <button id="get-directions-btn" class="message-send" style="float: none; margin-top: 10px;">Get Directions <svg style="margin-top: -3px; margin-left:5px"
-                    xmlns="http://www.w3.org/2000/svg" width="24" height="24">
-                    <path d="M7.293 4.707 14.586 12l-7.293 7.293 1.414 1.414L17.414 12 8.707 3.293 7.293 4.707z" />
-                </svg></button>
-        </div>
-
         <div id="map">
         </div>
         <section class="awards">
@@ -402,22 +391,193 @@
                 lat: 30.1004118,
                 lng: 31.3404542
             };
-            const mapStyleId = '3f0d830b01d8786d76c1043e';
 
-            // Create the map with custom styling
-            const map = new google.maps.Map(document.getElementById('map'), {
+            // Black and white map style (fallback JSON if mapId doesn't work)
+            const mapStyles = [
+                {
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "color": "#f5f5f5"
+                        }
+                    ]
+                },
+                {
+                    "elementType": "labels.icon",
+                    "stylers": [
+                        {
+                            "visibility": "off"
+                        }
+                    ]
+                },
+                {
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#616161"
+                        }
+                    ]
+                },
+                {
+                    "elementType": "labels.text.stroke",
+                    "stylers": [
+                        {
+                            "color": "#f5f5f5"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "administrative.land_parcel",
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#bdbdbd"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "poi",
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "color": "#eeeeee"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "poi",
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#757575"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "poi.park",
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "color": "#e5e5e5"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "poi.park",
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#9e9e9e"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road",
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "color": "#ffffff"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road.arterial",
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#757575"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road.highway",
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "color": "#dadada"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road.highway",
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#616161"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road.local",
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#9e9e9e"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "transit.line",
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "color": "#e5e5e5"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "transit.station",
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "color": "#eeeeee"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "water",
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "color": "#c9c9c9"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "water",
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#9e9e9e"
+                        }
+                    ]
+                }
+            ];
+
+            // Try to create map with mapId first, fallback to JSON styles
+            let mapOptions = {
                 zoom: 15,
                 center: eminentStudio,
-                mapId: mapStyleId,
                 mapTypeControl: true,
                 streetViewControl: true,
                 fullscreenControl: true,
                 zoomControl: true
-            });
+            };
 
-            const directionsService = new google.maps.DirectionsService();
-            const directionsRenderer = new google.maps.DirectionsRenderer();
-            directionsRenderer.setMap(map);
+            // Try using mapId first
+            try {
+                mapOptions.mapId = '3f0d830b01d8786d76c1043e';
+            } catch (error) {
+                // If mapId fails, use JSON styles
+                mapOptions.styles = mapStyles;
+            }
+
+            const map = new google.maps.Map(document.getElementById('map'), mapOptions);
+
+            // If mapId didn't work, apply JSON styles
+            if (!mapOptions.mapId) {
+                map.setOptions({ styles: mapStyles });
+            }
 
             // Add custom styling to map container
             const mapContainer = document.getElementById('map');
@@ -458,6 +618,20 @@
                             font-size: 14px;
                             text-shadow: 0 1px 1px rgba(255,255,255,0.8);
                         ">33 Mohamed Bek Ramzy Street – Triumph Square – Heliopolis, Cairo Governorate 11757</p>
+                        <div style="margin-top: 15px;">
+                            <a href="https://www.google.com/maps/dir/?api=1&destination=30.1004118,31.3404542" 
+                               target="_blank" 
+                               style="
+                                   display: inline-block;
+                                   padding: 8px 16px;
+                                   background: #4285f4;
+                                   color: white;
+                                   text-decoration: none;
+                                   border-radius: 4px;
+                                   font-size: 14px;
+                                   font-weight: 500;
+                               ">Get Directions</a>
+                        </div>
                     </div>
                 `
             });
@@ -467,31 +641,8 @@
                 infoWindow.open(map, marker);
             });
 
-            // Function to calculate and display route
-            function calculateAndDisplayRoute() {
-                const startAddress = document.getElementById('start-address').value;
-                if (!startAddress) {
-                    alert('Please enter a starting location.');
-                    return;
-                }
-
-                directionsService.route({
-                    origin: startAddress,
-                    destination: eminentStudio,
-                    travelMode: google.maps.TravelMode.DRIVING
-                }, (response, status) => {
-                    if (status === 'OK') {
-                        directionsRenderer.setDirections(response);
-                        marker.setVisible(false); // Hide the original marker
-                        infoWindow.close(); // Close info window if open
-                    } else {
-                        window.alert('Directions request failed due to ' + status);
-                    }
-                });
-            }
-
-            // Add event listener for the directions button
-            document.getElementById('get-directions-btn').addEventListener('click', calculateAndDisplayRoute);
+            // Open info window by default
+            infoWindow.open(map, marker);
         }
     </script>
     <script>
