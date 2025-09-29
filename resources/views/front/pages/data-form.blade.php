@@ -300,7 +300,7 @@
         </section>
 
         <section class="contact-form">
-            <form id="dataForm" action="{{ route('send_data') }}" method="POST">
+            <form id="dataForm" action="{{ route('send data') }}" method="POST">
                 @csrf
                 <div class="input-group">
                     <input type="text" id="name" name="name" onblur="checkInput(this)" required>
