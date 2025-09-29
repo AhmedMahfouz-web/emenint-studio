@@ -112,6 +112,7 @@
 
         .message-send:hover svg {
             transform: translateX(-2px);
+            transform: rotate(180deg)
         }
 
         /* Custom Google Maps Info Window Styling */
