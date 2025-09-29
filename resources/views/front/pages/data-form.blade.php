@@ -87,7 +87,7 @@
 
         .phone-input {
             input {
-                /* padding-left: 60px; */
+                padding-left: 60px;
                 /* Make space for the +966 prefix */
 
                 +label {
@@ -464,8 +464,8 @@
                 </div>
                 <div class="input-group phone-input">
                     <input type="tel" name="mobile" id="mobile" onblur="checkInput(this)" required>
-                    <span class="phone-prefix">+966</span>
                     <label for="mobile">رقم الجوال</label>
+                    <span class="phone-prefix">+966</span>
                 </div>
                 <div class="input-group">
                     <input type="email" name="email" id="email" onblur="checkInput(this)">
