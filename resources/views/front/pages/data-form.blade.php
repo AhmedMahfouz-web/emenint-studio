@@ -91,7 +91,7 @@
                         padding: 5px 10px 5px 0;
                         pointer-events: none;
                         user-select: none;
-                        direction: ltr;
+                        direction: rtl;
                         flex-shrink: 0;
                     }
 
