@@ -114,317 +114,318 @@
                         font-size: 12px;
                         transform: translate(10px, -12px);
                     }
-
-                    .phone-prefix {
-                        position: absolute;
-                        left: 10px;
-                        top: 5px;
-                        color: #010101;
-                        font-size: 16px;
-                        font-weight: 400;
-                        pointer-events: none;
-                        user-select: none;
-                        direction: ltr;
-                        z-index: 1;
-                    }
                 }
 
-                textarea {
-
-                    &:focus {
-                        box-shadow: 0px 0px 0px 1px #010101;
-                    }
-
-                    &:focus,
-                    &.active {
-                        height: 100px;
-                        margin-top: 10px;
-                        padding-left: 10px;
-                        border: solid 1px #010101;
-                    }
+                .phone-prefix {
+                    position: absolute;
+                    left: 10px;
+                    top: 5px;
+                    color: #010101;
+                    font-size: 16px;
+                    font-weight: 400;
+                    pointer-events: none;
+                    user-select: none;
+                    direction: ltr;
+                    z-index: 1;
                 }
             }
 
-            .message-send {
-                border: none;
-                font-size: 18px;
-                color: #010101;
-                cursor: pointer;
-                display: flex;
-                font-weight: 500;
-                float: left;
-                padding: 0;
-                font-family: 'IBM Plex Sans Arabic', sans-serif;
+            textarea {
 
-            }
-
-            .message-send svg {
-                transition: all 0.2s ease-in;
-                transform: rotate(180deg)
-            }
-
-            .message-send:hover svg {
-                transform: rotate(180deg)
-            }
-
-            /* Custom Google Maps Info Window Styling */
-            .gm-style .gm-style-iw {
-                padding: 0 !important;
-            }
-
-            .gm-style .gm-style-iw-d {
-                overflow: visible !important;
-            }
-
-            .gm-style .gm-style-iw-c {
-                padding: 0 !important;
-                border-radius: 8px !important;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
-            }
-
-            .gm-style .gm-style-iw-tc {
-                display: none !important;
-            }
-
-            .gm-style .gm-style-iw button {
-                display: none !important;
-            }
-
-            /* Success Modal Styles */
-            .success-modal {
-                display: none;
-                position: fixed;
-                z-index: 9999;
-                left: 0;
-                top: 0;
-                width: 100%;
-                height: 100%;
-                background-color: rgba(0, 0, 0, 0.5);
-                backdrop-filter: blur(5px);
-                animation: fadeIn 0.3s ease-in-out;
-            }
-
-            .success-modal.show {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-
-            .modal-content {
-                background-color: white;
-                padding: 40px;
-                border-radius: 15px;
-                text-align: center;
-                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-                max-width: 400px;
-                width: 90%;
-                animation: slideIn 0.4s ease-out;
-                position: relative;
-            }
-
-            .success-icon {
-                width: 80px;
-                height: 80px;
-                background-color: #003cfc;
-                border-radius: 50%;
-                margin: 0 auto 20px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                animation: bounce 0.6s ease-in-out;
-            }
-
-            .success-icon svg {
-                width: 40px;
-                height: 40px;
-                fill: white;
-            }
-
-            .success-message {
-                font-size: 18px;
-                color: #333;
-                margin-bottom: 10px;
-                font-weight: 500;
-                font-family: 'IBM Plex Sans Arabic', sans-serif;
-            }
-
-            .success-submessage {
-                font-size: 14px;
-                color: #666;
-                margin-bottom: 20px;
-                font-family: 'IBM Plex Sans Arabic', sans-serif;
-            }
-
-            @keyframes fadeIn {
-                from {
-                    opacity: 0;
+                &:focus {
+                    box-shadow: 0px 0px 0px 1px #010101;
                 }
 
-                to {
-                    opacity: 1;
+                &:focus,
+                &.active {
+                    height: 100px;
+                    margin-top: 10px;
+                    padding-left: 10px;
+                    border: solid 1px #010101;
                 }
             }
+        }
 
-            @keyframes slideIn {
-                from {
-                    transform: translateY(-50px);
-                    opacity: 0;
-                }
+        .message-send {
+            border: none;
+            font-size: 18px;
+            color: #010101;
+            cursor: pointer;
+            display: flex;
+            font-weight: 500;
+            float: left;
+            padding: 0;
+            font-family: 'IBM Plex Sans Arabic', sans-serif;
 
-                to {
-                    transform: translateY(0);
-                    opacity: 1;
-                }
+        }
+
+        .message-send svg {
+            transition: all 0.2s ease-in;
+            transform: rotate(180deg)
+        }
+
+        .message-send:hover svg {
+            transform: rotate(180deg)
+        }
+
+        /* Custom Google Maps Info Window Styling */
+        .gm-style .gm-style-iw {
+            padding: 0 !important;
+        }
+
+        .gm-style .gm-style-iw-d {
+            overflow: visible !important;
+        }
+
+        .gm-style .gm-style-iw-c {
+            padding: 0 !important;
+            border-radius: 8px !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+        }
+
+        .gm-style .gm-style-iw-tc {
+            display: none !important;
+        }
+
+        .gm-style .gm-style-iw button {
+            display: none !important;
+        }
+
+        /* Success Modal Styles */
+        .success-modal {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .success-modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            max-width: 400px;
+            width: 90%;
+            animation: slideIn 0.4s ease-out;
+            position: relative;
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background-color: #003cfc;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: bounce 0.6s ease-in-out;
+        }
+
+        .success-icon svg {
+            width: 40px;
+            height: 40px;
+            fill: white;
+        }
+
+        .success-message {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 10px;
+            font-weight: 500;
+            font-family: 'IBM Plex Sans Arabic', sans-serif;
+        }
+
+        .success-submessage {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+            font-family: 'IBM Plex Sans Arabic', sans-serif;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
             }
 
-            @keyframes bounce {
+            to {
+                opacity: 1;
+            }
+        }
 
-                0%,
-                20%,
-                50%,
-                80%,
-                100% {
-                    transform: translateY(0);
-                }
-
-                40% {
-                    transform: translateY(-10px);
-                }
-
-                60% {
-                    transform: translateY(-5px);
-                }
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
             }
 
-            .form-loading {
-                opacity: 0.6;
-                pointer-events: none;
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes bounce {
+
+            0%,
+            20%,
+            50%,
+            80%,
+            100% {
+                transform: translateY(0);
             }
 
-            .loading-spinner {
-                display: none;
-                width: 20px;
-                height: 20px;
-                border: 2px solid #f3f3f3;
-                border-top: 2px solid #010101;
-                border-radius: 50%;
-                animation: spin 1s linear infinite;
-                margin-left: 10px;
+            40% {
+                transform: translateY(-10px);
             }
 
-            @keyframes spin {
-                0% {
-                    transform: rotate(0deg);
-                }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
 
-                100% {
-                    transform: rotate(360deg);
-                }
+        .form-loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .loading-spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #010101;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
             }
 
-            /* Error Modal Styles */
-            .error-modal {
-                display: none;
-                position: fixed;
-                z-index: 9999;
-                left: 0;
-                top: 0;
-                width: 100%;
-                height: 100%;
-                background-color: rgba(0, 0, 0, 0.5);
-                backdrop-filter: blur(5px);
-                animation: fadeIn 0.3s ease-in-out;
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Error Modal Styles */
+        .error-modal {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .error-modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .error-modal .modal-content {
+            background-color: white;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            max-width: 400px;
+            width: 90%;
+            animation: slideIn 0.4s ease-out;
+            position: relative;
+        }
+
+        .error-icon {
+            width: 80px;
+            height: 80px;
+            background-color: #dc3545;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: shake 0.6s ease-in-out;
+        }
+
+        .error-icon svg {
+            width: 40px;
+            height: 40px;
+            fill: white;
+        }
+
+        .error-message {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 10px;
+            font-weight: 500;
+            font-family: 'IBM Plex Sans Arabic', sans-serif;
+        }
+
+        .error-submessage {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+            font-family: 'IBM Plex Sans Arabic', sans-serif;
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
             }
 
-            .error-modal.show {
-                display: flex;
-                align-items: center;
-                justify-content: center;
+            10%,
+            30%,
+            50%,
+            70%,
+            90% {
+                transform: translateX(-5px);
             }
 
-            .error-modal .modal-content {
-                background-color: white;
-                padding: 40px;
-                border-radius: 15px;
-                text-align: center;
-                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-                max-width: 400px;
-                width: 90%;
-                animation: slideIn 0.4s ease-out;
-                position: relative;
+            20%,
+            40%,
+            60%,
+            80% {
+                transform: translateX(5px);
             }
+        }
 
-            .error-icon {
-                width: 80px;
-                height: 80px;
-                background-color: #dc3545;
-                border-radius: 50%;
-                margin: 0 auto 20px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                animation: shake 0.6s ease-in-out;
-            }
+        .modal-close-btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+            font-family: 'IBM Plex Sans Arabic', sans-serif;
+        }
 
-            .error-icon svg {
-                width: 40px;
-                height: 40px;
-                fill: white;
-            }
-
-            .error-message {
-                font-size: 18px;
-                color: #333;
-                margin-bottom: 10px;
-                font-weight: 500;
-                font-family: 'IBM Plex Sans Arabic', sans-serif;
-            }
-
-            .error-submessage {
-                font-size: 14px;
-                color: #666;
-                margin-bottom: 20px;
-                font-family: 'IBM Plex Sans Arabic', sans-serif;
-            }
-
-            @keyframes shake {
-
-                0%,
-                100% {
-                    transform: translateX(0);
-                }
-
-                10%,
-                30%,
-                50%,
-                70%,
-                90% {
-                    transform: translateX(-5px);
-                }
-
-                20%,
-                40%,
-                60%,
-                80% {
-                    transform: translateX(5px);
-                }
-            }
-
-            .modal-close-btn {
-                background-color: #dc3545;
-                color: white;
-                border: none;
-                padding: 10px 20px;
-                border-radius: 5px;
-                cursor: pointer;
-                font-size: 14px;
-                transition: background-color 0.3s ease;
-                font-family: 'IBM Plex Sans Arabic', sans-serif;
-            }
-
-            .modal-close-btn:hover {
-                background-color: #c82333;
-            }
+        .modal-close-btn:hover {
+            background-color: #c82333;
+        }
     </style>
 @endsection
 
