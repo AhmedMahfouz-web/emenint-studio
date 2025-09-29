@@ -106,11 +106,12 @@
 
         .message-send svg {
             transition: all 0.2s ease-in;
-            transform: translateX(-2px);
+            transform: translateX(2px);
+            transform: rotate(180deg)
         }
 
         .message-send:hover svg {
-            transform: translateX(2px);
+            transform: translateX(-2px);
         }
 
         /* Custom Google Maps Info Window Styling */
@@ -322,7 +323,7 @@
                 <button type="submit" class="message-send"><svg style="margin-top: -3px; margin-left:5px"
                         xmlns="http://www.w3.org/2000/svg" width="24" height="24">
                         <path d="M7.293 4.707 14.586 12l-7.293 7.293 1.414 1.414L17.414 12 8.707 3.293 7.293 4.707z" />
-                    </svg>ارسال استئارتك
+                    </svg>ارسال استشارتك
                     <div class="loading-spinner"></div>
 
                 </button>
