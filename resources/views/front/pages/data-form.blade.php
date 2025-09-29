@@ -87,7 +87,7 @@
 
         .phone-input {
             input {
-                padding-left: 60px;
+                /* padding-left: 60px; */
                 /* Make space for the +966 prefix */
 
                 +label {
