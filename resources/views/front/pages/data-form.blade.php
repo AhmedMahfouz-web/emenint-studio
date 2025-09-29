@@ -82,44 +82,46 @@
             }
 
             /* Phone input with prefix styling */
-            &.phone-input {
-                input {
-                    padding-left: 60px;
-                    /* Make space for the +966 prefix */
 
-                    +label {
-                        right: 10px;
-                        top: -5px;
-                        position: absolute;
-                        pointer-events: none;
-                        transition: all 0.2s ease-in;
-                        text-align: right;
-                        direction: rtl;
-                    }
+        }
 
-                    &:focus,
-                    &.active {
-                        +label {
-                            font-size: 12px;
-                            transform: translate(10px, -12px);
-                        }
-                    }
+        .phone-input {
+            input {
+                padding-left: 60px;
+                /* Make space for the +966 prefix */
 
-                }
-
-
-                .phone-prefix {
+                +label {
+                    right: 10px;
+                    top: -5px;
                     position: absolute;
-                    left: 10px;
-                    top: 5px;
-                    color: #010101;
-                    font-size: 16px;
-                    font-weight: 400;
                     pointer-events: none;
-                    user-select: none;
-                    direction: ltr;
-                    z-index: 1;
+                    transition: all 0.2s ease-in;
+                    text-align: right;
+                    direction: rtl;
                 }
+
+                &:focus,
+                &.active {
+                    +label {
+                        font-size: 12px;
+                        transform: translate(10px, -12px);
+                    }
+                }
+
+            }
+
+
+            .phone-prefix {
+                position: absolute;
+                left: 10px;
+                top: 5px;
+                color: #010101;
+                font-size: 16px;
+                font-weight: 400;
+                pointer-events: none;
+                user-select: none;
+                direction: ltr;
+                z-index: 1;
             }
 
             textarea {
