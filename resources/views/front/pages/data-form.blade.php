@@ -421,7 +421,7 @@
             background-color: #c82333;
         }
 
-        .inview {
+        .arabic {
             font-family: 'IBM Plex Sans Arabic', sans-serif !important;
         }
     </style>
@@ -452,8 +452,8 @@
                 </div>
                 <div class="grid-width svgh-bh flex text-center">
                     <div class="js-parallaxheader-text">
-                        <div class="subline inview inview--up">(سجل بياناتك)</div>
-                        <h2 class="inview inview--up">عرض اليوم الوطنى</h2>
+                        <div class="subline inview inview--up arabic">(سجل بياناتك)</div>
+                        <h2 class="inview inview--up arabic">عرض اليوم الوطنى</h2>
                     </div>
                 </div>
             </div>
