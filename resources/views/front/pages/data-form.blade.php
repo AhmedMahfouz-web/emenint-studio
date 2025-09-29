@@ -153,6 +153,10 @@
 
         }
 
+        .invew {
+            font-family: 'IBM Plex Sans Arabic', sans-serif;
+        }
+
         .message-send svg {
             transition: all 0.2s ease-in;
             transform: rotate(180deg)
