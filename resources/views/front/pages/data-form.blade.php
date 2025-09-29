@@ -106,12 +106,10 @@
 
         .message-send svg {
             transition: all 0.2s ease-in;
-            transform: translateX(2px);
             transform: rotate(180deg)
         }
 
         .message-send:hover svg {
-            transform: translateX(-2px);
             transform: rotate(180deg)
         }
 
@@ -267,6 +265,90 @@
                 transform: rotate(360deg);
             }
         }
+
+        /* Error Modal Styles */
+        .error-modal {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .error-modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .error-modal .modal-content {
+            background-color: white;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            max-width: 400px;
+            width: 90%;
+            animation: slideIn 0.4s ease-out;
+            position: relative;
+        }
+
+        .error-icon {
+            width: 80px;
+            height: 80px;
+            background-color: #dc3545;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: shake 0.6s ease-in-out;
+        }
+
+        .error-icon svg {
+            width: 40px;
+            height: 40px;
+            fill: white;
+        }
+
+        .error-message {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .error-submessage {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+
+        .modal-close-btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+
+        .modal-close-btn:hover {
+            background-color: #c82333;
+        }
     </style>
 @endsection
 
@@ -340,8 +422,23 @@
                         <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
                     </svg>
                 </div>
-                <div class="success-message">تم إرسال استئارتك بنجاح!</div>
+                <div class="success-message">تم إرسال استشارتك بنجاح!</div>
                 <div class="success-submessage">سيتم التواصل معكم خلال 24 ساعة</div>
+            </div>
+        </div>
+
+        <!-- Error Modal -->
+        <div id="errorModal" class="error-modal">
+            <div class="modal-content">
+                <div class="error-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" fill="none"/>
+                        <path d="M15.73 3H8.27L3 8.27v7.46L8.27 21h7.46L21 15.73V8.27L15.73 3zM12 17.3c-.72 0-1.3-.58-1.3-1.3s.58-1.3 1.3-1.3 1.3.58 1.3 1.3-.58 1.3-1.3 1.3zm1-4.3h-2V7h2v6z"/>
+                    </svg>
+                </div>
+                <div class="error-message">فشل في إرسال الاستشارة!</div>
+                <div class="error-submessage" id="errorText">حدث خطأ أثناء إرسال الرسالة. يرجى المحاولة مرة أخرى.</div>
+                <button class="modal-close-btn" onclick="hideErrorModal()">حسناً</button>
             </div>
         </div>
 
@@ -364,6 +461,8 @@
             const submitButton = form.querySelector('.message-send');
             const loadingSpinner = submitButton.querySelector('.loading-spinner');
             const successModal = document.getElementById('successModal');
+            const errorModal = document.getElementById('errorModal');
+            const errorText = document.getElementById('errorText');
 
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
@@ -409,10 +508,11 @@
                             // Auto-hide modal after 4 seconds
                             setTimeout(() => {
                                 hideModal();
-                            }, 4000);
+                            }, 10000);
                         } else {
-                            alert(data.message ||
-                                'حدث خطأ أثناء إرسال الرسالة. يرجى المحاولة مرة أخرى.');
+                            // Show error modal
+                            errorText.textContent = data.message || 'حدث خطأ أثناء إرسال الرسالة. يرجى المحاولة مرة أخرى.';
+                            errorModal.classList.add('show');
                         }
                     })
                     .catch(error => {
@@ -423,26 +523,44 @@
                         loadingSpinner.style.display = 'none';
                         submitButton.disabled = false;
 
-                        alert('حدث خطأ أثناء إرسال الرسالة. يرجى المحاولة مرة أخرى.');
+                        // Show error modal
+                    errorText.textContent = 'حدث خطأ أثناء إرسال الرسالة. يرجى المحاولة مرة أخرى.';
+                    errorModal.classList.add('show');
                     });
             });
 
-            // Function to hide modal
+            // Function to hide success modal
             function hideModal() {
                 successModal.classList.remove('show');
             }
 
-            // Hide modal when clicking outside
+            // Function to hide error modal
+            window.hideErrorModal = function() {
+                errorModal.classList.remove('show');
+            }
+
+            // Hide modals when clicking outside
             successModal.addEventListener('click', function(e) {
                 if (e.target === successModal) {
                     hideModal();
                 }
             });
 
-            // Hide modal on escape key
+            errorModal.addEventListener('click', function(e) {
+                if (e.target === errorModal) {
+                    hideErrorModal();
+                }
+            });
+
+            // Hide modals on escape key
             document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape' && successModal.classList.contains('show')) {
-                    hideModal();
+                if (e.key === 'Escape') {
+                    if (successModal.classList.contains('show')) {
+                        hideModal();
+                    }
+                    if (errorModal.classList.contains('show')) {
+                        hideErrorModal();
+                    }
                 }
             });
         });
