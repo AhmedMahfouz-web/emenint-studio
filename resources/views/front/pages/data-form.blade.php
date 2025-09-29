@@ -153,10 +153,6 @@
 
         }
 
-        .invew {
-            font-family: 'IBM Plex Sans Arabic', sans-serif;
-        }
-
         .message-send svg {
             transition: all 0.2s ease-in;
             transform: rotate(180deg)
@@ -423,6 +419,10 @@
 
         .modal-close-btn:hover {
             background-color: #c82333;
+        }
+
+        .inview {
+            font-family: 'IBM Plex Sans Arabic', sans-serif !important;
         }
     </style>
 @endsection
