@@ -70,7 +70,7 @@
                 &.active {
                     +label {
                         font-size: 12px;
-                        transform: translate(-10px, -12px);
+                        transform: translate(10px, -12px);
                     }
                 }
 
@@ -319,12 +319,12 @@
                     <textarea name="message" id="message" onblur="checkInput(this)" required></textarea>
                     <label for="message">استئارتك</label>
                 </div>
-                <button type="submit" class="message-send">ارسال استئارتك
-                    <div class="loading-spinner"></div>
-                    <svg style="margin-top: -3px; margin-left:5px" xmlns="http://www.w3.org/2000/svg" width="24"
-                        height="24">
+                <button type="submit" class="message-send"><svg style="margin-top: -3px; margin-left:5px"
+                        xmlns="http://www.w3.org/2000/svg" width="24" height="24">
                         <path d="M7.293 4.707 14.586 12l-7.293 7.293 1.414 1.414L17.414 12 8.707 3.293 7.293 4.707z" />
-                    </svg>
+                    </svg>ارسال استئارتك
+                    <div class="loading-spinner"></div>
+
                 </button>
             </form>
 
