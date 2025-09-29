@@ -6,16 +6,11 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <style>
-        #map {
-            height: 500px;
-            width: 70%;
-            margin: auto;
-        }
-
         form {
             width: 50%;
             margin: 40px auto 80px;
             max-width: 400px;
+            text-align: right;
         }
 
         @media(max-width: 480px) {
@@ -37,6 +32,8 @@
             position: relative;
             margin: auto;
             margin-bottom: 20px;
+            text-align: right;
+            direction: rtl;
 
             input,
             textarea {
@@ -52,13 +49,17 @@
                 background-color: transparent;
                 transition: all 0.2s ease-in;
                 font-weight: 400;
+                text-align: right;
+                direction: rtl;
 
                 +label {
-                    left: 10px;
+                    right: 10px;
                     top: -5px;
                     position: absolute;
                     pointer-events: none;
                     transition: all 0.2s ease-in;
+                    text-align: right;
+                    direction: rtl;
                 }
 
                 &:focus {
@@ -98,7 +99,7 @@
             cursor: pointer;
             display: flex;
             font-weight: 500;
-            float: right;
+            float: left;
             padding: 0;
 
         }
