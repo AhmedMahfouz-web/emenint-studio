@@ -108,7 +108,8 @@
                     direction: rtl;
                 }
 
-                input:focus &input:active {
+                &:focus,
+                &:active {
 
                     +label {
                         font-size: 12px;
