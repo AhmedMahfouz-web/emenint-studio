@@ -374,7 +374,7 @@
                 const formData = new FormData(form);
 
                 // Send AJAX request
-                fetch('{{ route('send_data') }}', {
+                fetch('{{ route('send data') }}', {
                         method: 'POST',
                         body: formData,
                         headers: {
