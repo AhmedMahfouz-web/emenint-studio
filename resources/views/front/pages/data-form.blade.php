@@ -76,6 +76,41 @@
 
             }
 
+            /* Phone input with prefix styling */
+            &.phone-input {
+                .phone-wrapper {
+                    position: relative;
+                    display: flex;
+                    align-items: center;
+                    border-bottom: solid 1px #010101;
+
+                    .phone-prefix {
+                        color: #010101;
+                        font-size: 16px;
+                        font-weight: 400;
+                        padding: 5px 10px 5px 0;
+                        pointer-events: none;
+                        user-select: none;
+                        direction: ltr;
+                        flex-shrink: 0;
+                    }
+
+                    input {
+                        border-bottom: none;
+                        padding-left: 0;
+                        flex: 1;
+
+                        &:focus {
+                            box-shadow: none;
+                        }
+                    }
+
+                    &:focus-within {
+                        box-shadow: 0 1px 0 0 #010101;
+                    }
+                }
+            }
+
             textarea {
 
                 &:focus {
@@ -330,9 +365,26 @@
         }
 
         @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-            20%, 40%, 60%, 80% { transform: translateX(5px); }
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            10%,
+            30%,
+            50%,
+            70%,
+            90% {
+                transform: translateX(-5px);
+            }
+
+            20%,
+            40%,
+            60%,
+            80% {
+                transform: translateX(5px);
+            }
         }
 
         .modal-close-btn {
@@ -391,17 +443,20 @@
                     <input type="text" id="name" name="name" onblur="checkInput(this)" required>
                     <label for="name">الاسم</label>
                 </div>
-                <div class="input-group">
-                    <input type="tel" name="mobile" id="mobile" onblur="checkInput(this)" required>
+                <div class="input-group phone-input">
+                    <div class="phone-wrapper">
+                        <span class="phone-prefix">+966</span>
+                        <input type="tel" name="mobile" id="mobile" onblur="checkInput(this)" required>
+                    </div>
                     <label for="mobile">رقم الجوال</label>
                 </div>
                 <div class="input-group">
-                    <input type="email" name="email" id="email" onblur="checkInput(this)" required>
+                    <input type="email" name="email" id="email" onblur="checkInput(this)">
                     <label for="email">البريد الالكتروني</label>
                 </div>
                 <div class="input-group">
                     <textarea name="message" id="message" onblur="checkInput(this)" required></textarea>
-                    <label for="message">استئارتك</label>
+                    <label for="message">استشارتك</label>
                 </div>
                 <button type="submit" class="message-send"><svg style="margin-top: -3px; margin-left:5px"
                         xmlns="http://www.w3.org/2000/svg" width="24" height="24">
@@ -432,8 +487,11 @@
             <div class="modal-content">
                 <div class="error-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" fill="none"/>
-                        <path d="M15.73 3H8.27L3 8.27v7.46L8.27 21h7.46L21 15.73V8.27L15.73 3zM12 17.3c-.72 0-1.3-.58-1.3-1.3s.58-1.3 1.3-1.3 1.3.58 1.3 1.3-.58 1.3-1.3 1.3zm1-4.3h-2V7h2v6z"/>
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+                            fill="none" />
+                        <path
+                            d="M15.73 3H8.27L3 8.27v7.46L8.27 21h7.46L21 15.73V8.27L15.73 3zM12 17.3c-.72 0-1.3-.58-1.3-1.3s.58-1.3 1.3-1.3 1.3.58 1.3 1.3-.58 1.3-1.3 1.3zm1-4.3h-2V7h2v6z" />
                     </svg>
                 </div>
                 <div class="error-message">فشل في إرسال الاستشارة!</div>
@@ -450,8 +508,16 @@
         let checkInput = function(input) {
             if (input.value.length > 0) {
                 input.className = 'active';
+                // For phone input, also add active class to the wrapper
+                if (input.id === 'mobile') {
+                    input.closest('.phone-wrapper').classList.add('active');
+                }
             } else {
                 input.className = '';
+                // For phone input, also remove active class from the wrapper
+                if (input.id === 'mobile') {
+                    input.closest('.phone-wrapper').classList.remove('active');
+                }
             }
         };
 
@@ -511,7 +577,8 @@
                             }, 10000);
                         } else {
                             // Show error modal
-                            errorText.textContent = data.message || 'حدث خطأ أثناء إرسال الرسالة. يرجى المحاولة مرة أخرى.';
+                            errorText.textContent = data.message ||
+                                'حدث خطأ أثناء إرسال الرسالة. يرجى المحاولة مرة أخرى.';
                             errorModal.classList.add('show');
                         }
                     })
@@ -524,8 +591,8 @@
                         submitButton.disabled = false;
 
                         // Show error modal
-                    errorText.textContent = 'حدث خطأ أثناء إرسال الرسالة. يرجى المحاولة مرة أخرى.';
-                    errorModal.classList.add('show');
+                        errorText.textContent = 'حدث خطأ أثناء إرسال الرسالة. يرجى المحاولة مرة أخرى.';
+                        errorModal.classList.add('show');
                     });
             });
 

@@ -24,7 +24,7 @@ class mailController extends Controller
             // Validate the request
             $request->validate([
                 'name' => 'required|string|max:255',
-                'email' => 'required|email',
+                'email' => 'email',
                 'mobile' => 'required|string',
                 'message' => 'required|string'
             ]);
