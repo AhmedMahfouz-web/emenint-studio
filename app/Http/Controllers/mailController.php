@@ -29,7 +29,7 @@ class mailController extends Controller
                 'message' => 'required|string'
             ]);
 
-            $data = array('name' => $request->name, 'email' => $request->email, 'mobile' => $request->mobile, 'body' => $request->message);
+            $data = array('name' => $request->name, 'email' => $request->email, 'mobile' => '+966-' . $request->mobile, 'body' => $request->message);
             Mail::send('mail', $data, function ($message) {
                 $message->to('support@eminent-studio.com', 'سجل بياناتك')->subject('سجل بياناتك');
                 $message->from('info@eminent-studio.com', 'Eminent-Studio');
