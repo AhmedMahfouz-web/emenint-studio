@@ -130,7 +130,7 @@ Route::post('/send_data', [mailController::class, 'send_data'])->name('send data
 // Jobs routes
 Route::get('/career', [JobController::class, 'index'])->name('career');
 // Route::get('/career/{job:slug}', [JobController::class, 'show'])->name('career');
-Route::post('/career/apply', [JobController::class, 'apply'])->name('jobs.apply');
+Route::post('/career/apply', [JobController::class, 'apply'])->name('jobs apply');
 
 // Route::group(['prefix' => 'admin'], function () {
 //     Route::get('login', [UserController::class, 'get_login'])->name('get login');
