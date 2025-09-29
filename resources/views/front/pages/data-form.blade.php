@@ -6,11 +6,15 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@100;200;300;400;500;600;700&display=swap');
+    </style>
+    <style>
         form {
             width: 50%;
             margin: 40px auto 80px;
             max-width: 400px;
             text-align: right;
+            font-family: 'IBM Plex Sans Arabic', sans-serif;
         }
 
         @media(max-width: 480px) {
@@ -34,6 +38,7 @@
             margin-bottom: 20px;
             text-align: right;
             direction: rtl;
+            font-family: 'IBM Plex Sans Arabic', sans-serif;
 
             input,
             textarea {
@@ -78,36 +83,29 @@
 
             /* Phone input with prefix styling */
             &.phone-input {
-                .phone-wrapper {
-                    position: relative;
-                    display: flex;
-                    align-items: center;
-                    border-bottom: solid 1px #010101;
-
-                    .phone-prefix {
-                        color: #010101;
-                        font-size: 16px;
-                        font-weight: 400;
-                        padding: 5px 10px 5px 0;
-                        pointer-events: none;
-                        user-select: none;
-                        direction: rtl;
-                        flex-shrink: 0;
-                    }
-
-                    input {
-                        border-bottom: none;
-                        padding-left: 0;
-                        flex: 1;
-
-                        &:focus {
-                            box-shadow: none;
+                input {
+                    padding-left: 60px; /* Make space for the +966 prefix */
+                    
+                    &:focus,
+                    &.active {
+                        +label {
+                            font-size: 12px;
+                            transform: translate(10px, -12px);
                         }
                     }
-
-                    &:focus-within {
-                        box-shadow: 0 1px 0 0 #010101;
-                    }
+                }
+                
+                .phone-prefix {
+                    position: absolute;
+                    left: 10px;
+                    top: 5px;
+                    color: #010101;
+                    font-size: 16px;
+                    font-weight: 400;
+                    pointer-events: none;
+                    user-select: none;
+                    direction: ltr;
+                    z-index: 1;
                 }
             }
 
@@ -136,6 +134,7 @@
             font-weight: 500;
             float: left;
             padding: 0;
+            font-family: 'IBM Plex Sans Arabic', sans-serif;
 
         }
 
@@ -226,12 +225,14 @@
             color: #333;
             margin-bottom: 10px;
             font-weight: 500;
+            font-family: 'IBM Plex Sans Arabic', sans-serif;
         }
 
         .success-submessage {
             font-size: 14px;
             color: #666;
             margin-bottom: 20px;
+            font-family: 'IBM Plex Sans Arabic', sans-serif;
         }
 
         @keyframes fadeIn {
@@ -356,12 +357,14 @@
             color: #333;
             margin-bottom: 10px;
             font-weight: 500;
+            font-family: 'IBM Plex Sans Arabic', sans-serif;
         }
 
         .error-submessage {
             font-size: 14px;
             color: #666;
             margin-bottom: 20px;
+            font-family: 'IBM Plex Sans Arabic', sans-serif;
         }
 
         @keyframes shake {
@@ -396,6 +399,7 @@
             cursor: pointer;
             font-size: 14px;
             transition: background-color 0.3s ease;
+            font-family: 'IBM Plex Sans Arabic', sans-serif;
         }
 
         .modal-close-btn:hover {
@@ -444,10 +448,8 @@
                     <label for="name">الاسم</label>
                 </div>
                 <div class="input-group phone-input">
-                    <div class="phone-wrapper">
-                        <span class="phone-prefix">+966</span>
-                        <input type="tel" name="mobile" id="mobile" onblur="checkInput(this)" required>
-                    </div>
+                    <input type="tel" name="mobile" id="mobile" onblur="checkInput(this)" required>
+                    <span class="phone-prefix">+966</span>
                     <label for="mobile">رقم الجوال</label>
                 </div>
                 <div class="input-group">
@@ -508,16 +510,8 @@
         let checkInput = function(input) {
             if (input.value.length > 0) {
                 input.className = 'active';
-                // For phone input, also add active class to the wrapper
-                if (input.id === 'mobile') {
-                    input.closest('.phone-wrapper').classList.add('active');
-                }
             } else {
                 input.className = '';
-                // For phone input, also remove active class from the wrapper
-                if (input.id === 'mobile') {
-                    input.closest('.phone-wrapper').classList.remove('active');
-                }
             }
         };
 
