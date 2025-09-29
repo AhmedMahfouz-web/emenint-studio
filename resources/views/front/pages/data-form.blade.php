@@ -87,6 +87,15 @@
                     padding-left: 60px;
                     /* Make space for the +966 prefix */
 
+                    +label {
+                        right: 10px;
+                        top: -5px;
+                        position: absolute;
+                        pointer-events: none;
+                        transition: all 0.2s ease-in;
+                        text-align: right;
+                        direction: rtl;
+                    }
 
                     &:focus,
                     &.active {
@@ -98,24 +107,6 @@
 
                 }
 
-                label {
-                    right: 10px;
-                    top: -5px;
-                    position: absolute;
-                    pointer-events: none;
-                    transition: all 0.2s ease-in;
-                    text-align: right;
-                    direction: rtl;
-                }
-
-                &:focus,
-                &:active {
-
-                    +label {
-                        font-size: 12px;
-                        transform: translate(10px, -12px);
-                    }
-                }
 
                 .phone-prefix {
                     position: absolute;
