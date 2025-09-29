@@ -84,8 +84,19 @@
             /* Phone input with prefix styling */
             &.phone-input {
                 input {
-                    padding-left: 60px; /* Make space for the +966 prefix */
-                    
+                    padding-left: 60px;
+                    /* Make space for the +966 prefix */
+
+                    +label {
+                        right: 10px;
+                        top: -5px;
+                        position: absolute;
+                        pointer-events: none;
+                        transition: all 0.2s ease-in;
+                        text-align: right;
+                        direction: rtl;
+                    }
+
                     &:focus,
                     &.active {
                         +label {
@@ -93,8 +104,9 @@
                             transform: translate(10px, -12px);
                         }
                     }
+
                 }
-                
+
                 .phone-prefix {
                     position: absolute;
                     left: 10px;
