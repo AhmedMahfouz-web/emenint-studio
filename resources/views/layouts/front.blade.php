@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Eminent Studio</title>
 
     <link rel='stylesheet' id='styles-normalize-css' href='{{ asset('css/normalizea149.css?ver=6.4') }}' type='text/css'

@@ -67,6 +67,10 @@ Route::get('/contact-us', function () {
     return view('front.pages.contact');
 })->name('contact');
 
+Route::get('/national-day', function () {
+    return view('front.pages.data-form');
+})->name('national-day');
+
 
 Route::get('/projects', [App\Http\Controllers\ProjectController::class, 'index'])->name('projects.index');
 Route::get('/projects/category/{categorySlug}', [App\Http\Controllers\ProjectController::class, 'category'])->name('projects.category');
@@ -121,11 +125,12 @@ Route::get('/project/zenda', function () {
 })->name('zenda');
 
 Route::post('/send_mail', [mailController::class, 'send_mail'])->name('send mail');
+Route::post('/send_data', [mailController::class, 'send_data'])->name('send data');
 
 // Jobs routes
 Route::get('/career', [JobController::class, 'index'])->name('career');
 // Route::get('/career/{job:slug}', [JobController::class, 'show'])->name('career');
-Route::post('/career/apply', [JobController::class, 'apply'])->name('jobs apply');
+Route::post('/career/apply', [JobController::class, 'apply'])->name('jobs.apply');
 
 // Route::group(['prefix' => 'admin'], function () {
 //     Route::get('login', [UserController::class, 'get_login'])->name('get login');
