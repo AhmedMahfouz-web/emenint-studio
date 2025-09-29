@@ -424,6 +424,10 @@
         .arabic {
             font-family: 'IBM Plex Sans Arabic', sans-serif !important;
         }
+
+        .contact-form {
+            margin-bottom: 100px;
+        }
     </style>
 @endsection
 
