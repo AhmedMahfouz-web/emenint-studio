@@ -1,5 +1,6 @@
 @extends('layouts.front')
 
+
 @section('content')
     <div id="page">
         {{-- <section class="index-intro">
