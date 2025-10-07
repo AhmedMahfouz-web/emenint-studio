@@ -76,12 +76,12 @@
                             <div class="gradient-blur gradient-blur-drop-menu">
                                 <div></div>
                             </div>
-                            <li><a href="{{ route('branding') }}">Branding</a></li>
-                            <li><a href="{{ route('marketing') }}">Marketing</a></li>
-                            <li><a href="{{ route('advertising') }}">Advertising</a></li>
-                            <li><a href="{{ route('development') }}">Development</a></li>
-                            <li><a href="{{ route('ecommerce') }}">E-commerce</a></li>
-                            <li><a href="{{ route('consultant') }}">Consultant</a></li>
+                            <li><a href="{{ route('services.category', 'branding') }}">Branding</a></li>
+                            <li><a href="{{ route('services.category', 'marketing') }}">Marketing</a></li>
+                            <li><a href="{{ route('services.category', 'advertising') }}">Advertising</a></li>
+                            <li><a href="{{ route('services.category', 'development') }}">Development</a></li>
+                            <li><a href="{{ route('services.category', 'ecommerce') }}">E-commerce</a></li>
+                            <li><a href="{{ route('services.category', 'consultant') }}">Consultant</a></li>
                         </ul>
                     </li>
                     <li><a href="{{ route('about') }}"><span>.&nbsp;Studio</span><span>.&nbsp;Studio</span></a></li>
@@ -107,12 +107,18 @@
                             </li>
                             <li><a id="services_link" href="#">Services</a>
                                 <ul class="close" id="services_links">
-                                    <li class="links"><a href="{{ route('branding') }}">Branding</a></li>
-                                    <li class="links"><a href="{{ route('marketing') }}">Marketing</a></li>
-                                    <li class="links"><a href="{{ route('advertising') }}">Advertising</a></li>
-                                    <li class="links"><a href="{{ route('development') }}">Development</a></li>
-                                    <li class="links"><a href="{{ route('ecommerce') }}">E-commerce</a></li>
-                                    <li class="links"><a href="{{ route('consultant') }}">Consultant</a></li>
+                                    <li class="links"><a
+                                            href="{{ route('services.category', 'branding') }}">Branding</a></li>
+                                    <li class="links"><a
+                                            href="{{ route('services.category', 'marketing') }}">Marketing</a></li>
+                                    <li class="links"><a
+                                            href="{{ route('services.category', 'advertising') }}">Advertising</a></li>
+                                    <li class="links"><a
+                                            href="{{ route('services.category', 'development') }}">Development</a></li>
+                                    <li class="links"><a
+                                            href="{{ route('services.category', 'ecommerce') }}">E-commerce</a></li>
+                                    <li class="links"><a
+                                            href="{{ route('services.category', 'consultant') }}">Consultant</a></li>
                                 </ul>
                             </li>
                             <li><a href="{{ route('about') }}">Studio</a></li>

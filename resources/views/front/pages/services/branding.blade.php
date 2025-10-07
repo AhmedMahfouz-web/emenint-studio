@@ -1,7 +1,7 @@
 @extends('layouts.front')
 
 @section('content')
-    <div id="page" class="bg-black">
+    <div id="page">
         <section class="svg-header svg-header--project">
             <div class="svgh-bh">
                 <div id="svg-animaiotn" class="inview flex flex--bottom">
@@ -12,7 +12,7 @@
                                 <style>
                                     .cls-1 {
                                         fill: none;
-                                        stroke: #f0f0f0;
+                                        stroke: #2c2a2a;
                                         stroke-miterlimit: 10;
                                         stroke-width: 2px;
                                     }
@@ -24,332 +24,111 @@
                     </div>
                 </div>
                 <div class="grid-width svgh-bh flex flex--bottom text-center">
-                    <div class="js-parallaxheader-text">
-                        <div class="subline inview inview--up">(Did you ask)</div>
-                        <h1 class="inview inview--up">What is eminent ?</h1>
+                    <div>
+                        <div class="subline inview inview--up">(Welcome to the show)</div>
+                        <h1 class="inview inview--up">Branding</h1>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section class="introtext">
-            <div class="grid-width text-center">
-                <div class="subline inview inview--up">
-                    (brandnig)
-                </div>
-                <div class="editor-content copy-xl inview inview--up">
-                    <p class="p1">Welcome to Eminent Studio, a trailblazing marketing and advertising agency, we are not
-                        just a service provider, we are a dedicated partner on your journey.</p>
-                </div>
-            </div>
-
-            <div class="flex flex-top">
-                <div class="grid-width text-center editor-content-mv">
-                    <div class="subline inview inview--up">
-                        (An eminent on a mission)
-                    </div>
-                    <div class="editor-content copy-xl inview inview--up">
-                        <p class="p1 p2">to offer a transformative journey to our clients, helping them embark on a
-                            new professional identity and brand. We are committed to sharing this journey with our
-                            clients, fostering enduring relationships beyond project completion.</p>
-                    </div>
-                </div>
-
-                <div class="grid-width text-center editor-content-mv">
-                    <div class="subline inview inview--up">
-                        (An eminent with a vision)
-                    </div>
-                    <div class="editor-content copy-xl inview inview--up">
-                        <p class="p1 p2">to become the foremost media hub in the Middle East and GCC region, setting
-                            new standards. We aspire to be the catalyst that
-                            transforms our clients' professional identities and brands, providing a unique
-                            and unparalleled experience.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="keynotes">
+        <section class="info-swiper">
             <div class="grid-width">
-                <div class="flex flex--top flex--nom-sml">
-                    <div class='col'>
-                        <div class="kynote inview inview--up">
-                            <div class="inview inview--line"></div>
-                            <div class="h2 output inview inview--up" data-output="4">
-                                4 </div>
+                <div class="swiper-container info-swiper-content swiper-branding">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide">
                             <div class="inview inview--up">
-                                <div class="subline">
-                                    (Countries)
-                                </div>
-                                <div class="copy-m">
-                                    Following extensive dedication and concerted efforts, our initiatives have successfully
-                                    expanded their reach to encompass over four countries within Middle East and GCC region.
-                                </div>
-                            </div>
+                                Brand Name Suggestion </div>
+
+                            <div class="editor-content copy-s inview inview--up">
+                                We assist in selecting a powerful and emorable brand name that reflects your business
+                                identity and resonates
+                                with your target market. </div>
+
                         </div>
-                        <div class="kynote inview inview--up">
-                            <div class="inview inview--line"></div>
-                            <div class="h2 output inview inview--up" data-output="99">
-                                99 </div>
+                        <div class="swiper-slide">
                             <div class="inview inview--up">
-                                <div class="subline">
-                                    (Satsification)
-                                </div>
-                                <div class="copy-m">
-                                    While many strive for perfection, we believe in a different approach. Here, we aim for
-                                    99% excellence, knowing that it takes our unique touch to surpass even 100%. It's our
-                                    commitment to go beyond the ordinary and redefine success.</div>
-                            </div>
+                                Brand Guidelines </div>
+
+                            <div class="editor-content copy-s inview inview--up">
+                                We create brand guidelines that serve as a roadmap
+                                for maintaining brand consistency and ensuring all communications align
+                                with your brand's voice and image. </div>
+
                         </div>
-                    </div>
-                    <div class='col'>
-                        <div class="kynote inview inview--up">
-                            <div class="inview inview--line"></div>
-                            <div class="h2 output inview inview--up" data-output="100+">
-                                100+ </div>
+                        <div class="swiper-slide">
                             <div class="inview inview--up">
-                                <div class="subline">
-                                    (Clients)
-                                </div>
-                                <div class="copy-m">
-                                    In our rich history of expertise, we've delighted over a hundred clients, surpassing
-                                    their expectations and achieved their projects and brands, like what they wanted.
-                                </div>
+                                Brand Identity </div>
+
+                            <div class="editor-content copy-s inview inview--up">
+                                We design a cohesive brand identity system, including
+                                color palettes, typography, and visual elements, to establish a strong and
+                                recognizable brand presence.
                             </div>
+
                         </div>
-                        <div class="kynote inview inview--up">
-                            <div class="inview inview--line"></div>
-                            <div class="h2 output inview inview--up" data-output="247">
-                                247 </div>
+                        <div class="swiper-slide">
                             <div class="inview inview--up">
-                                <div class="subline">
-                                    (We're available)
-                                </div>
-                                <div class="copy-m">
-                                    Your ambitions and company requirements don't adhere to clock, so whenever you find an
-                                    idea, you find us. This is not a real number, but it is part of our priority. </div>
-                            </div>
+                                Brand Strategy </div>
+
+                            <div class="editor-content copy-s inview inview--up">
+                                We develop a comprehensive brand strategy that
+                                defines your brand's positioning, values, and personality, ensuring
+                                consistency across all touch points. </div>
+
                         </div>
-                        <div class="kynote inview inview--up">
-                            <div class="inview inview--line"></div>
-                            <div class="h2 output inview inview--up" data-output="+6">
-                                +15 </div>
+                        <div class="swiper-slide">
                             <div class="inview inview--up">
-                                <div class="subline">
-                                    (Years of experience)
-                                </div>
-                                <div class="copy-m">
-                                    With over 15 years of combined experience within our company, we operate cohesively as a
-                                    team. United by a shared vision, we diligently pursue a singular goal: to consistently
-                                    elevate our work to always be eminent. </div>
-                            </div>
+                                Logo Concept and Design </div>
+
+                            <div class="editor-content copy-s inview inview--up">
+                                Our talented designers create unique and
+                                visually appealing logo concepts that convey your brand's essence and
+                                differentiate it from competitors </div>
+
                         </div>
                     </div>
+                    <div class="swiper-scrollbar"></div>
                 </div>
+            </div>
         </section>
 
-        <section class="introtext">
-            <div class="grid-width text-center content-sml">
-                <div class="subline inview inview--up">
-                    (Why Eminent?)
-                </div>
-                <h2 class="inview inview--up">
-                    Embark on the journey </h2>
-                <div class="editor-content inview inview--up">
-                    <p class="p1">Welcome to Eminent Studio, a trailblazing marketing and advertising agency established
-                        in 2023. Our vision is to emerge as the foremost media hub in the Middle East and GCC region,
-                        redefining industry standards. As a startup, our passion lies in delivering high-end luxury services
-                        that elevate brands to unparalleled heights.
-                        <br>
-                        At Eminent Studio, we aspire to be the catalyst that transforms our clients' professional identities
-                        and brands, providing a unique and unparalleled experience. Our mission is to offer a transformative
-                        journey, helping clients embark on new professional identities and brands.
-                    </p>
+        <section class="separator inview inview--up">
+            <div class="grid-width copy-s">
+                <div class="js-seperator">
+                    <div class="separator--text flex">
+                        <div class="flex--strech">
+                            <span class="top"><span>Sec.</span>(01)</span>
+                            <span class="bottom"><span>Sec.</span>(02)</span>
+                        </div>
+                        <div>
+                            <span class="top">Text</span>
+                            <span class="bottom">Text</span>
+                        </div>
+                    </div>
+                    <div class="separator--line inview inview--line"></div>
                 </div>
             </div>
         </section>
 
 
-        <section class="info-swipers">
-            <div class="grid-width">
-                <div class="text-center">
-                    <div class="subline inview inview--up">
-                        (Our values)
-                    </div>
-                </div>
-                <div class="swipers-container info-swipers-content">
-                    <div class="swipers-wrapper">
-                        <div class="swipers-slide">
-                            <div class="subline inview inview--up">
-                                (01)
-                            </div>
-                            <div class="inview inview--up">
-                                Customer-Centered </div>
-
-                            <div class="editor-content copy-s inview inview--up">
-                                We prioritize our customers' needs and aspirations, ensuring that every
-                                interaction and solution is tailored to their specific requirements. We strive to exceed
-                                their expectations and deliver outstanding results that drive their success. </div>
-
-                        </div>
-                        <div class="swipers-slide">
-                            <div class="subline inview inview--up">
-                                (02)
-                            </div>
-                            <div class="inview inview--up">
-                                Excellence in Service </div>
-
-                            <div class="editor-content copy-s inview inview--up">
-                                We are committed to delivering excellence in every aspect of our service.
-                                From the moment our clients engage with us until the completion of their
-                                project, we provide exceptional attention to detail and professionalism. We strive to exceed
-                                expectations and leave a lasting
-                                impression of unparalleled service quality. </div>
-
-                        </div>
-                        <div class="swipers-slide">
-                            <div class="subline inview inview--up">
-                                (03)
-                            </div>
-                            <div class="inview inview--up">
-                                Integrity and Trust </div>
-
-                            <div class="editor-content copy-s inview inview--up">
-                                We prioritize integrity and trust in all our business dealings. Honesty,
-                                transparency, and ethical practices form the foundation of our company.
-                                We build long-lasting relationships with our clients based on trust,
-                                ensuring that their needs and interests are always at the forefront of our
-                                actions.
-                            </div>
-
-                        </div>
-                        <div class="swipers-slide">
-                            <div class="subline inview inview--up">
-                                (04)
-                            </div>
-                            <div class="inview inview--up">
-                                Innovation and Adaptability </div>
-
-                            <div class="editor-content copy-s inview inview--up">
-                                We embrace innovation and continually seek new ways to enhance our
-                                services and stay ahead of the curve. We adapt to evolving client
-                                preferences, industry trends, and technological advancements, ensuring
-                                that we consistently deliver cutting-edge solutions and experiences. </div>
-
-                        </div>
-                        <div class="swipers-slide">
-                            <div class="subline inview inview--up">
-                                (05)
-                            </div>
-                            <div class="inview inview--up">
-                                Accountability </div>
-
-                            <div class="editor-content copy-s inview inview--up">
-                                We take full responsibility for our actions and the outcomes of our work.
-                                We are committed to delivering projects on time, within budget, and to
-                                the highest quality standards. Our team is dedicated to providing reliable,
-                                consistent, and dependable services. </div>
-
-                        </div>
-                        <div class="swipers-slide">
-                            <div class="subline inview inview--up">
-                                (06)
-                            </div>
-                            <div class="inview inview--up">
-                                Personalization </div>
-
-                            <div class="editor-content copy-s inview inview--up">
-                                We believe in the power of customization. We understand that every client
-                                is unique, and we strive to tailor our services to their individual desires and
-                                preferences. Our commitment to personalization ensures that each
-                                experience is truly one-of-a-kind. </div>
-
-                        </div>
-                        <div class="swipers-slide">
-                            <div class="subline inview inview--up">
-                                (07)
-                            </div>
-                            <div class="inview inview--up">
-                                Innovation and Creativity </div>
-
-                            <div class="editor-content copy-s inview inview--up">
-                                We embrace innovation and encourage creative thinking to develop
-                                cutting-edge marketing and advertising strategies. We constantly seek
-                                new ideas, techniques, and technologies to stay ahead of industry trends
-                                and deliver fresh, impactful solutions to our clients.
-                            </div>
-                        </div>
-                    </div>
-                    <div class="swipers-scrollbar"></div>
-                </div>
-            </div>
-        </section>
-
-        <section class="introtext">
-            <div class="grid-width text-center">
-                <div class="subline inview inview--up">
-                    (Team)
-                </div>
-                <h2 class="inview inview--up">
-                    Who's behind eminent?</h2>
-            </div>
-        </section>
-
-        <section class="team" id="team-übersicht">
-            <div class="grid-width">
-                <div class="team-wrapper">
-                    <div class="profile">
-                        <div class="memberimg inview inview--up">
-                            <div class="parallax-section">
-                                <div class="parallax-section--image cover-image scale"
-                                    style="background-image:url({{ asset('uploads/team/mostafa-ansary.jpg') }});">
+        <section>
+            <div class="grid-width project-wrapper">
+                @foreach ($projects as $project)
+                    <a class="js-projectlink inview inview--up" href="{{ route('project.show', $project->slug) }}">
+                        <div class="scale">
+                            <div class="project-image overflow-hidden">
+                                <div class="parallax-section inview2">
+                                    <div class="parallax-section--image cover-image lazyload"
+                                        data-bg="{{ $project->featured_image_url }}">
+                                    </div>
                                 </div>
                             </div>
-
                         </div>
-                        <div class="#">
-                            <div class="copy-l marg"><span class="underline">Mostafa Ansary</span></div>
-                            <div class="copy-s">Head of Branding</div>
-                        </div>
-                    </div>
-                    <div class='profile'>
-                        <div class="memberimg inview inview--up">
-                            <div class="parallax-section">
-                                <div class="parallax-section--image cover-image scale"
-                                    style="background-image:url({{ asset('uploads/team/ehab-osman.jpg') }});">
-                                </div>
-                            </div>
-
-                        </div>
-                        <div class="inview inview--up">
-                            <div class="copy-l marg"><span class="underline">
-                                    Ehab Osman</span></div>
-                            <div class="copy-s">Head of Marketing</div>
-                        </div>
-                    </div>
-                </div>
+                    </a>
+                @endforeach
             </div>
         </section>
 
-        <section class="introtext">
-            <div class="grid-width text-center">
-                <div class="editor-content copy-xl inview inview--up">
-                    <p class="p1">Are you <span style="color:#003BF3">eminent</span> enough <br> to be a part of our
-                        studio ?
-                    </p>
-                </div>
-
-                <div class="flex quicklinks">
-                    <div class="inview inview--up">
-                        <div class="magnet">
-                            <a class="btn" href="studio.html">
-                                <span class="flex">
-                                    Join us</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </section>
-    @endsection
+    </div><!-- /page -->
+@endsection

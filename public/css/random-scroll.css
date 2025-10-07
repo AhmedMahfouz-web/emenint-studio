@@ -1,0 +1,307 @@
+/**
+ * Random Scroll Effect Styles
+ * CSS for directional scroll animations
+ */
+
+/* Base styles for scroll sections */
+.scroll-section {
+    position: relative;
+    min-height: 100vh;
+    overflow: hidden;
+    transform-origin: center center;
+}
+
+/* Smooth scrolling for the entire page */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Container styles for the main page wrapper */
+#page {
+    transform-origin: center center;
+    will-change: transform, filter;
+    backface-visibility: hidden;
+    perspective: 1000px;
+}
+
+/* Prevent scroll during animations */
+body.scroll-locked {
+    overflow: hidden;
+    height: 100vh;
+}
+
+/* Enhanced transition overlay styles */
+.scroll-transition-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 9999;
+    mix-blend-mode: multiply;
+    backdrop-filter: blur(1px);
+}
+
+/* Section-specific enhancements */
+.scroll-section:nth-child(1) {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+.scroll-section:nth-child(2) {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.scroll-section:nth-child(3) {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.scroll-section:nth-child(4) {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.scroll-section:nth-child(5) {
+    background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+}
+
+/* Parallax effect for elements within sections */
+.scroll-section .parallax-element {
+    transform: translateZ(0);
+    will-change: transform;
+    transition: transform 0.1s linear;
+}
+
+/* Direction-specific animations */
+@keyframes slideInRight {
+    from {
+        transform: translateX(100vw) scale(0.8);
+        opacity: 0.7;
+    }
+    to {
+        transform: translateX(0) scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes slideInDownLeft {
+    from {
+        transform: translate(-50vw, 50vh) rotate(-5deg) scale(0.9);
+        opacity: 0.7;
+    }
+    to {
+        transform: translate(0, 0) rotate(0deg) scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes slideInDownRight {
+    from {
+        transform: translate(50vw, 50vh) rotate(5deg) scale(0.9);
+        opacity: 0.7;
+    }
+    to {
+        transform: translate(0, 0) rotate(0deg) scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        transform: translateX(-100vw) scale(0.8);
+        opacity: 0.7;
+    }
+    to {
+        transform: translateX(0) scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes slideInUpRight {
+    from {
+        transform: translate(50vw, -30vh) rotate(3deg) scale(0.95);
+        opacity: 0.7;
+    }
+    to {
+        transform: translate(0, 0) rotate(0deg) scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes slideInDown {
+    from {
+        transform: translateY(30vh) scale(0.95);
+        opacity: 0.7;
+    }
+    to {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+}
+
+/* Apply animations to sections based on their direction */
+.scroll-section[data-direction="right"] {
+    animation: slideInRight 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.scroll-section[data-direction="down-left"] {
+    animation: slideInDownLeft 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.scroll-section[data-direction="down-right"] {
+    animation: slideInDownRight 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.scroll-section[data-direction="left"] {
+    animation: slideInLeft 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.scroll-section[data-direction="up-right"] {
+    animation: slideInUpRight 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.scroll-section[data-direction="down"] {
+    animation: slideInDown 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+/* Loading state styles */
+.scroll-effect-loading {
+    position: relative;
+}
+
+.scroll-effect-loading::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(45deg, #003bf4, #00c4ff);
+    z-index: 10000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.scroll-effect-loading.active::before {
+    opacity: 0.1;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .scroll-section {
+        min-height: 80vh;
+    }
+    
+    /* Reduce transform distances on mobile */
+    @keyframes slideInRight {
+        from {
+            transform: translateX(50vw) scale(0.9);
+        }
+    }
+    
+    @keyframes slideInLeft {
+        from {
+            transform: translateX(-50vw) scale(0.9);
+        }
+    }
+    
+    @keyframes slideInDownLeft {
+        from {
+            transform: translate(-30vw, 30vh) rotate(-3deg) scale(0.95);
+        }
+    }
+    
+    @keyframes slideInDownRight {
+        from {
+            transform: translate(30vw, 30vh) rotate(3deg) scale(0.95);
+        }
+    }
+    
+    @keyframes slideInUpRight {
+        from {
+            transform: translate(30vw, -20vh) rotate(2deg) scale(0.97);
+        }
+    }
+}
+
+/* Accessibility - Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+    #page {
+        transition: none !important;
+    }
+    
+    .scroll-section {
+        animation: none !important;
+    }
+    
+    .scroll-transition-overlay {
+        display: none !important;
+    }
+    
+    html {
+        scroll-behavior: auto;
+    }
+}
+
+/* Debug mode styles */
+.scroll-debug-info {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    font-family: monospace;
+    font-size: 12px;
+    z-index: 10001;
+    max-width: 300px;
+}
+
+.scroll-debug-info h4 {
+    margin: 0 0 10px 0;
+    color: #003bf4;
+}
+
+.scroll-debug-info p {
+    margin: 5px 0;
+}
+
+/* Performance optimizations */
+.scroll-section * {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+/* Smooth transitions for all interactive elements */
+.scroll-section a,
+.scroll-section button,
+.scroll-section .btn {
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.scroll-section a:hover,
+.scroll-section button:hover,
+.scroll-section .btn:hover {
+    transform: translateY(-2px);
+}
+
+/* Custom scrollbar for better visual integration */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #003bf4;
+    border-radius: 4px;
+    transition: background 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #0056b3;
+}

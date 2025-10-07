@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects Messy Scroll Demo</title>
+    <link rel="stylesheet" href="css/projects-messy-scroll.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: #000;
+            color: white;
+        }
+        
+        .demo-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 50px;
+        }
+        
+        .intro-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .outro-section {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+        
+        /* Mock project styles */
+        .latest {
+            background: #111;
+            min-height: 200vh;
+            position: relative;
+        }
+        
+        .mock-project {
+            display: block;
+            text-decoration: none;
+            color: white;
+            margin: 20px;
+            padding: 20px;
+            background: linear-gradient(45deg, #003bf4, #00c4ff);
+            border-radius: 15px;
+            transition: transform 0.3s ease;
+        }
+        
+        .mock-project:hover {
+            transform: scale(1.05);
+        }
+        
+        .project-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+            border-radius: 10px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        
+        .project-title {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        
+        .project-description {
+            font-size: 1rem;
+            opacity: 0.8;
+            line-height: 1.4;
+        }
+        
+        .instructions {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.8);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            z-index: 10000;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(0, 59, 244, 0.5);
+        }
+        
+        .instructions h2 {
+            color: #003bf4;
+            margin-bottom: 20px;
+        }
+        
+        .instructions button {
+            background: #003bf4;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 15px;
+        }
+        
+        .instructions button:hover {
+            background: #0056b3;
+        }
+        
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Instructions overlay -->
+    <div class="instructions" id="instructions">
+        <h2>🌪️ Projects Messy Scroll Demo</h2>
+        <p>This demo shows how the messy scroll effect works:</p>
+        <ul style="text-align: left; margin: 20px 0;">
+            <li><strong>Normal scrolling</strong> through intro section</li>
+            <li><strong>Messy scroll activates</strong> when you reach projects</li>
+            <li><strong>Chaotic navigation</strong> between 10 mock projects</li>
+            <li><strong>Normal scrolling resumes</strong> after projects section</li>
+        </ul>
+        <p><strong>Controls:</strong> Mouse wheel, touch swipe, or arrow keys</p>
+        <button onclick="closeInstructions()">Start Demo</button>
+    </div>
+
+    <!-- Intro section -->
+    <section class="demo-section intro-section">
+        <div>
+            <h1 style="font-size: 3rem; margin-bottom: 20px;">Welcome to Eminent Studio</h1>
+            <p style="font-size: 1.2rem; opacity: 0.8;">Scroll down to experience normal scrolling, then enter the chaotic projects section!</p>
+        </div>
+    </section>
+
+    <!-- Projects section with messy scroll -->
+    <section class="latest">
+        <div style="text-align: center; padding: 50px 0; position: relative; z-index: 100;">
+            <h2 style="font-size: 2.5rem; margin-bottom: 20px; color: #003bf4;">Our Projects</h2>
+            <p style="font-size: 1.1rem; opacity: 0.7; margin-bottom: 40px;">Get ready for a messy, chaotic browsing experience!</p>
+        </div>
+
+        <!-- Mock projects that will be made messy -->
+        <a href="/project/amazing-branding" class="mock-project">
+            <div class="project-image">🎨</div>
+            <div class="project-title">Amazing Branding Project</div>
+            <div class="project-description">A revolutionary branding solution that transforms businesses into memorable experiences.</div>
+        </a>
+
+        <a href="/project/digital-marketing" class="mock-project">
+            <div class="project-image">📱</div>
+            <div class="project-title">Digital Marketing Campaign</div>
+            <div class="project-description">Comprehensive digital strategy that boosted client engagement by 300%.</div>
+        </a>
+
+        <a href="/project/web-development" class="mock-project">
+            <div class="project-image">💻</div>
+            <div class="project-title">Modern Web Development</div>
+            <div class="project-description">Cutting-edge website with seamless user experience and stunning visuals.</div>
+        </a>
+
+        <a href="/project/mobile-app" class="mock-project">
+            <div class="project-image">📲</div>
+            <div class="project-title">Mobile App Design</div>
+            <div class="project-description">Intuitive mobile application that simplifies complex business processes.</div>
+        </a>
+
+        <a href="/project/logo-design" class="mock-project">
+            <div class="project-image">🏷️</div>
+            <div class="project-title">Logo Design Masterpiece</div>
+            <div class="project-description">Iconic logo design that perfectly captures brand essence and values.</div>
+        </a>
+
+        <a href="/project/social-media" class="mock-project">
+            <div class="project-image">📸</div>
+            <div class="project-title">Social Media Strategy</div>
+            <div class="project-description">Viral social media campaign that reached millions of potential customers.</div>
+        </a>
+
+        <a href="/project/ecommerce" class="mock-project">
+            <div class="project-image">🛒</div>
+            <div class="project-title">E-commerce Platform</div>
+            <div class="project-description">Complete online store solution with advanced features and analytics.</div>
+        </a>
+
+        <a href="/project/video-production" class="mock-project">
+            <div class="project-image">🎬</div>
+            <div class="project-title">Video Production</div>
+            <div class="project-description">Cinematic brand video that tells compelling stories and drives action.</div>
+        </a>
+
+        <a href="/project/packaging-design" class="mock-project">
+            <div class="project-image">📦</div>
+            <div class="project-title">Packaging Design</div>
+            <div class="project-description">Award-winning packaging design that stands out on shelves worldwide.</div>
+        </a>
+
+        <a href="/project/corporate-identity" class="mock-project">
+            <div class="project-image">🏢</div>
+            <div class="project-title">Corporate Identity</div>
+            <div class="project-description">Complete corporate identity system that unifies all brand touchpoints.</div>
+        </a>
+    </section>
+
+    <!-- Outro section -->
+    <section class="demo-section outro-section">
+        <div>
+            <h2 style="font-size: 2.5rem; margin-bottom: 20px;">Back to Normal!</h2>
+            <p style="font-size: 1.2rem; opacity: 0.8;">You've experienced the messy scroll effect! Normal scrolling has resumed.</p>
+            <p style="font-size: 1rem; margin-top: 20px;">Add <code>?debug=true</code> to the URL to see debug information.</p>
+        </div>
+    </section>
+
+    <script src="js/projects-messy-scroll.js"></script>
+    <script>
+        function closeInstructions() {
+            document.getElementById('instructions').classList.add('hidden');
+        }
+
+        // Add debug mode if requested
+        if (window.location.search.includes('debug=true')) {
+            document.addEventListener('DOMContentLoaded', function() {
+                const debugInfo = document.createElement('div');
+                debugInfo.className = 'messy-debug-info';
+                debugInfo.innerHTML = '<h4>🌪️ Messy Scroll Debug</h4><p>Loading...</p>';
+                document.body.appendChild(debugInfo);
+                
+                setInterval(() => {
+                    if (window.projectsMessyScroll) {
+                        const info = window.projectsMessyScroll.getCurrentProject();
+                        debugInfo.innerHTML = `
+                            <h4>🌪️ Messy Scroll Debug</h4>
+                            <p><strong>Active:</strong> ${info.isActive}</p>
+                            <p><strong>Current Project:</strong> ${info.index + 1}/${info.total}</p>
+                            <p><strong>Direction:</strong> ${info.direction}</p>
+                            <p><strong>Scroll Position:</strong> ${Math.round(window.scrollY)}px</p>
+                            <p><strong>Projects Found:</strong> ${info.total}</p>
+                        `;
+                    }
+                }, 500);
+            });
+        }
+
+        // Add indicator
+        document.addEventListener('DOMContentLoaded', function() {
+            const indicator = document.createElement('div');
+            indicator.className = 'messy-scroll-indicator';
+            indicator.innerHTML = 'Normal Scroll';
+            document.body.appendChild(indicator);
+            
+            setInterval(() => {
+                if (window.projectsMessyScroll) {
+                    const info = window.projectsMessyScroll.getCurrentProject();
+                    if (info.isActive) {
+                        indicator.innerHTML = `🌪️ Messy Mode<br>Project ${info.index + 1}/${info.total}<br>${info.direction}`;
+                        indicator.classList.add('active');
+                    } else {
+                        indicator.innerHTML = 'Normal Scroll';
+                        indicator.classList.remove('active');
+                    }
+                }
+            }, 500);
+        });
+
+        // Keyboard controls
+        window.addEventListener('keydown', function(e) {
+            if (window.projectsMessyScroll && window.projectsMessyScroll.getCurrentProject().isActive) {
+                if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+                    e.preventDefault();
+                    window.projectsMessyScroll.triggerMessyTransition('down');
+                } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+                    e.preventDefault();
+                    window.projectsMessyScroll.triggerMessyTransition('up');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

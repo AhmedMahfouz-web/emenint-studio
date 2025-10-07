@@ -10,144 +10,165 @@ use Illuminate\Http\UploadedFile;
 class ImageOptimizationService
 {
     protected $manager;
+    protected $maxWidth = 1920;
+    protected $maxHeight = 1920;
+    protected $quality = 80;
 
     public function __construct()
     {
         $this->manager = new ImageManager(new Driver());
     }
 
-    public function processUpload(UploadedFile $uploadedFile, array $options = []): array
+    /**
+     * Convert uploaded image to WebP format and optimize size
+     * 
+     * @param UploadedFile $file
+     * @param string $directory
+     * @param int|null $maxWidth
+     * @param int|null $maxHeight
+     * @param int|null $quality
+     * @return string The storage path of the optimized image
+     */
+    public function optimizeAndConvert(
+        UploadedFile $file, 
+        string $directory = 'project-images',
+        ?int $maxWidth = null,
+        ?int $maxHeight = null,
+        ?int $quality = null
+    ): string {
+        $maxWidth = $maxWidth ?? $this->maxWidth;
+        $maxHeight = $maxHeight ?? $this->maxHeight;
+        $quality = $quality ?? $this->quality;
+
+        // Generate unique filename with .webp extension
+        $filename = time() . '_' . uniqid() . '.webp';
+        $relativePath = $directory . '/' . $filename;
+        $fullPath = storage_path('app/public/' . $relativePath);
+
+        // Ensure directory exists
+        if (!file_exists(dirname($fullPath))) {
+            mkdir(dirname($fullPath), 0755, true);
+        }
+
+        // Load image
+        $image = $this->manager->read($file->getPathname());
+
+        // Get original dimensions
+        $originalWidth = $image->width();
+        $originalHeight = $image->height();
+
+        // Calculate new dimensions while maintaining aspect ratio
+        if ($originalWidth > $maxWidth || $originalHeight > $maxHeight) {
+            $ratio = min($maxWidth / $originalWidth, $maxHeight / $originalHeight);
+            $newWidth = (int) ($originalWidth * $ratio);
+            $newHeight = (int) ($originalHeight * $ratio);
+            
+            $image->resize($newWidth, $newHeight);
+        }
+
+        // Convert to WebP and save
+        $image->toWebp($quality)->save($fullPath);
+
+        // Return the relative path for storage
+        return $relativePath;
+    }
+
+    /**
+     * Process multiple images
+     * 
+     * @param array $files Array of UploadedFile instances
+     * @param string $directory
+     * @return array Array of storage paths
+     */
+    public function optimizeMultiple(array $files, string $directory = 'project-images'): array
+    {
+        $paths = [];
+        
+        foreach ($files as $file) {
+            if ($file instanceof UploadedFile) {
+                $paths[] = $this->optimizeAndConvert($file, $directory);
+            }
+        }
+        
+        return $paths;
+    }
+
+    /**
+     * Delete optimized image
+     * 
+     * @param string $path
+     * @return bool
+     */
+    public function deleteOptimized(string $path): bool
+    {
+        if (Storage::disk('public')->exists($path)) {
+            return Storage::disk('public')->delete($path);
+        }
+        
+        return false;
+    }
+
+    /**
+     * Delete multiple optimized images
+     * 
+     * @param array $paths
+     * @return array Array of deletion results
+     */
+    public function deleteMultiple(array $paths): array
     {
         $results = [];
         
-        // 1. Store original file
-        $originalPath = $this->storeOriginal($uploadedFile);
-        $results['original'] = $originalPath;
-        
-        // 2. Generate WebP versions
-        $webpVersions = $this->generateWebPVersions($originalPath);
-        $results['webp'] = $webpVersions;
-        
-        // 3. Generate JPEG fallbacks
-        $jpegVersions = $this->generateJPEGVersions($originalPath);
-        $results['jpeg'] = $jpegVersions;
-        
-        // 4. Calculate metadata
-        $results['metadata'] = $this->calculateMetadata($uploadedFile, $results);
+        foreach ($paths as $path) {
+            if ($path) {
+                $results[$path] = $this->deleteOptimized($path);
+            }
+        }
         
         return $results;
     }
 
-    protected function storeOriginal(UploadedFile $file): string
+    /**
+     * Clean up old images when updating
+     * 
+     * @param string|array|null $oldImages
+     * @param string|array|null $newImages
+     * @return void
+     */
+    public function cleanupOldImages($oldImages, $newImages): void
     {
-        $filename = time() . '_' . uniqid() . '_original.' . $file->getClientOriginalExtension();
-        $path = $file->storeAs('projects/images/originals', $filename, 'public');
-        return Storage::url($path);
+        // Convert to arrays for consistent handling
+        $oldPaths = $this->normalizeImagePaths($oldImages);
+        $newPaths = $this->normalizeImagePaths($newImages);
+        
+        // Find images that were removed
+        $imagesToDelete = array_diff($oldPaths, $newPaths);
+        
+        // Delete the removed images
+        if (!empty($imagesToDelete)) {
+            $this->deleteMultiple($imagesToDelete);
+        }
     }
 
-    protected function generateWebPVersions(string $originalPath): array
+    /**
+     * Normalize image paths to array format
+     * 
+     * @param string|array|null $images
+     * @return array
+     */
+    private function normalizeImagePaths($images): array
     {
-        $versions = [];
-        $sizes = config('image-optimization.sizes');
-        
-        foreach ($sizes as $sizeName => $dimensions) {
-            if ($sizeName === 'original') {
-                continue;
-            }
-            
-            $webpPath = $this->resizeAndConvert($originalPath, $dimensions, 'webp', $sizeName);
-            $versions[$sizeName] = $webpPath;
+        if (is_null($images)) {
+            return [];
         }
         
-        return $versions;
-    }
-
-    protected function generateJPEGVersions(string $originalPath): array
-    {
-        $versions = [];
-        $sizes = config('image-optimization.sizes');
-        
-        foreach ($sizes as $sizeName => $dimensions) {
-            if ($sizeName === 'original') {
-                continue;
-            }
-            
-            $jpegPath = $this->resizeAndConvert($originalPath, $dimensions, 'jpeg', $sizeName);
-            $versions[$sizeName] = $jpegPath;
+        if (is_string($images)) {
+            return [$images];
         }
         
-        return $versions;
-    }
-
-    protected function resizeAndConvert(string $originalPath, array $dimensions, string $format, string $sizeName): string
-    {
-        // Convert URL back to storage path
-        $storagePath = str_replace('/storage/', '', $originalPath);
-        $fullPath = storage_path('app/public/' . $storagePath);
-        
-        // Load and resize image
-        $image = $this->manager->read($fullPath);
-        
-        if ($dimensions) {
-            $image->resize($dimensions['width'], $dimensions['height'], function ($constraint) {
-                $constraint->aspectRatio();
-                $constraint->upsize();
-            });
+        if (is_array($images)) {
+            return array_filter($images); // Remove empty values
         }
         
-        // Generate filename
-        $filename = time() . '_' . uniqid() . '_' . $sizeName . '.' . $format;
-        $directory = 'projects/images/' . $format;
-        $relativePath = $directory . '/' . $filename;
-        $fullOutputPath = storage_path('app/public/' . $relativePath);
-        
-        // Ensure directory exists
-        if (!file_exists(dirname($fullOutputPath))) {
-            mkdir(dirname($fullOutputPath), 0755, true);
-        }
-        
-        // Save with appropriate quality
-        if ($format === 'webp') {
-            $image->toWebp(config('image-optimization.formats.webp.quality'))->save($fullOutputPath);
-        } else {
-            $image->toJpeg(config('image-optimization.formats.jpeg.quality'))->save($fullOutputPath);
-        }
-        
-        return Storage::url($relativePath);
-    }
-
-    protected function calculateMetadata(UploadedFile $originalFile, array $results): array
-    {
-        $originalSize = $originalFile->getSize();
-        
-        // Calculate optimized size (approximate)
-        $optimizedSize = 0;
-        foreach ($results['webp'] as $webpPath) {
-            $storagePath = str_replace('/storage/', '', $webpPath);
-            $fullPath = storage_path('app/public/' . $storagePath);
-            if (file_exists($fullPath)) {
-                $optimizedSize += filesize($fullPath);
-            }
-        }
-        
-        $compressionRatio = $originalSize > 0 ? (($originalSize - $optimizedSize) / $originalSize) * 100 : 0;
-        
-        return [
-            'original_size' => $this->formatBytes($originalSize),
-            'optimized_size' => $this->formatBytes($optimizedSize),
-            'compression_ratio' => round($compressionRatio, 1) . '%',
-            'dimensions' => getimagesize($originalFile->getPathname()) ?: ['width' => 0, 'height' => 0],
-        ];
-    }
-
-    protected function formatBytes(int $bytes, int $precision = 2): string
-    {
-        $units = ['B', 'KB', 'MB', 'GB'];
-        
-        for ($i = 0; $bytes > 1024 && $i < count($units) - 1; $i++) {
-            $bytes /= 1024;
-        }
-        
-        return round($bytes, $precision) . ' ' . $units[$i];
+        return [];
     }
 }

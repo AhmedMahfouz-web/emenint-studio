@@ -5,12 +5,14 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ProjectResource\Pages;
 use App\Models\Project;
 use App\Models\ServiceCategory;
+use App\Services\ImageOptimizationService;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\UploadedFile;
 
 class ProjectResource extends Resource
 {
@@ -87,12 +89,25 @@ class ProjectResource extends Resource
                 Forms\Components\Section::make('Media')
                     ->schema([
                         Forms\Components\FileUpload::make('featured_image')
+                            ->label('Featured Image (will be converted to WebP)')
                             ->image()
-                            ->directory('project-images'),
+                            ->disk('public')
+                            ->deleteUploadedFileUsing(function ($file) {
+                                $optimizer = app(ImageOptimizationService::class);
+                                return $optimizer->deleteOptimized($file);
+                            })
+                            ->helperText('Image will be automatically converted to WebP format and optimized'),
+                        
                         Forms\Components\FileUpload::make('gallery_images')
+                            ->label('Gallery Images (will be converted to WebP)')
                             ->image()
                             ->multiple()
-                            ->directory('project-images/gallery'),
+                            ->disk('public')
+                            ->deleteUploadedFileUsing(function ($file) {
+                                $optimizer = app(ImageOptimizationService::class);
+                                return $optimizer->deleteOptimized($file);
+                            })
+                            ->helperText('Images will be automatically converted to WebP format and optimized'),
                     ])->columns(2),
 
                 Forms\Components\Section::make('SEO Settings')
@@ -148,7 +163,24 @@ class ProjectResource extends Resource
                                                     $field = Forms\Components\RichEditor::make('content_data.' . $fieldName)->label($label);
                                                     break;
                                                 case 'file_upload':
-                                                    $field = Forms\Components\FileUpload::make('content_data.' . $fieldName)->label($label);
+                                                    $field = Forms\Components\FileUpload::make('content_data.' . $fieldName)
+                                                        ->label($label)
+                                                        ->image()
+                                                        ->disk('public')
+                                                        ->directory('project-images/blocks')
+                                                        ->getUploadedFileNameForStorageUsing(
+                                                            fn (UploadedFile $file): string => (string) str($file->hashName())
+                                                                ->prepend(time() . '_')
+                                                                ->replace('.' . $file->getClientOriginalExtension(), '.webp')
+                                                        )
+                                                        ->saveUploadedFileUsing(function (UploadedFile $file) {
+                                                            $optimizer = app(ImageOptimizationService::class);
+                                                            return $optimizer->optimizeAndConvert($file, 'project-images/blocks', 1920, 1920, 80);
+                                                        })
+                                                        ->deleteUploadedFileUsing(function ($file) {
+                                                            $optimizer = app(ImageOptimizationService::class);
+                                                            return $optimizer->deleteOptimized($file);
+                                                        });
                                                     break;
                                                 case 'toggle':
                                                     $field = Forms\Components\Toggle::make('content_data.' . $fieldName)->label($label);
@@ -178,7 +210,10 @@ class ProjectResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\ImageColumn::make('featured_image')->label('Image'),
+                Tables\Columns\ImageColumn::make('featured_image')
+                    ->label('Image')
+                    ->disk('public')
+                    ->size(60),
 
                 Tables\Columns\TextColumn::make('title')
                     ->searchable()

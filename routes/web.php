@@ -6,6 +6,7 @@ use App\Http\Controllers\ClientController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\CurrencyController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\mailController;
 use App\Http\Controllers\ProductController;
@@ -27,9 +28,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('front.home');
-})->name('home');
+Route::get('/services/{categorySlug}', [App\Http\Controllers\ProjectController::class, 'category'])->name('services.category');
+Route::get('/project/{slug}', [App\Http\Controllers\ProjectController::class, 'show'])->name('project.show');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/studio', function () {
     return view('front.pages.about');
@@ -39,29 +40,29 @@ Route::get('/projects', function () {
     return view('front.pages.projects');
 })->name('projects');
 
-Route::get('/services/branding', function () {
-    return view('front.pages.branding');
-})->name('branding');
+// Route::get('/services/branding', function () {
+//     return view('front.pages.branding');
+// })->name('branding');
 
-Route::get('/services/marketing', function () {
-    return view('front.pages.services.marketing');
-})->name('marketing');
+// Route::get('/services/marketing', function () {
+//     return view('front.pages.services.marketing');
+// })->name('marketing');
 
-Route::get('/services/advertising', function () {
-    return view('front.pages.services.advertising');
-})->name('advertising');
+// Route::get('/services/advertising', function () {
+//     return view('front.pages.services.advertising');
+// })->name('advertising');
 
-Route::get('/services/websites-&-application-development', function () {
-    return view('front.pages.services.development');
-})->name('development');
+// Route::get('/services/websites-&-application-development', function () {
+//     return view('front.pages.services.development');
+// })->name('development');
 
-Route::get('/services/ecommerce', function () {
-    return view('front.pages.services.ecommerce');
-})->name('ecommerce');
+// Route::get('/services/ecommerce', function () {
+//     return view('front.pages.services.ecommerce');
+// })->name('ecommerce');
 
-Route::get('/services/consultant', function () {
-    return view('front.pages.services.consultant');
-})->name('consultant');
+// Route::get('/services/consultant', function () {
+//     return view('front.pages.services.consultant');
+// })->name('consultant');
 
 Route::get('/contact-us', function () {
     return view('front.pages.contact');

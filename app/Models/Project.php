@@ -41,7 +41,6 @@ class Project extends Model
         'is_featured' => 'boolean',
         'project_date' => 'date',
         'completion_date' => 'date',
-        'featured_image' => 'array',
         'gallery_images' => 'array',
         'technologies_used' => 'array',
         'services_provided' => 'array',
@@ -80,5 +79,81 @@ class Project extends Model
     public function getSeoKeywordsAttribute()
     {
         return $this->seo_meta['keywords'] ?? '';
+    }
+
+    /**
+     * Get the featured image URL
+     */
+    public function getFeaturedImageUrlAttribute(): ?string
+    {
+        if (!$this->featured_image) {
+            return null;
+        }
+        
+        return asset('storage/' . $this->featured_image);
+    }
+
+    /**
+     * Get gallery image URLs
+     */
+    public function getGalleryImageUrlsAttribute(): array
+    {
+        if (!$this->gallery_images || !is_array($this->gallery_images)) {
+            return [];
+        }
+        
+        return array_map(function ($image) {
+            return asset('storage/' . $image);
+        }, $this->gallery_images);
+    }
+
+    /**
+     * Set featured image attribute with optimization
+     */
+    public function setFeaturedImageAttribute($value)
+    {
+        if ($value instanceof \Illuminate\Http\UploadedFile) {
+            $optimizer = app(\App\Services\ImageOptimizationService::class);
+            $this->attributes['featured_image'] = $optimizer->optimizeAndConvert(
+                $value,
+                'project-images',
+                1920,
+                1920,
+                80
+            );
+        } else {
+            $this->attributes['featured_image'] = $value;
+        }
+    }
+
+    /**
+     * Set gallery images attribute with optimization
+     */
+    public function setGalleryImagesAttribute($value)
+    {
+        if (is_array($value)) {
+            $optimizer = app(\App\Services\ImageOptimizationService::class);
+            $optimizedPaths = [];
+            
+            foreach ($value as $file) {
+                if ($file instanceof \Illuminate\Http\UploadedFile) {
+                    // Optimize and convert to WebP
+                    $optimizedPaths[] = $optimizer->optimizeAndConvert(
+                        $file,
+                        'project-images/gallery',
+                        1920,
+                        1920,
+                        80
+                    );
+                } elseif (is_string($file)) {
+                    // Keep existing file paths
+                    $optimizedPaths[] = $file;
+                }
+            }
+            
+            $this->attributes['gallery_images'] = json_encode($optimizedPaths);
+        } else {
+            $this->attributes['gallery_images'] = $value;
+        }
     }
 }

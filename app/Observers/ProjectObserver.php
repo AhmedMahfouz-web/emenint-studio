@@ -4,81 +4,53 @@ namespace App\Observers;
 
 use App\Models\Project;
 use App\Services\ImageOptimizationService;
-use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Arr;
 
 class ProjectObserver
 {
-    protected $optimizationService;
+    protected $imageOptimizer;
 
-    public function __construct(ImageOptimizationService $optimizationService)
+    public function __construct(ImageOptimizationService $imageOptimizer)
     {
-        $this->optimizationService = $optimizationService;
+        $this->imageOptimizer = $imageOptimizer;
     }
 
-    public function saving(Project $project): void
+    /**
+     * Handle the Project "updating" event.
+     */
+    public function updating(Project $project): void
     {
-        if ($project->isDirty('featured_image') && $project->featured_image instanceof UploadedFile) {
-            $this->deleteImageSet($project->getOriginal('featured_image'));
-            $project->featured_image = $this->optimizationService->processUpload($project->featured_image);
+        // Clean up featured image if changed
+        if ($project->isDirty('featured_image')) {
+            $oldImage = $project->getOriginal('featured_image');
+            $newImage = $project->featured_image;
+            
+            if ($oldImage && $oldImage !== $newImage) {
+                $this->imageOptimizer->deleteOptimized($oldImage);
+            }
         }
 
-        if ($project->isDirty('gallery_images') && is_array($project->gallery_images)) {
-            $originalGallery = $project->getOriginal('gallery_images') ?? [];
-            $newGallery = [];
-            $keptImageOriginalPaths = [];
-
-            foreach ($project->gallery_images as $image) {
-                if ($image instanceof UploadedFile) {
-                    $newGallery[] = $this->optimizationService->processUpload($image);
-                } else {
-                    $imageData = is_string($image) ? json_decode($image, true) : $image;
-                    if (is_array($imageData) && isset($imageData['original'])) {
-                        $newGallery[] = $imageData;
-                        $keptImageOriginalPaths[] = $imageData['original'];
-                    }
-                }
-            }
-
-            foreach ($originalGallery as $oldImage) {
-                $oldImageData = is_string($oldImage) ? json_decode($oldImage, true) : $oldImage;
-                if (is_array($oldImageData) && isset($oldImageData['original']) && !in_array($oldImageData['original'], $keptImageOriginalPaths)) {
-                    $this->deleteImageSet($oldImageData);
-                }
-            }
-
-            $project->gallery_images = $newGallery;
+        // Clean up gallery images if changed
+        if ($project->isDirty('gallery_images')) {
+            $oldImages = $project->getOriginal('gallery_images') ?? [];
+            $newImages = $project->gallery_images ?? [];
+            
+            $this->imageOptimizer->cleanupOldImages($oldImages, $newImages);
         }
     }
 
+    /**
+     * Handle the Project "deleted" event.
+     */
     public function deleted(Project $project): void
     {
-        $this->deleteImageSet($project->featured_image);
-        if (is_array($project->gallery_images)) {
-            foreach ($project->gallery_images as $image) {
-                $this->deleteImageSet($image);
-            }
+        // Delete featured image
+        if ($project->featured_image) {
+            $this->imageOptimizer->deleteOptimized($project->featured_image);
         }
-    }
 
-    protected function deleteImageSet($imageSet): void
-    {
-        if (empty($imageSet)) return;
-
-        $imageData = is_string($imageSet) ? json_decode($imageSet, true) : $imageSet;
-        if (!is_array($imageData)) return;
-
-        $filesToDelete = [];
-        $filesToDelete[] = Arr::get($imageData, 'original');
-        $filesToDelete = array_merge($filesToDelete, array_values(Arr::get($imageData, 'webp', [])));
-        $filesToDelete = array_merge($filesToDelete, array_values(Arr::get($imageData, 'jpeg', [])));
-
-        foreach ($filesToDelete as $fileUrl) {
-            if ($fileUrl) {
-                $path = str_replace(Storage::url(''), '', $fileUrl);
-                Storage::disk('public')->delete($path);
-            }
+        // Delete all gallery images
+        if ($project->gallery_images && is_array($project->gallery_images)) {
+            $this->imageOptimizer->deleteMultiple($project->gallery_images);
         }
     }
 }
