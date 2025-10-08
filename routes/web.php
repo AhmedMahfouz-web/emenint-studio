@@ -37,16 +37,23 @@ Route::get('/test-webp', function () {
     $webpSupport = function_exists('imagewebp');
     $gdInfo = gd_info();
     
-    // Check if project-images directory exists
-    $projectImagesPath = storage_path('app/public/project-images');
-    $directoryExists = is_dir($projectImagesPath);
+    // Check if project-images directory exists using Storage facade
+    $disk = \Illuminate\Support\Facades\Storage::disk('public');
+    $directoryExists = $disk->exists('project-images');
     
-    // Get recent WebP files
+    // Get recent WebP files using Storage facade
     $webpFiles = [];
     if ($directoryExists) {
-        $files = glob($projectImagesPath . '/*.webp');
-        $webpFiles = array_map('basename', array_slice($files, -5)); // Last 5 WebP files
+        $allFiles = $disk->files('project-images');
+        $webpFiles = array_filter($allFiles, function($file) {
+            return pathinfo($file, PATHINFO_EXTENSION) === 'webp';
+        });
+        $webpFiles = array_map('basename', array_slice($webpFiles, -5)); // Last 5 WebP files
     }
+    
+    // Get storage configuration info
+    $storageConfig = config('filesystems.disks.public');
+    $storagePath = $storageConfig['root'] ?? 'Not configured';
     
     return response()->json([
         'webp_function_exists' => $webpSupport,
@@ -56,6 +63,11 @@ Route::get('/test-webp', function () {
         'storage_path_writable' => is_writable(storage_path('app/public')),
         'project_images_directory_exists' => $directoryExists,
         'recent_webp_files' => $webpFiles,
+        'storage_configuration' => [
+            'disk' => 'public',
+            'root_path' => $storagePath,
+            'url' => $storageConfig['url'] ?? 'Not configured',
+        ],
         'gd_info' => $gdInfo,
     ]);
 });

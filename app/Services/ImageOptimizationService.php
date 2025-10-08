@@ -45,11 +45,14 @@ class ImageOptimizationService
             // Generate unique filename with .webp extension
             $filename = time() . '_' . uniqid() . '.webp';
             $relativePath = $directory . '/' . $filename;
-            $fullPath = storage_path('app/public/' . $relativePath);
-
-            // Ensure directory exists
-            if (!file_exists(dirname($fullPath))) {
-                mkdir(dirname($fullPath), 0755, true);
+            
+            // Use Laravel's Storage facade with the public disk configuration
+            $disk = Storage::disk('public');
+            
+            // Ensure directory exists using Storage facade
+            $directoryPath = dirname($relativePath);
+            if (!$disk->exists($directoryPath)) {
+                $disk->makeDirectory($directoryPath);
             }
 
             // Load image
@@ -68,11 +71,13 @@ class ImageOptimizationService
                 $image->resize($newWidth, $newHeight);
             }
 
-            // Convert to WebP and save
-            $image->toWebp($quality)->save($fullPath);
+            // Convert to WebP and save using Storage facade
+            $webpData = $image->toWebp($quality)->toString();
+            $disk->put($relativePath, $webpData);
 
             // Log successful conversion
             Log::info("WebP conversion successful: {$file->getClientOriginalName()} -> {$filename}");
+            Log::info("Saved to storage disk: public/{$relativePath}");
 
             // Return the relative path for storage
             return $relativePath;
@@ -81,13 +86,13 @@ class ImageOptimizationService
             // Log error and fallback to original file upload
             Log::error("WebP conversion failed for {$file->getClientOriginalName()}: " . $e->getMessage());
             
-            // Fallback: save original file without conversion
+            // Fallback: save original file without conversion using Storage facade
             $originalExtension = $file->getClientOriginalExtension();
             $filename = time() . '_' . uniqid() . '.' . $originalExtension;
             $relativePath = $directory . '/' . $filename;
             
-            // Store original file
-            $file->storeAs('public/' . $directory, $filename);
+            // Store original file using Storage facade
+            $file->storeAs($directory, $filename, 'public');
             
             return $relativePath;
         }
