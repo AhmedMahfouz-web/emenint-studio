@@ -92,6 +92,11 @@ class ProjectResource extends Resource
                             ->label('Featured Image (will be converted to WebP)')
                             ->image()
                             ->disk('public')
+                            ->storeFileNamesIn('featured_image_file_names')
+                            ->saveUploadedFileUsing(function (UploadedFile $file) {
+                                $optimizer = app(ImageOptimizationService::class);
+                                return $optimizer->optimizeAndConvert($file, 'project-images');
+                            })
                             ->deleteUploadedFileUsing(function ($file) {
                                 $optimizer = app(ImageOptimizationService::class);
                                 return $optimizer->deleteOptimized($file);
@@ -103,6 +108,11 @@ class ProjectResource extends Resource
                             ->image()
                             ->multiple()
                             ->disk('public')
+                            ->storeFileNamesIn('gallery_images_file_names')
+                            ->saveUploadedFileUsing(function (UploadedFile $file) {
+                                $optimizer = app(ImageOptimizationService::class);
+                                return $optimizer->optimizeAndConvert($file, 'project-images');
+                            })
                             ->deleteUploadedFileUsing(function ($file) {
                                 $optimizer = app(ImageOptimizationService::class);
                                 return $optimizer->deleteOptimized($file);

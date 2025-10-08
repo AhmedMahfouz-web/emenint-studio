@@ -32,11 +32,6 @@ Route::get('/services/{categorySlug}', [App\Http\Controllers\ProjectController::
 Route::get('/project/{slug}', [App\Http\Controllers\ProjectController::class, 'show'])->name('project.show');
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-// Test route to check if routing works
-Route::get('/test-admin', function () {
-    return 'Admin routing works! Try /admin now';
-});
-
 Route::get('/studio', function () {
     return view('front.pages.about');
 })->name('about');
