@@ -32,6 +32,20 @@ Route::get('/services/{categorySlug}', [App\Http\Controllers\ProjectController::
 Route::get('/project/{slug}', [App\Http\Controllers\ProjectController::class, 'show'])->name('project.show');
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
+// Test WebP support
+Route::get('/test-webp', function () {
+    $webpSupport = function_exists('imagewebp');
+    $gdInfo = gd_info();
+    
+    return response()->json([
+        'webp_function_exists' => $webpSupport,
+        'gd_webp_support' => $gdInfo['WebP Support'] ?? false,
+        'intervention_image_installed' => class_exists('Intervention\Image\ImageManager'),
+        'image_optimization_service_exists' => class_exists('App\Services\ImageOptimizationService'),
+        'storage_path_writable' => is_writable(storage_path('app/public')),
+    ]);
+});
+
 Route::get('/studio', function () {
     return view('front.pages.about');
 })->name('about');

@@ -89,35 +89,19 @@ class ProjectResource extends Resource
                 Forms\Components\Section::make('Media')
                     ->schema([
                         Forms\Components\FileUpload::make('featured_image')
-                            ->label('Featured Image (will be converted to WebP)')
+                            ->label('Featured Image')
                             ->image()
                             ->disk('public')
-                            ->storeFileNamesIn('featured_image_file_names')
-                            ->saveUploadedFileUsing(function (UploadedFile $file) {
-                                $optimizer = app(ImageOptimizationService::class);
-                                return $optimizer->optimizeAndConvert($file, 'project-images');
-                            })
-                            ->deleteUploadedFileUsing(function ($file) {
-                                $optimizer = app(ImageOptimizationService::class);
-                                return $optimizer->deleteOptimized($file);
-                            })
-                            ->helperText('Image will be automatically converted to WebP format and optimized'),
+                            ->directory('project-images')
+                            ->helperText('Upload JPG/PNG images - they will be optimized automatically'),
                         
                         Forms\Components\FileUpload::make('gallery_images')
-                            ->label('Gallery Images (will be converted to WebP)')
+                            ->label('Gallery Images')
                             ->image()
                             ->multiple()
                             ->disk('public')
-                            ->storeFileNamesIn('gallery_images_file_names')
-                            ->saveUploadedFileUsing(function (UploadedFile $file) {
-                                $optimizer = app(ImageOptimizationService::class);
-                                return $optimizer->optimizeAndConvert($file, 'project-images');
-                            })
-                            ->deleteUploadedFileUsing(function ($file) {
-                                $optimizer = app(ImageOptimizationService::class);
-                                return $optimizer->deleteOptimized($file);
-                            })
-                            ->helperText('Images will be automatically converted to WebP format and optimized'),
+                            ->directory('project-images')
+                            ->helperText('Upload JPG/PNG images - they will be optimized automatically'),
                     ])->columns(2),
 
                 Forms\Components\Section::make('SEO Settings')
