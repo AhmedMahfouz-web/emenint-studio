@@ -107,53 +107,5 @@ class Project extends Model
         }, $this->gallery_images);
     }
 
-    /**
-     * Set featured image attribute with optimization
-     */
-    public function setFeaturedImageAttribute($value)
-    {
-        if ($value instanceof \Illuminate\Http\UploadedFile) {
-            $optimizer = app(\App\Services\ImageOptimizationService::class);
-            $this->attributes['featured_image'] = $optimizer->optimizeAndConvert(
-                $value,
-                'project-images',
-                1920,
-                1920,
-                80
-            );
-        } else {
-            $this->attributes['featured_image'] = $value;
-        }
-    }
-
-    /**
-     * Set gallery images attribute with optimization
-     */
-    public function setGalleryImagesAttribute($value)
-    {
-        if (is_array($value)) {
-            $optimizer = app(\App\Services\ImageOptimizationService::class);
-            $optimizedPaths = [];
-            
-            foreach ($value as $file) {
-                if ($file instanceof \Illuminate\Http\UploadedFile) {
-                    // Optimize and convert to WebP
-                    $optimizedPaths[] = $optimizer->optimizeAndConvert(
-                        $file,
-                        'project-images/gallery',
-                        1920,
-                        1920,
-                        80
-                    );
-                } elseif (is_string($file)) {
-                    // Keep existing file paths
-                    $optimizedPaths[] = $file;
-                }
-            }
-            
-            $this->attributes['gallery_images'] = json_encode($optimizedPaths);
-        } else {
-            $this->attributes['gallery_images'] = $value;
-        }
-    }
+    // Removed model mutators - WebP conversion now handled by Filament callbacks
 }

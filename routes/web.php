@@ -32,10 +32,21 @@ Route::get('/services/{categorySlug}', [App\Http\Controllers\ProjectController::
 Route::get('/project/{slug}', [App\Http\Controllers\ProjectController::class, 'show'])->name('project.show');
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-// Test WebP support
+// Test WebP support and conversion
 Route::get('/test-webp', function () {
     $webpSupport = function_exists('imagewebp');
     $gdInfo = gd_info();
+    
+    // Check if project-images directory exists
+    $projectImagesPath = storage_path('app/public/project-images');
+    $directoryExists = is_dir($projectImagesPath);
+    
+    // Get recent WebP files
+    $webpFiles = [];
+    if ($directoryExists) {
+        $files = glob($projectImagesPath . '/*.webp');
+        $webpFiles = array_map('basename', array_slice($files, -5)); // Last 5 WebP files
+    }
     
     return response()->json([
         'webp_function_exists' => $webpSupport,
@@ -43,6 +54,9 @@ Route::get('/test-webp', function () {
         'intervention_image_installed' => class_exists('Intervention\Image\ImageManager'),
         'image_optimization_service_exists' => class_exists('App\Services\ImageOptimizationService'),
         'storage_path_writable' => is_writable(storage_path('app/public')),
+        'project_images_directory_exists' => $directoryExists,
+        'recent_webp_files' => $webpFiles,
+        'gd_info' => $gdInfo,
     ]);
 });
 

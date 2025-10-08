@@ -5,6 +5,7 @@ namespace App\Services;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Http\UploadedFile;
 
 class ImageOptimizationService
@@ -36,41 +37,60 @@ class ImageOptimizationService
         ?int $maxHeight = null,
         ?int $quality = null
     ): string {
-        $maxWidth = $maxWidth ?? $this->maxWidth;
-        $maxHeight = $maxHeight ?? $this->maxHeight;
-        $quality = $quality ?? $this->quality;
+        try {
+            $maxWidth = $maxWidth ?? $this->maxWidth;
+            $maxHeight = $maxHeight ?? $this->maxHeight;
+            $quality = $quality ?? $this->quality;
 
-        // Generate unique filename with .webp extension
-        $filename = time() . '_' . uniqid() . '.webp';
-        $relativePath = $directory . '/' . $filename;
-        $fullPath = storage_path('app/public/' . $relativePath);
+            // Generate unique filename with .webp extension
+            $filename = time() . '_' . uniqid() . '.webp';
+            $relativePath = $directory . '/' . $filename;
+            $fullPath = storage_path('app/public/' . $relativePath);
 
-        // Ensure directory exists
-        if (!file_exists(dirname($fullPath))) {
-            mkdir(dirname($fullPath), 0755, true);
-        }
+            // Ensure directory exists
+            if (!file_exists(dirname($fullPath))) {
+                mkdir(dirname($fullPath), 0755, true);
+            }
 
-        // Load image
-        $image = $this->manager->read($file->getPathname());
+            // Load image
+            $image = $this->manager->read($file->getPathname());
 
-        // Get original dimensions
-        $originalWidth = $image->width();
-        $originalHeight = $image->height();
+            // Get original dimensions
+            $originalWidth = $image->width();
+            $originalHeight = $image->height();
 
-        // Calculate new dimensions while maintaining aspect ratio
-        if ($originalWidth > $maxWidth || $originalHeight > $maxHeight) {
-            $ratio = min($maxWidth / $originalWidth, $maxHeight / $originalHeight);
-            $newWidth = (int) ($originalWidth * $ratio);
-            $newHeight = (int) ($originalHeight * $ratio);
+            // Calculate new dimensions while maintaining aspect ratio
+            if ($originalWidth > $maxWidth || $originalHeight > $maxHeight) {
+                $ratio = min($maxWidth / $originalWidth, $maxHeight / $originalHeight);
+                $newWidth = (int) ($originalWidth * $ratio);
+                $newHeight = (int) ($originalHeight * $ratio);
+                
+                $image->resize($newWidth, $newHeight);
+            }
+
+            // Convert to WebP and save
+            $image->toWebp($quality)->save($fullPath);
+
+            // Log successful conversion
+            Log::info("WebP conversion successful: {$file->getClientOriginalName()} -> {$filename}");
+
+            // Return the relative path for storage
+            return $relativePath;
             
-            $image->resize($newWidth, $newHeight);
+        } catch (\Exception $e) {
+            // Log error and fallback to original file upload
+            Log::error("WebP conversion failed for {$file->getClientOriginalName()}: " . $e->getMessage());
+            
+            // Fallback: save original file without conversion
+            $originalExtension = $file->getClientOriginalExtension();
+            $filename = time() . '_' . uniqid() . '.' . $originalExtension;
+            $relativePath = $directory . '/' . $filename;
+            
+            // Store original file
+            $file->storeAs('public/' . $directory, $filename);
+            
+            return $relativePath;
         }
-
-        // Convert to WebP and save
-        $image->toWebp($quality)->save($fullPath);
-
-        // Return the relative path for storage
-        return $relativePath;
     }
 
     /**

@@ -93,7 +93,11 @@ class ProjectResource extends Resource
                             ->image()
                             ->disk('public')
                             ->directory('project-images')
-                            ->helperText('Upload JPG/PNG images - they will be optimized automatically'),
+                            ->saveUploadedFileUsing(function (UploadedFile $file, $component) {
+                                $optimizer = app(ImageOptimizationService::class);
+                                return $optimizer->optimizeAndConvert($file, 'project-images');
+                            })
+                            ->helperText('Images will be automatically converted to WebP format'),
                         
                         Forms\Components\FileUpload::make('gallery_images')
                             ->label('Gallery Images')
@@ -101,7 +105,11 @@ class ProjectResource extends Resource
                             ->multiple()
                             ->disk('public')
                             ->directory('project-images')
-                            ->helperText('Upload JPG/PNG images - they will be optimized automatically'),
+                            ->saveUploadedFileUsing(function (UploadedFile $file, $component) {
+                                $optimizer = app(ImageOptimizationService::class);
+                                return $optimizer->optimizeAndConvert($file, 'project-images');
+                            })
+                            ->helperText('Images will be automatically converted to WebP format'),
                     ])->columns(2),
 
                 Forms\Components\Section::make('SEO Settings')
