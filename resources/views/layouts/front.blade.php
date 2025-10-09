@@ -154,6 +154,7 @@
 <script type="text/javascript" src="{{ asset('blocks/team/team3781.js?ver=6.2.2') }}" id="block-acf-team-js"></script>
 <script type="text/javascript" src="{{ asset('js/main.js') }}"></script>
 <script type="text/javascript" src="{{ asset('js/swiper-bundle.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('js/adaptive-header.js') }}"></script>
 <script>
     $(window).on('load', function() {
         $('.loader-wrapper').fadeOut('slow');

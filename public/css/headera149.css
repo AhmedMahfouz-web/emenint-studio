@@ -225,4 +225,96 @@
 
 body.mega-menu--open #header.nav-up {
     transform: translateY(0);
-} /*# sourceMappingURL=header.css.map */
+}
+
+/* Adaptive Header Enhancements */
+#header {
+    transition: all 0.25s ease, transform 0.25s ease;
+}
+
+#header .adaptive-text {
+    transition: color 0.3s ease, fill 0.3s ease, background-color 0.3s ease;
+}
+
+/* Dark mode - white text for dark backgrounds */
+#header.header-dark #logo .cls-2 {
+    fill: #ffffff !important;
+    transition: fill 0.3s ease;
+}
+
+#header.header-dark .main-menu a span {
+    color: #ffffff !important;
+    transition: color 0.3s ease;
+}
+
+#header.header-dark .burger-inner span {
+    background-color: #ffffff !important;
+    transition: background-color 0.3s ease;
+}
+
+#header.header-dark .brand-login {
+    color: #ffffff !important;
+    border-color: #ffffff !important;
+    transition: color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Light mode - dark text for light backgrounds */
+#header.header-light #logo .cls-2 {
+    fill: #212121 !important;
+    transition: fill 0.3s ease;
+}
+
+#header.header-light .main-menu a span {
+    color: #212121 !important;
+    transition: color 0.3s ease;
+}
+
+#header.header-light .burger-inner span {
+    background-color: #212121 !important;
+    transition: background-color 0.3s ease;
+}
+
+#header.header-light .brand-login {
+    color: #212121 !important;
+    border-color: #212121 !important;
+    transition: color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Hover states for adaptive header */
+#header.header-dark .main-menu a:hover span {
+    color: #cccccc !important;
+}
+
+#header.header-light .main-menu a:hover span {
+    color: #555555 !important;
+}
+
+/* CSS-only fallback using mix-blend-mode for modern browsers */
+@supports (mix-blend-mode: difference) {
+    .adaptive-header-fallback #header #logo .cls-2 {
+        mix-blend-mode: difference;
+        fill: #ffffff;
+    }
+    
+    .adaptive-header-fallback #header .main-menu a span {
+        mix-blend-mode: difference;
+        color: #ffffff;
+    }
+    
+    .adaptive-header-fallback #header .burger-inner span {
+        mix-blend-mode: difference;
+        background-color: #ffffff;
+    }
+}
+
+/* Ensure blue accent color stays consistent */
+#header #logo .cls-155 {
+    fill: #003bf4 !important;
+}
+
+#header.header-dark #logo .cls-155,
+#header.header-light #logo .cls-155 {
+    fill: #003bf4 !important;
+}
+
+/*# sourceMappingURL=header.css.map */
