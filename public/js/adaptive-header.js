@@ -286,12 +286,14 @@ class AdaptiveHeader {
             // Get the average brightness of the area behind the header
             const brightness = this.getBackgroundBrightness(centerX, centerY, headerRect);
             
-            // Determine if we need light or dark text
-            const shouldUseDarkText = brightness > this.config.threshold;
-            const newMode = shouldUseDarkText ? 'light' : 'dark';
+            // Determine if we need light or dark text (INVERTED LOGIC)
+            // If background is bright (>threshold), use dark text (light mode)
+            // If background is dark (<threshold), use light text (dark mode)
+            const shouldUseLightText = brightness < this.config.threshold;
+            const newMode = shouldUseLightText ? 'dark' : 'light';
 
             // Add debugging information
-            console.log(`Background brightness: ${brightness.toFixed(3)}, Mode: ${newMode}, Threshold: ${this.config.threshold}`);
+            console.log(`Background brightness: ${brightness.toFixed(3)}, Mode: ${newMode} (${shouldUseLightText ? 'light text' : 'dark text'}), Threshold: ${this.config.threshold}`);
 
             if (newMode !== this.currentMode) {
                 this.updateHeaderMode(newMode);
@@ -559,14 +561,14 @@ class AdaptiveHeader {
         
         // Check element context if available
         if (element) {
-            const textElements = element.querySelectorAll('.color-white, [class*="white"], .text-white');
-            if (textElements.length > 0) {
-                return 0.2; // If there's white text, background is probably dark
+            const whiteTextElements = element.querySelectorAll('.color-white, [class*="white"], .text-white');
+            if (whiteTextElements.length > 0) {
+                return 0.2; // If there's white text, background is dark (low brightness)
             }
             
             const darkTextElements = element.querySelectorAll('.color-black, [class*="black"], .text-black, .text-dark');
             if (darkTextElements.length > 0) {
-                return 0.8; // If there's dark text, background is probably light
+                return 0.8; // If there's dark text, background is light (high brightness)
             }
         }
         
@@ -668,14 +670,15 @@ class AdaptiveHeader {
             
             // If overlay text is white/light, video is probably dark
             if (textColor) {
-                const brightness = this.getColorBrightness(textColor);
-                // Invert the logic - if text is light, background is dark
-                return brightness > 0.5 ? 0.2 : 0.8;
+                const textBrightness = this.getColorBrightness(textColor);
+                // If text is light (bright), background is dark (return low brightness)
+                // If text is dark, background is light (return high brightness)
+                return textBrightness > 0.5 ? 0.2 : 0.8;
             }
         }
         
-        // Default to neutral and let other detection methods handle it
-        return 0.3; // Slightly dark assumption for videos
+        // Default to dark assumption for videos (low brightness value)
+        return 0.2; // Most hero videos are dark backgrounds
     }
 
     /**
