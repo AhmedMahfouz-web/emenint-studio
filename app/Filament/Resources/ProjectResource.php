@@ -13,6 +13,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Log;
 
 class ProjectResource extends Resource
 {
@@ -93,11 +94,11 @@ class ProjectResource extends Resource
                             ->image()
                             ->disk('public')
                             ->directory('project-images')
-                            ->saveUploadedFileUsing(function (UploadedFile $file, $component) {
-                                $optimizer = app(ImageOptimizationService::class);
-                                return $optimizer->optimizeAndConvert($file, 'project-images');
-                            })
-                            ->helperText('Images will be automatically converted to WebP format'),
+                            ->visibility('public')
+                            ->maxSize(10240) // 10MB
+                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
+                            ->helperText('Upload a featured image for this project. Max size: 10MB.')
+                            ->required(false),
                         
                         Forms\Components\FileUpload::make('gallery_images')
                             ->label('Gallery Images (Legacy)')

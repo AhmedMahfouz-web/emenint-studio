@@ -9,6 +9,7 @@ use Filament\Forms;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Http\UploadedFile;
 use App\Services\ImageOptimizationService;
+use Illuminate\Support\Facades\Log;
 
 class EditProject extends EditRecord
 {
@@ -64,5 +65,23 @@ class EditProject extends EditRecord
                 
             Actions\DeleteAction::make(),
         ];
+    }
+
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        // Debug: Log the form data before saving
+        Log::info('Project update data:', $data);
+        
+        return $data;
+    }
+
+    protected function afterSave(): void
+    {
+        // Debug: Log the updated project data
+        Log::info('Project updated successfully:', [
+            'id' => $this->record->id,
+            'title' => $this->record->title,
+            'featured_image' => $this->record->featured_image,
+        ]);
     }
 }

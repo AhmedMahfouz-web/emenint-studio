@@ -136,5 +136,5 @@ class Project extends Model
         })->toArray();
     }
 
-    // Removed model mutators - WebP conversion now handled by Filament callbacks
+    // Basic model - no complex image processing for now
 }
