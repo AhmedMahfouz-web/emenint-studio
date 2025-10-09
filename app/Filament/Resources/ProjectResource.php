@@ -117,7 +117,7 @@ class ProjectResource extends Resource
                     ->schema([
                         Forms\Components\Placeholder::make('gallery_info')
                             ->label('')
-                            ->content('Add and manage project images after creating the project. Use the "Add Images" button in the edit page for bulk uploads.')
+                            ->content('📸 **Project images can be added after creation.** Use the "Bulk Upload Images" button in the edit page to select and upload multiple images at once.')
                             ->columnSpanFull()
                             ->visible(fn ($context) => $context === 'create'),
 

@@ -18,36 +18,64 @@ class EditProject extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\Action::make('add_images')
-                ->label('Add Images')
-                ->icon('heroicon-o-plus')
+            Actions\Action::make('bulk_upload')
+                ->label('Bulk Upload Images')
+                ->icon('heroicon-o-photo')
                 ->color('success')
-                ->action(function () {
-                    // Get current max sort order
-                    $maxSortOrder = $this->record->projectImages()->max('sort_order') ?? 0;
-                    
-                    // Add 5 empty image slots for easy upload
-                    for ($i = 1; $i <= 5; $i++) {
-                        ProjectImage::create([
-                            'project_id' => $this->record->id,
-                            'image_path' => '', // Empty path - user will upload
-                            'alt_text' => 'Project Image',
-                            'sort_order' => $maxSortOrder + $i,
-                        ]);
+                ->form([
+                    Forms\Components\FileUpload::make('bulk_images')
+                        ->label('Select Multiple Images')
+                        ->image()
+                        ->multiple()
+                        ->disk('public')
+                        ->directory('project-images')
+                        ->maxFiles(50)
+                        ->panelLayout('grid')
+                        ->imagePreviewHeight('120')
+                        ->visibility('public')
+                        ->maxSize(10240) // 10MB per file
+                        ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
+                        ->helperText('Select up to 50 images to upload at once. Max size: 10MB per image.')
+                        ->required()
+                        ->columnSpanFull(),
+                ])
+                ->action(function (array $data) {
+                    if (!isset($data['bulk_images']) || empty($data['bulk_images'])) {
+                        \Filament\Notifications\Notification::make()
+                            ->title('No images selected')
+                            ->warning()
+                            ->send();
+                        return;
                     }
                     
+                    // Get current max sort order
+                    $maxSortOrder = $this->record->projectImages()->max('sort_order') ?? 0;
+                    $uploadedCount = 0;
+                    
+                    // Create ProjectImage records for each uploaded file
+                    foreach ($data['bulk_images'] as $imagePath) {
+                        ProjectImage::create([
+                            'project_id' => $this->record->id,
+                            'image_path' => $imagePath,
+                            'alt_text' => 'Project Image',
+                            'sort_order' => ++$maxSortOrder,
+                        ]);
+                        $uploadedCount++;
+                    }
+                    
+                    // Refresh the form to show new images
                     $this->refreshFormData(['projectImages']);
                     
                     \Filament\Notifications\Notification::make()
-                        ->title('Image slots added')
-                        ->body('5 empty image slots added. Upload images in the gallery section below.')
+                        ->title('Images uploaded successfully')
+                        ->body("{$uploadedCount} images added to the gallery. You can reorder them below.")
                         ->success()
                         ->send();
                 })
-                ->requiresConfirmation()
-                ->modalHeading('Add Image Slots')
-                ->modalDescription('This will add 5 empty image slots that you can upload images to in the gallery section below.')
-                ->modalSubmitActionLabel('Add Slots'),
+                ->modalHeading('Bulk Upload Images')
+                ->modalDescription('Select multiple images to upload at once. They will be added to the gallery where you can reorder and edit them.')
+                ->modalSubmitActionLabel('Upload Images')
+                ->modalWidth('2xl'),
                 
             Actions\DeleteAction::make(),
         ];
