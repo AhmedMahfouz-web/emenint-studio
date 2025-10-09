@@ -123,40 +123,40 @@ class ProjectResource extends Resource
 
                         Forms\Components\Repeater::make('projectImages')
                             ->relationship()
-                            ->label('Project Images')
+                            ->label('Manage Uploaded Images')
                             ->schema([
                                 Forms\Components\FileUpload::make('image_path')
-                                    ->label('Image')
+                                    ->label('')
                                     ->image()
-                                    ->nullable()
+                                    ->required()
                                     ->disk('public')
                                     ->directory('project-images')
-                                    ->imagePreviewHeight('150')
+                                    ->imagePreviewHeight('120')
+                                    ->panelAspectRatio('1:1')
                                     ->panelLayout('integrated')
                                     ->visibility('public')
                                     ->maxSize(10240) // 10MB
                                     ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
                                     ->multiple(false)
-                                    ->columnSpan(2),
-                                
-                                Forms\Components\TextInput::make('alt_text')
-                                    ->label('Alt Text')
-                                    ->default('Project Image')
-                                    ->maxLength(255)
-                                    ->columnSpan(1),
+                                    ->nullable(),
                             ])
                             ->orderColumn('sort_order')
                             ->reorderable()
-                            ->addActionLabel('Add Image')
+                            ->addActionLabel('Add Single Image')
                             ->deleteAction(
                                 fn (Forms\Components\Actions\Action $action) => $action
                                     ->requiresConfirmation()
                                     ->modalDescription('Delete this image?')
                             )
-                            ->collapsed(false)
-                            ->itemLabel(fn (array $state): ?string => $state['alt_text'] ?? 'Project Image')
+                            ->collapsed()
                             ->columnSpanFull()
-                            ->columns(3)
+                            ->grid([
+                                'default' => 3,
+                                'sm' => 4,
+                                'md' => 5,
+                                'lg' => 6,
+                                'xl' => 8,
+                            ])
                             ->visible(fn ($context) => $context === 'edit'),
                     ])
                     ->collapsible(),
