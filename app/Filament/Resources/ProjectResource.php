@@ -97,9 +97,20 @@ class ProjectResource extends Resource
                             ->visibility('public')
                             ->maxSize(10240) // 10MB
                             ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
-                            ->helperText('Upload a featured image for this project. Max size: 10MB.')
+                            ->helperText('Upload a featured image for this project. Will be automatically optimized to WebP format.')
                             ->multiple(false) // Explicitly single file
-                            ->nullable(),
+                            ->nullable()
+                            ->saveUploadedFileUsing(function (UploadedFile $file, $component) {
+                                try {
+                                    $optimizer = app(ImageOptimizationService::class);
+                                    return $optimizer->optimizeAndConvert($file, 'project-images', 1920, 1080, 85);
+                                } catch (\Exception $e) {
+                                    Log::error('Featured image optimization failed: ' . $e->getMessage());
+                                    // Fallback to normal upload
+                                    $filename = time() . '_' . $file->hashName();
+                                    return $file->storeAs('project-images', $filename, 'public');
+                                }
+                            }),
                         
                         Forms\Components\FileUpload::make('gallery_images')
                             ->label('Gallery Images (Legacy)')
@@ -138,7 +149,18 @@ class ProjectResource extends Resource
                                     ->maxSize(10240) // 10MB
                                     ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
                                     ->multiple(false)
-                                    ->nullable(),
+                                    ->nullable()
+                                    ->saveUploadedFileUsing(function (UploadedFile $file, $component) {
+                                        try {
+                                            $optimizer = app(ImageOptimizationService::class);
+                                            return $optimizer->optimizeAndConvert($file, 'project-images', 1920, 1920, 80);
+                                        } catch (\Exception $e) {
+                                            Log::error('Gallery image optimization failed: ' . $e->getMessage());
+                                            // Fallback to normal upload
+                                            $filename = time() . '_' . $file->hashName();
+                                            return $file->storeAs('project-images', $filename, 'public');
+                                        }
+                                    }),
                             ])
                             ->orderColumn('sort_order')
                             ->reorderable()

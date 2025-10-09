@@ -35,7 +35,18 @@ class EditProject extends EditRecord
                         ->visibility('public')
                         ->maxSize(10240) // 10MB per file
                         ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
-                        ->helperText('Select up to 50 images to upload at once. Max size: 10MB per image.')
+                        ->helperText('Select up to 50 images to upload at once. Images will be automatically optimized to WebP format.')
+                        ->saveUploadedFileUsing(function (UploadedFile $file, $component) {
+                            try {
+                                $optimizer = app(ImageOptimizationService::class);
+                                return $optimizer->optimizeAndConvert($file, 'project-images', 1920, 1920, 80);
+                            } catch (\Exception $e) {
+                                Log::error('Bulk image optimization failed: ' . $e->getMessage());
+                                // Fallback to normal upload
+                                $filename = time() . '_' . $file->hashName();
+                                return $file->storeAs('project-images', $filename, 'public');
+                            }
+                        })
                         ->required()
                         ->columnSpanFull(),
                 ])
