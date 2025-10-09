@@ -142,7 +142,6 @@ class ProjectResource extends Resource
                                     ->requiresConfirmation()
                                     ->modalDescription('Delete this image?')
                             )
-                            ->simple()
                             ->columnSpanFull()
                             ->grid([
                                 'default' => 2,
