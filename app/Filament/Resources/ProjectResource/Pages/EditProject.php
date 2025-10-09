@@ -26,7 +26,7 @@ class EditProject extends EditRecord
                     Forms\Components\FileUpload::make('images')
                         ->label('Select Images')
                         ->image()
-                        ->multiple()
+                        ->multiple(true) // Explicitly multiple files
                         ->disk('public')
                         ->directory('project-images')
                         ->maxFiles(50)

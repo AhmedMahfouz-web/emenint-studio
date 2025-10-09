@@ -98,7 +98,8 @@ class ProjectResource extends Resource
                             ->maxSize(10240) // 10MB
                             ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
                             ->helperText('Upload a featured image for this project. Max size: 10MB.')
-                            ->required(false),
+                            ->multiple(false) // Explicitly single file
+                            ->nullable(),
                         
                         Forms\Components\FileUpload::make('gallery_images')
                             ->label('Gallery Images (Legacy)')
@@ -185,7 +186,9 @@ class ProjectResource extends Resource
                                     ->panelLayout('integrated')
                                     ->visibility('public')
                                     ->maxSize(10240) // 10MB
-                                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif']),
+                                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
+                                    ->multiple(false) // Explicitly single file
+                                    ->nullable(),
                             ])
                             ->orderColumn('sort_order')
                             ->reorderable()
@@ -267,7 +270,9 @@ class ProjectResource extends Resource
                                                         ->directory('project-images/blocks')
                                                         ->visibility('public')
                                                         ->maxSize(10240) // 10MB
-                                                        ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif']);
+                                                        ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
+                                                        ->multiple(false) // Explicitly single file
+                                                        ->nullable();
                                                     break;
                                                 case 'toggle':
                                                     $field = Forms\Components\Toggle::make('content_data.' . $fieldName)->label($label);
