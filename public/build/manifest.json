@@ -1,0 +1,22 @@
+{
+  "resources/css/app.css": {
+    "file": "assets/app-DEleqObD.css",
+    "src": "resources/css/app.css",
+    "isEntry": true
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-BU-0oZrW.js",
+    "name": "app",
+    "src": "resources/js/app.js",
+    "isEntry": true,
+    "css": [
+      "assets/app-U_b-ZeMd.css"
+    ]
+  },
+  "resources/js/invoice.js": {
+    "file": "assets/invoice-l0sNRNKZ.js",
+    "name": "invoice",
+    "src": "resources/js/invoice.js",
+    "isEntry": true
+  }
+}
