@@ -57,7 +57,6 @@ class EditProject extends EditRecord
                     
                     $this->refreshFormData(['projectImages']);
                 })
-                ->modalHeading('Bulk Upload Images')
                 ->modalDescription('Upload multiple images at once. You can reorder them in the gallery section below.')
                 ->modalSubmitActionLabel('Upload Images')
                 ->successNotificationTitle('Images uploaded successfully'),

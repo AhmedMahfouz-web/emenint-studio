@@ -106,10 +106,9 @@ class ProjectResource extends Resource
                             ->multiple()
                             ->disk('public')
                             ->directory('project-images')
-                            ->saveUploadedFileUsing(function (UploadedFile $file, $component) {
-                                $optimizer = app(ImageOptimizationService::class);
-                                return $optimizer->optimizeAndConvert($file, 'project-images');
-                            })
+                            ->visibility('public')
+                            ->maxSize(10240) // 10MB per file
+                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
                             ->helperText('Legacy field - use Project Images section below for sortable images'),
                     ])->columns(2),
 
@@ -137,9 +136,13 @@ class ProjectResource extends Resource
                                 ->label('Add Bulk Images to Gallery')
                                 ->icon('heroicon-o-arrow-down')
                                 ->color('success')
-                                ->action(function ($livewire, $get) {
+                                ->action(function ($livewire, $get, $set) {
                                     $bulkImages = $get('bulk_images_temp');
-                                    if (!$bulkImages) {
+                                    if (!$bulkImages || !is_array($bulkImages)) {
+                                        \Filament\Notifications\Notification::make()
+                                            ->title('No images to process')
+                                            ->warning()
+                                            ->send();
                                         return;
                                     }
                                     
@@ -154,8 +157,14 @@ class ProjectResource extends Resource
                                         ];
                                     }
                                     
-                                    $livewire->data['projectImages'] = $existingImages;
-                                    $livewire->data['bulk_images_temp'] = [];
+                                    $set('projectImages', $existingImages);
+                                    $set('bulk_images_temp', []);
+                                    
+                                    \Filament\Notifications\Notification::make()
+                                        ->title('Images added successfully')
+                                        ->body(count($bulkImages) . ' images added to gallery')
+                                        ->success()
+                                        ->send();
                                 })
                                 ->visible(fn ($get) => !empty($get('bulk_images_temp')))
                         ])
@@ -256,19 +265,9 @@ class ProjectResource extends Resource
                                                         ->image()
                                                         ->disk('public')
                                                         ->directory('project-images/blocks')
-                                                        ->getUploadedFileNameForStorageUsing(
-                                                            fn (UploadedFile $file): string => (string) str($file->hashName())
-                                                                ->prepend(time() . '_')
-                                                                ->replace('.' . $file->getClientOriginalExtension(), '.webp')
-                                                        )
-                                                        ->saveUploadedFileUsing(function (UploadedFile $file) {
-                                                            $optimizer = app(ImageOptimizationService::class);
-                                                            return $optimizer->optimizeAndConvert($file, 'project-images/blocks', 1920, 1920, 80);
-                                                        })
-                                                        ->deleteUploadedFileUsing(function ($file) {
-                                                            $optimizer = app(ImageOptimizationService::class);
-                                                            return $optimizer->deleteOptimized($file);
-                                                        });
+                                                        ->visibility('public')
+                                                        ->maxSize(10240) // 10MB
+                                                        ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif']);
                                                     break;
                                                 case 'toggle':
                                                     $field = Forms\Components\Toggle::make('content_data.' . $fieldName)->label($label);
