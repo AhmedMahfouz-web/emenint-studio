@@ -22,6 +22,7 @@ class AdaptiveHeader {
             transitionDuration: 300, // CSS transition duration in ms
             throttleDelay: 16, // ~60fps for scroll events
             observerRootMargin: '0px 0px -50% 0px', // Only check top half of viewport
+            videoSections: ['.index-page-teaser', '.page-teaser--video'], // Sections with video backgrounds
             ...options
         };
 
@@ -93,7 +94,30 @@ class AdaptiveHeader {
         // Get all sections for intersection observation
         this.sections = Array.from(document.querySelectorAll(this.config.sectionSelector));
         
+        // Ensure videos can play properly
+        this.ensureVideoPlayback();
+        
         console.log(`Found ${this.textElements.length} text elements and ${this.sections.length} sections`);
+    }
+
+    /**
+     * Ensure video elements can play properly
+     */
+    ensureVideoPlayback() {
+        const videos = document.querySelectorAll('video[autoplay]');
+        videos.forEach(video => {
+            // Ensure video properties are set correctly
+            video.muted = true;
+            video.playsInline = true;
+            video.loop = true;
+            
+            // Force play if paused
+            if (video.paused) {
+                video.play().catch(error => {
+                    console.warn('Video autoplay failed:', error);
+                });
+            }
+        });
     }
 
     /**
@@ -159,7 +183,10 @@ class AdaptiveHeader {
 
         // Handle dynamic content changes
         if (window.MutationObserver) {
-            const observer = new MutationObserver(() => this.throttledCheck());
+            const observer = new MutationObserver(() => {
+                this.throttledCheck();
+                this.ensureVideoPlayback(); // Re-check videos on DOM changes
+            });
             observer.observe(document.body, {
                 childList: true,
                 subtree: true,
@@ -323,9 +350,15 @@ class AdaptiveHeader {
      * Calculate brightness of an element
      */
     calculateElementBrightness(element, x, y) {
+        // Check if element contains a video first
+        const video = element.querySelector('video');
+        if (video) {
+            return this.getVideoBrightness(video);
+        }
+
         const computedStyle = window.getComputedStyle(element);
         
-        // Check background image first
+        // Check background image
         const backgroundImage = computedStyle.backgroundImage;
         if (backgroundImage && backgroundImage !== 'none') {
             return this.getImageBrightness(element, backgroundImage);
@@ -345,6 +378,11 @@ class AdaptiveHeader {
         // Fallback: check parent elements
         let parent = element.parentElement;
         while (parent && parent !== document.body) {
+            const parentVideo = parent.querySelector('video');
+            if (parentVideo) {
+                return this.getVideoBrightness(parentVideo);
+            }
+
             const parentStyle = window.getComputedStyle(parent);
             const parentBg = parentStyle.backgroundColor;
             
@@ -428,6 +466,36 @@ class AdaptiveHeader {
             return 0.8;
         }
         return 0.4; // Default for gradients
+    }
+
+    /**
+     * Get brightness from video element
+     */
+    getVideoBrightness(video) {
+        // For video backgrounds, we'll use heuristics based on the video source
+        // and assume most promotional videos are darker
+        
+        const videoSrc = video.src || (video.querySelector('source') && video.querySelector('source').src);
+        
+        if (videoSrc) {
+            const filename = videoSrc.toLowerCase();
+            
+            // Check for specific video types that are typically dark
+            if (filename.includes('promo') || 
+                filename.includes('hero') || 
+                filename.includes('intro') ||
+                filename.includes('eminent')) {
+                return 0.2; // Dark video, needs light text
+            }
+            
+            // Check for light video indicators
+            if (filename.includes('light') || filename.includes('bright')) {
+                return 0.8; // Light video, needs dark text
+            }
+        }
+        
+        // Default assumption: most hero/background videos are dark
+        return 0.2; // Assume dark video background
     }
 
     /**
