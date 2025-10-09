@@ -39,7 +39,7 @@
             </div>
         </section>
         {{-- Project Gallery Component --}}
-        <x-project-gallery :project="$project" :show-captions="true" layout="default" />
+        <x-project-gallery :project="$project" />
 
     </div>
 @endsection

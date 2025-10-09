@@ -54,9 +54,6 @@ class ManageGallery extends Page implements HasTable
                         ->disk('public')
                         ->directory('project-images'),
                         
-                    Forms\Components\TextInput::make('alt_text')
-                        ->label('Alt Text Template')
-                        ->helperText('Will be used for all uploaded images'),
                 ])
                 ->action(function (array $data) {
                     $sortOrder = ProjectImage::where('project_id', $data['project_id'])->max('sort_order') + 1;
@@ -65,7 +62,7 @@ class ManageGallery extends Page implements HasTable
                         ProjectImage::create([
                             'project_id' => $data['project_id'],
                             'image_path' => $imagePath,
-                            'alt_text' => $data['alt_text'] ?? 'Project Image',
+                            'alt_text' => 'Project Image',
                             'sort_order' => $sortOrder++,
                         ]);
                     }
@@ -93,23 +90,12 @@ class ManageGallery extends Page implements HasTable
                     ->weight('bold')
                     ->toggleable(isToggledHiddenByDefault: !$this->selectedProject),
                     
-                Tables\Columns\TextColumn::make('alt_text')
-                    ->label('Alt Text')
-                    ->limit(30)
-                    ->wrap(),
                     
                 Tables\Columns\TextColumn::make('sort_order')
                     ->label('Order')
                     ->badge()
                     ->color('primary'),
                     
-                Tables\Columns\IconColumn::make('is_featured')
-                    ->label('★')
-                    ->boolean()
-                    ->trueIcon('heroicon-s-star')
-                    ->falseIcon('heroicon-o-star')
-                    ->trueColor('warning')
-                    ->falseColor('gray'),
             ])
             ->contentGrid([
                 'md' => 2,
