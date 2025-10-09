@@ -56,4 +56,3 @@
         @endif
     @endforeach
 @endif
-<h1>test gallery</h1>
