@@ -125,11 +125,10 @@ class ProjectResource extends Resource
                             ->reorderable()
                             ->panelLayout('grid')
                             ->imagePreviewHeight('120')
-                            ->saveUploadedFileUsing(function (UploadedFile $file, $component) {
-                                $optimizer = app(ImageOptimizationService::class);
-                                return $optimizer->optimizeAndConvert($file, 'project-images');
-                            })
-                            ->helperText('Upload up to 50 images at once. They will be added to the gallery below after saving.')
+                            ->visibility('public')
+                            ->maxSize(10240) // 10MB per file
+                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
+                            ->helperText('Upload up to 50 images at once. Max size: 10MB per image.')
                             ->dehydrated(false)
                             ->columnSpanFull(),
 
@@ -175,10 +174,9 @@ class ProjectResource extends Resource
                                     ->imagePreviewHeight('120')
                                     ->panelAspectRatio('1:1')
                                     ->panelLayout('integrated')
-                                    ->saveUploadedFileUsing(function (UploadedFile $file, $component) {
-                                        $optimizer = app(ImageOptimizationService::class);
-                                        return $optimizer->optimizeAndConvert($file, 'project-images');
-                                    }),
+                                    ->visibility('public')
+                                    ->maxSize(10240) // 10MB
+                                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif']),
                             ])
                             ->orderColumn('sort_order')
                             ->reorderable()

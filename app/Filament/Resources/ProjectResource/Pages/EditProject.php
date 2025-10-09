@@ -33,11 +33,10 @@ class EditProject extends EditRecord
                         ->reorderable()
                         ->panelLayout('grid')
                         ->imagePreviewHeight('120')
-                        ->saveUploadedFileUsing(function (UploadedFile $file, $component) {
-                            $optimizer = app(ImageOptimizationService::class);
-                            return $optimizer->optimizeAndConvert($file, 'project-images');
-                        })
-                        ->helperText('Upload up to 50 images at once')
+                        ->visibility('public')
+                        ->maxSize(10240) // 10MB per file
+                        ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
+                        ->helperText('Upload up to 50 images at once. Max size: 10MB per image.')
                         ->required(),
                 ])
                 ->action(function (array $data) {
