@@ -146,7 +146,12 @@ class ProjectResource extends Resource
                             ->deleteAction(
                                 fn (Forms\Components\Actions\Action $action) => $action
                                     ->requiresConfirmation()
+                                    ->modalHeading('Delete Image')
                                     ->modalDescription('Delete this image?')
+                                    ->modalSubmitActionLabel('Delete')
+                                    ->color('danger')
+                                    ->size('sm')
+                                    ->modalWidth('sm')
                             )
                             ->collapsed()
                             ->columnSpanFull()
@@ -157,6 +162,8 @@ class ProjectResource extends Resource
                                 'lg' => 6,
                                 'xl' => 8,
                             ])
+                            ->defaultItems(0)
+                            ->cloneable(false)
                             ->visible(fn ($context) => $context === 'edit'),
                     ])
                     ->collapsible(),
