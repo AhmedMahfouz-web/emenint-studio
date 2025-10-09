@@ -38,22 +38,8 @@
                 </div>
             </div>
         </section>
-        @if($project->gallery_images && count($project->gallery_images) > 0)
-            @foreach ($project->gallery_images as $galleryImage)
-                <section class="bilder">
-                    <div class="grid-width">
-                        <div class="flex bilder-wrap-1 flex--nom">
-                            <div class="bilder-wrap-image">
-                                <div class="inview inview--up">
-                                    <img data-src="{{ asset('storage/' . $galleryImage) }}" alt="{{ $project->title }} Gallery"
-                                        class="lazyload" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-            @endforeach
-        @endif
+        {{-- Project Gallery Component --}}
+        <x-project-gallery :project="$project" :show-captions="true" layout="default" />
 
     </div>
 @endsection

@@ -9,7 +9,7 @@ class ProjectController extends Controller
 {
     public function show($slug)
     {
-        $project = Project::with(['serviceCategory', 'blockContents.templateBlock'])
+        $project = Project::with(['serviceCategory', 'blockContents.templateBlock', 'projectImages'])
             ->where('slug', $slug)
             ->where('status', 'active')
             ->firstOrFail();
@@ -26,7 +26,7 @@ class ProjectController extends Controller
 
     public function index()
     {
-        $projects = Project::with('serviceCategory')
+        $projects = Project::with(['serviceCategory', 'projectImages'])
             ->where('status', 'active')
             ->orderBy('sort_order')
             ->orderBy('created_at', 'desc')
@@ -41,7 +41,7 @@ class ProjectController extends Controller
             ->where('is_active', true)
             ->firstOrFail();
 
-        $projects = Project::with('serviceCategory')
+        $projects = Project::with(['serviceCategory', 'projectImages'])
             ->where('service_category_id', $category->id)
             ->where('status', 'active')
             ->orderBy('sort_order')
