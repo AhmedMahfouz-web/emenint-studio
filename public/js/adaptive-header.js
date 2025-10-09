@@ -18,9 +18,9 @@ class AdaptiveHeader {
             headerSelector: '#header',
             textElements: '#header #logo .cls-2, #header .main-menu a, #header .burger-inner span',
             sectionSelector: 'section, div[class*="block"], .index-page-teaser, .introtext',
-            threshold: 0.5, // Brightness threshold (0-1)
-            transitionDuration: 300, // CSS transition duration in ms
-            throttleDelay: 16, // ~60fps for scroll events
+            threshold: 0.4, // Brightness threshold (0-1) - slightly lower for better detection
+            transitionDuration: 200, // CSS transition duration in ms - faster for smoothness
+            throttleDelay: 32, // ~30fps for better performance
             observerRootMargin: '0px 0px -50% 0px', // Only check top half of viewport
             videoSections: ['.index-page-teaser', '.page-teaser--video'], // Sections with video backgrounds
             ...options
@@ -104,17 +104,31 @@ class AdaptiveHeader {
      * Ensure video elements can play properly
      */
     ensureVideoPlayback() {
-        const videos = document.querySelectorAll('video[autoplay]');
+        const videos = document.querySelectorAll('video');
         videos.forEach(video => {
             // Ensure video properties are set correctly
             video.muted = true;
             video.playsInline = true;
             video.loop = true;
+            video.autoplay = true;
+            
+            // Add event listeners to prevent pausing
+            video.addEventListener('pause', () => {
+                setTimeout(() => {
+                    if (video.paused) {
+                        video.play().catch(() => {});
+                    }
+                }, 100);
+            });
             
             // Force play if paused
             if (video.paused) {
                 video.play().catch(error => {
                     console.warn('Video autoplay failed:', error);
+                    // Try again after a short delay
+                    setTimeout(() => {
+                        video.play().catch(() => {});
+                    }, 500);
                 });
             }
         });
@@ -286,14 +300,14 @@ class AdaptiveHeader {
             // Get the average brightness of the area behind the header
             const brightness = this.getBackgroundBrightness(centerX, centerY, headerRect);
             
-            // Determine if we need light or dark text (INVERTED LOGIC)
+            // Simple and correct logic:
             // If background is bright (>threshold), use dark text (light mode)
             // If background is dark (<threshold), use light text (dark mode)
-            const shouldUseLightText = brightness < this.config.threshold;
-            const newMode = shouldUseLightText ? 'dark' : 'light';
+            const isDarkBackground = brightness < this.config.threshold;
+            const newMode = isDarkBackground ? 'dark' : 'light';
 
             // Add debugging information
-            console.log(`Background brightness: ${brightness.toFixed(3)}, Mode: ${newMode} (${shouldUseLightText ? 'light text' : 'dark text'}), Threshold: ${this.config.threshold}`);
+            console.log(`Background brightness: ${brightness.toFixed(3)}, Is Dark: ${isDarkBackground}, Mode: ${newMode}, Threshold: ${this.config.threshold}`);
 
             if (newMode !== this.currentMode) {
                 this.updateHeaderMode(newMode);
@@ -305,54 +319,29 @@ class AdaptiveHeader {
     }
 
     /**
-     * Get the average brightness of the area behind the header
+     * Get the average brightness of the area behind the header (simplified for performance)
      */
     getBackgroundBrightness(centerX, centerY, headerRect) {
-        // More comprehensive sampling points for better accuracy
+        // Simplified sampling for better performance
         const samplePoints = [
             { x: centerX, y: centerY }, // Center
-            { x: centerX - headerRect.width * 0.3, y: centerY }, // Left
-            { x: centerX + headerRect.width * 0.3, y: centerY }, // Right
-            { x: centerX, y: centerY + headerRect.height * 0.3 }, // Bottom
-            { x: centerX - headerRect.width * 0.15, y: centerY - headerRect.height * 0.15 }, // Top-left
-            { x: centerX + headerRect.width * 0.15, y: centerY - headerRect.height * 0.15 }, // Top-right
-            { x: centerX - headerRect.width * 0.15, y: centerY + headerRect.height * 0.15 }, // Bottom-left
-            { x: centerX + headerRect.width * 0.15, y: centerY + headerRect.height * 0.15 }, // Bottom-right
+            { x: centerX - headerRect.width * 0.25, y: centerY }, // Left
+            { x: centerX + headerRect.width * 0.25, y: centerY }, // Right
+            { x: centerX, y: centerY + headerRect.height * 0.2 }, // Bottom
         ];
 
         let totalBrightness = 0;
         let validSamples = 0;
-        let brightnessValues = [];
 
         samplePoints.forEach(point => {
             const brightness = this.samplePointBrightness(point.x, point.y);
             if (brightness !== null) {
                 totalBrightness += brightness;
-                brightnessValues.push(brightness);
                 validSamples++;
             }
         });
 
-        if (validSamples === 0) return 0.5;
-
-        // Calculate average brightness
-        const averageBrightness = totalBrightness / validSamples;
-        
-        // Add some intelligence: if there's high variance, use median instead of average
-        if (brightnessValues.length > 3) {
-            brightnessValues.sort((a, b) => a - b);
-            const median = brightnessValues[Math.floor(brightnessValues.length / 2)];
-            
-            // Calculate variance
-            const variance = brightnessValues.reduce((acc, val) => acc + Math.pow(val - averageBrightness, 2), 0) / brightnessValues.length;
-            
-            // If high variance, prefer median for stability
-            if (variance > 0.1) {
-                return median;
-            }
-        }
-
-        return averageBrightness;
+        return validSamples > 0 ? totalBrightness / validSamples : 0.5;
     }
 
     /**
@@ -677,8 +666,8 @@ class AdaptiveHeader {
             }
         }
         
-        // Default to dark assumption for videos (low brightness value)
-        return 0.2; // Most hero videos are dark backgrounds
+        // Most promotional/hero videos have dark content
+        return 0.1; // Very low brightness = dark video = needs light text
     }
 
     /**

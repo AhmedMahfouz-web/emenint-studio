@@ -233,7 +233,7 @@ body.mega-menu--open #header.nav-up {
 }
 
 #header .adaptive-text {
-    transition: color 0.3s ease, fill 0.3s ease, background-color 0.3s ease;
+    transition: color 0.2s ease, fill 0.2s ease, background-color 0.2s ease;
 }
 
 /* Dark mode - white text for dark backgrounds */

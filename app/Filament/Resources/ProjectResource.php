@@ -114,9 +114,56 @@ class ProjectResource extends Resource
 
                 Forms\Components\Section::make('Project Images Gallery')
                     ->schema([
+                        Forms\Components\FileUpload::make('bulk_images_temp')
+                            ->label('Bulk Upload Images')
+                            ->image()
+                            ->multiple()
+                            ->disk('public')
+                            ->directory('project-images')
+                            ->maxFiles(50)
+                            ->reorderable()
+                            ->panelLayout('grid')
+                            ->imagePreviewHeight('120')
+                            ->saveUploadedFileUsing(function (UploadedFile $file, $component) {
+                                $optimizer = app(ImageOptimizationService::class);
+                                return $optimizer->optimizeAndConvert($file, 'project-images');
+                            })
+                            ->helperText('Upload up to 50 images at once. They will be added to the gallery below after saving.')
+                            ->dehydrated(false)
+                            ->columnSpanFull(),
+
+                        Forms\Components\Actions::make([
+                            Forms\Components\Actions\Action::make('process_bulk_upload')
+                                ->label('Add Bulk Images to Gallery')
+                                ->icon('heroicon-o-arrow-down')
+                                ->color('success')
+                                ->action(function ($livewire, $get) {
+                                    $bulkImages = $get('bulk_images_temp');
+                                    if (!$bulkImages) {
+                                        return;
+                                    }
+                                    
+                                    $existingImages = $get('projectImages') ?? [];
+                                    $maxSortOrder = count($existingImages);
+                                    
+                                    foreach ($bulkImages as $imagePath) {
+                                        $existingImages[] = [
+                                            'image_path' => $imagePath,
+                                            'alt_text' => 'Project Image',
+                                            'sort_order' => ++$maxSortOrder,
+                                        ];
+                                    }
+                                    
+                                    $livewire->data['projectImages'] = $existingImages;
+                                    $livewire->data['bulk_images_temp'] = [];
+                                })
+                                ->visible(fn ($get) => !empty($get('bulk_images_temp')))
+                        ])
+                        ->columnSpanFull(),
+
                         Forms\Components\Repeater::make('projectImages')
                             ->relationship()
-                            ->label('')
+                            ->label('Manage Uploaded Images')
                             ->schema([
                                 Forms\Components\FileUpload::make('image_path')
                                     ->label('')
@@ -124,11 +171,9 @@ class ProjectResource extends Resource
                                     ->required()
                                     ->disk('public')
                                     ->directory('project-images')
-                                    ->imagePreviewHeight('200')
+                                    ->imagePreviewHeight('120')
                                     ->panelAspectRatio('1:1')
                                     ->panelLayout('integrated')
-                                    ->removeUploadedFileButtonPosition('top')
-                                    ->uploadButtonPosition('center')
                                     ->saveUploadedFileUsing(function (UploadedFile $file, $component) {
                                         $optimizer = app(ImageOptimizationService::class);
                                         return $optimizer->optimizeAndConvert($file, 'project-images');
@@ -136,21 +181,23 @@ class ProjectResource extends Resource
                             ])
                             ->orderColumn('sort_order')
                             ->reorderable()
-                            ->addActionLabel('Add Image')
+                            ->addActionLabel('Add Single Image')
                             ->deleteAction(
                                 fn (Forms\Components\Actions\Action $action) => $action
                                     ->requiresConfirmation()
                                     ->modalDescription('Delete this image?')
                             )
+                            ->collapsed()
                             ->columnSpanFull()
                             ->grid([
-                                'default' => 2,
-                                'sm' => 3,
-                                'md' => 4,
-                                'lg' => 5,
-                                'xl' => 6,
+                                'default' => 3,
+                                'sm' => 4,
+                                'md' => 5,
+                                'lg' => 6,
+                                'xl' => 8,
                             ]),
-                    ]),
+                    ])
+                    ->collapsible(),
 
                 Forms\Components\Section::make('SEO Settings')
                     ->schema([
