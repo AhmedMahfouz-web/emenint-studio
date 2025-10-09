@@ -116,41 +116,68 @@ class ProjectResource extends Resource
                     ->schema([
                         Forms\Components\Repeater::make('projectImages')
                             ->relationship()
-                            ->label('Project Images (Sortable)')
+                            ->label('Project Images Gallery')
                             ->schema([
-                                Forms\Components\FileUpload::make('image_path')
-                                    ->label('Image')
-                                    ->image()
-                                    ->required()
-                                    ->disk('public')
-                                    ->directory('project-images')
-                                    ->saveUploadedFileUsing(function (UploadedFile $file, $component) {
-                                        $optimizer = app(ImageOptimizationService::class);
-                                        return $optimizer->optimizeAndConvert($file, 'project-images');
-                                    })
-                                    ->columnSpan(2),
+                                Forms\Components\Grid::make(3)
+                                    ->schema([
+                                        Forms\Components\FileUpload::make('image_path')
+                                            ->label('Image')
+                                            ->image()
+                                            ->required()
+                                            ->disk('public')
+                                            ->directory('project-images')
+                                            ->imagePreviewHeight('150')
+                                            ->panelAspectRatio('16:9')
+                                            ->panelLayout('integrated')
+                                            ->removeUploadedFileButtonPosition('right')
+                                            ->uploadButtonPosition('left')
+                                            ->uploadProgressIndicatorPosition('left')
+                                            ->saveUploadedFileUsing(function (UploadedFile $file, $component) {
+                                                $optimizer = app(ImageOptimizationService::class);
+                                                return $optimizer->optimizeAndConvert($file, 'project-images');
+                                            })
+                                            ->columnSpan(1),
 
-                                Forms\Components\TextInput::make('alt_text')
-                                    ->label('Alt Text')
-                                    ->maxLength(255)
-                                    ->columnSpan(1),
+                                        Forms\Components\Grid::make(1)
+                                            ->schema([
+                                                Forms\Components\TextInput::make('alt_text')
+                                                    ->label('Alt Text')
+                                                    ->maxLength(255)
+                                                    ->placeholder('Describe the image for accessibility'),
 
-                                Forms\Components\Toggle::make('is_featured')
-                                    ->label('Featured')
-                                    ->columnSpan(1),
+                                                Forms\Components\Textarea::make('caption')
+                                                    ->label('Caption')
+                                                    ->rows(2)
+                                                    ->placeholder('Optional caption for display'),
 
-                                Forms\Components\Textarea::make('caption')
-                                    ->label('Caption')
-                                    ->rows(2)
-                                    ->columnSpanFull(),
+                                                Forms\Components\Toggle::make('is_featured')
+                                                    ->label('Featured Image')
+                                                    ->helperText('Mark as main gallery image'),
+                                            ])
+                                            ->columnSpan(2),
+                                    ]),
                             ])
-                            ->columns(2)
                             ->orderColumn('sort_order')
                             ->reorderable()
-                            ->collapsible()
-                            ->itemLabel(fn (array $state): ?string => $state['alt_text'] ?? 'Image')
-                            ->columnSpanFull(),
-                    ]),
+                            ->reorderableWithButtons()
+                            ->addActionLabel('Add Image')
+                            ->deleteAction(
+                                fn (Forms\Components\Actions\Action $action) => $action
+                                    ->requiresConfirmation()
+                                    ->modalDescription('Are you sure you want to delete this image?')
+                            )
+                            ->itemLabel(function (array $state): ?string {
+                                if (!empty($state['alt_text'])) {
+                                    return $state['alt_text'];
+                                }
+                                return 'Image #' . (array_search($state, request()->input('data.projectImages', [])) + 1);
+                            })
+                            ->collapsed()
+                            ->cloneable()
+                            ->columnSpanFull()
+                            ->grid(1),
+                    ])
+                    ->collapsible(),
 
                 Forms\Components\Section::make('SEO Settings')
                     ->schema([

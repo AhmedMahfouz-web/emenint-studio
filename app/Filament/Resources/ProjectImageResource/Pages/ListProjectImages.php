@@ -14,6 +14,11 @@ class ListProjectImages extends ListRecords
     {
         return [
             Actions\CreateAction::make(),
+            Actions\Action::make('gallery_manager')
+                ->label('Gallery Manager')
+                ->icon('heroicon-o-photo')
+                ->color('info')
+                ->url(fn (): string => static::getResource()::getUrl('gallery')),
         ];
     }
 }

@@ -30,45 +30,63 @@ class ProjectImageResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('Image Information')
+                Forms\Components\Section::make('Project & Image')
                     ->schema([
                         Forms\Components\Select::make('project_id')
                             ->label('Project')
                             ->options(Project::pluck('title', 'id'))
                             ->required()
-                            ->searchable(),
+                            ->searchable()
+                            ->preload()
+                            ->columnSpan(1),
 
-                        Forms\Components\FileUpload::make('image_path')
-                            ->label('Image')
-                            ->image()
-                            ->required()
-                            ->disk('public')
-                            ->directory('project-images')
-                            ->saveUploadedFileUsing(function (UploadedFile $file, $component) {
-                                $optimizer = app(ImageOptimizationService::class);
-                                return $optimizer->optimizeAndConvert($file, 'project-images');
-                            })
-                            ->helperText('Images will be automatically converted to WebP format'),
+                        Forms\Components\Grid::make(1)
+                            ->schema([
+                                Forms\Components\FileUpload::make('image_path')
+                                    ->label('Image')
+                                    ->image()
+                                    ->required()
+                                    ->disk('public')
+                                    ->directory('project-images')
+                                    ->imagePreviewHeight('200')
+                                    ->panelAspectRatio('16:9')
+                                    ->panelLayout('integrated')
+                                    ->saveUploadedFileUsing(function (UploadedFile $file, $component) {
+                                        $optimizer = app(ImageOptimizationService::class);
+                                        return $optimizer->optimizeAndConvert($file, 'project-images');
+                                    })
+                                    ->helperText('Images will be automatically converted to WebP format'),
+                            ])
+                            ->columnSpan(1),
+                    ])
+                    ->columns(2),
 
+                Forms\Components\Section::make('Image Details')
+                    ->schema([
                         Forms\Components\TextInput::make('alt_text')
                             ->label('Alt Text')
                             ->maxLength(255)
-                            ->helperText('Alternative text for accessibility'),
+                            ->placeholder('Describe the image for accessibility')
+                            ->helperText('Important for SEO and accessibility')
+                            ->columnSpan(2),
 
                         Forms\Components\Textarea::make('caption')
                             ->label('Caption')
-                            ->rows(2)
+                            ->rows(3)
+                            ->placeholder('Optional caption to display with the image')
                             ->columnSpanFull(),
 
                         Forms\Components\TextInput::make('sort_order')
                             ->label('Sort Order')
                             ->numeric()
-                            ->default(0)
-                            ->helperText('Lower numbers appear first'),
+                            ->default(fn () => \App\Models\ProjectImage::max('sort_order') + 1)
+                            ->helperText('Lower numbers appear first')
+                            ->columnSpan(1),
 
                         Forms\Components\Toggle::make('is_featured')
                             ->label('Featured Image')
-                            ->helperText('Mark as featured image for the project'),
+                            ->helperText('Highlight this image in the gallery')
+                            ->columnSpan(1),
                     ])
                     ->columns(2),
             ]);
@@ -81,33 +99,46 @@ class ProjectImageResource extends Resource
                 Tables\Columns\ImageColumn::make('image_path')
                     ->label('Image')
                     ->disk('public')
-                    ->size(80),
+                    ->size(120)
+                    ->square(),
 
                 Tables\Columns\TextColumn::make('project.title')
                     ->label('Project')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->weight('bold'),
 
                 Tables\Columns\TextColumn::make('alt_text')
                     ->label('Alt Text')
-                    ->limit(30)
-                    ->searchable(),
+                    ->limit(40)
+                    ->searchable()
+                    ->wrap(),
 
                 Tables\Columns\TextColumn::make('caption')
                     ->label('Caption')
-                    ->limit(40)
-                    ->searchable(),
+                    ->limit(50)
+                    ->searchable()
+                    ->wrap()
+                    ->toggleable(),
 
                 Tables\Columns\TextColumn::make('sort_order')
-                    ->label('Sort Order')
-                    ->sortable(),
+                    ->label('Order')
+                    ->sortable()
+                    ->alignCenter()
+                    ->badge()
+                    ->color('primary'),
 
                 Tables\Columns\IconColumn::make('is_featured')
                     ->label('Featured')
-                    ->boolean(),
+                    ->boolean()
+                    ->trueIcon('heroicon-o-star')
+                    ->falseIcon('heroicon-o-star')
+                    ->trueColor('warning')
+                    ->falseColor('gray'),
 
                 Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
+                    ->label('Added')
+                    ->dateTime('M j, Y')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
@@ -120,16 +151,42 @@ class ProjectImageResource extends Resource
                     ->label('Featured'),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->iconButton(),
+                Tables\Actions\DeleteAction::make()
+                    ->iconButton(),
+                Tables\Actions\Action::make('toggle_featured')
+                    ->label('Toggle Featured')
+                    ->icon('heroicon-o-star')
+                    ->color('warning')
+                    ->iconButton()
+                    ->action(function ($record) {
+                        $record->update(['is_featured' => !$record->is_featured]);
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\BulkAction::make('mark_featured')
+                        ->label('Mark as Featured')
+                        ->icon('heroicon-o-star')
+                        ->color('warning')
+                        ->action(function ($records) {
+                            $records->each->update(['is_featured' => true]);
+                        }),
+                    Tables\Actions\BulkAction::make('unmark_featured')
+                        ->label('Remove Featured')
+                        ->icon('heroicon-o-star')
+                        ->color('gray')
+                        ->action(function ($records) {
+                            $records->each->update(['is_featured' => false]);
+                        }),
                 ]),
             ])
             ->defaultSort('sort_order')
-            ->reorderable('sort_order');
+            ->reorderable('sort_order')
+            ->striped()
+            ->paginated([10, 25, 50]);
     }
 
     public static function getRelations(): array
@@ -145,6 +202,7 @@ class ProjectImageResource extends Resource
             'index' => Pages\ListProjectImages::route('/'),
             'create' => Pages\CreateProjectImage::route('/create'),
             'edit' => Pages\EditProjectImage::route('/{record}/edit'),
+            'gallery' => Pages\ManageGallery::route('/gallery'),
         ];
     }
 }
