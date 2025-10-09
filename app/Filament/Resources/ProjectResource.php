@@ -100,7 +100,7 @@ class ProjectResource extends Resource
                             ->helperText('Images will be automatically converted to WebP format'),
                         
                         Forms\Components\FileUpload::make('gallery_images')
-                            ->label('Gallery Images')
+                            ->label('Gallery Images (Legacy)')
                             ->image()
                             ->multiple()
                             ->disk('public')
@@ -109,8 +109,48 @@ class ProjectResource extends Resource
                                 $optimizer = app(ImageOptimizationService::class);
                                 return $optimizer->optimizeAndConvert($file, 'project-images');
                             })
-                            ->helperText('Images will be automatically converted to WebP format'),
+                            ->helperText('Legacy field - use Project Images section below for sortable images'),
                     ])->columns(2),
+
+                Forms\Components\Section::make('Project Images')
+                    ->schema([
+                        Forms\Components\Repeater::make('projectImages')
+                            ->relationship()
+                            ->label('Project Images (Sortable)')
+                            ->schema([
+                                Forms\Components\FileUpload::make('image_path')
+                                    ->label('Image')
+                                    ->image()
+                                    ->required()
+                                    ->disk('public')
+                                    ->directory('project-images')
+                                    ->saveUploadedFileUsing(function (UploadedFile $file, $component) {
+                                        $optimizer = app(ImageOptimizationService::class);
+                                        return $optimizer->optimizeAndConvert($file, 'project-images');
+                                    })
+                                    ->columnSpan(2),
+
+                                Forms\Components\TextInput::make('alt_text')
+                                    ->label('Alt Text')
+                                    ->maxLength(255)
+                                    ->columnSpan(1),
+
+                                Forms\Components\Toggle::make('is_featured')
+                                    ->label('Featured')
+                                    ->columnSpan(1),
+
+                                Forms\Components\Textarea::make('caption')
+                                    ->label('Caption')
+                                    ->rows(2)
+                                    ->columnSpanFull(),
+                            ])
+                            ->columns(2)
+                            ->orderColumn('sort_order')
+                            ->reorderable()
+                            ->collapsible()
+                            ->itemLabel(fn (array $state): ?string => $state['alt_text'] ?? 'Image')
+                            ->columnSpanFull(),
+                    ]),
 
                 Forms\Components\Section::make('SEO Settings')
                     ->schema([

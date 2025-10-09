@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Project extends Model
 {
@@ -61,6 +62,16 @@ class Project extends Model
         return $this->blockContents()->where('is_visible', true);
     }
 
+    public function projectImages(): HasMany
+    {
+        return $this->hasMany(ProjectImage::class)->orderBy('sort_order');
+    }
+
+    public function featuredProjectImage()
+    {
+        return $this->hasOne(ProjectImage::class)->where('is_featured', true);
+    }
+
     public function getRouteKeyName()
     {
         return 'slug';
@@ -94,7 +105,7 @@ class Project extends Model
     }
 
     /**
-     * Get gallery image URLs
+     * Get gallery image URLs (Legacy)
      */
     public function getGalleryImageUrlsAttribute(): array
     {
@@ -105,6 +116,24 @@ class Project extends Model
         return array_map(function ($image) {
             return asset('storage/' . $image);
         }, $this->gallery_images);
+    }
+
+    /**
+     * Get sorted project image URLs
+     */
+    public function getSortedProjectImagesAttribute()
+    {
+        return $this->projectImages()->ordered()->get();
+    }
+
+    /**
+     * Get project image URLs as array
+     */
+    public function getProjectImageUrlsAttribute(): array
+    {
+        return $this->projectImages()->ordered()->get()->map(function ($image) {
+            return $image->image_url;
+        })->toArray();
     }
 
     // Removed model mutators - WebP conversion now handled by Filament callbacks
