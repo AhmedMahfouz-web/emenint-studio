@@ -290,6 +290,9 @@ class AdaptiveHeader {
             const shouldUseDarkText = brightness > this.config.threshold;
             const newMode = shouldUseDarkText ? 'light' : 'dark';
 
+            // Add debugging information
+            console.log(`Background brightness: ${brightness.toFixed(3)}, Mode: ${newMode}, Threshold: ${this.config.threshold}`);
+
             if (newMode !== this.currentMode) {
                 this.updateHeaderMode(newMode);
                 this.currentMode = newMode;
@@ -300,28 +303,54 @@ class AdaptiveHeader {
     }
 
     /**
-     * Calculate background brightness behind the header
+     * Get the average brightness of the area behind the header
      */
-    getBackgroundBrightness(x, y, headerRect) {
+    getBackgroundBrightness(centerX, centerY, headerRect) {
+        // More comprehensive sampling points for better accuracy
         const samplePoints = [
-            { x: x, y: y }, // Center
-            { x: x - headerRect.width * 0.25, y: y }, // Left
-            { x: x + headerRect.width * 0.25, y: y }, // Right
-            { x: x, y: y + headerRect.height * 0.25 }, // Bottom
+            { x: centerX, y: centerY }, // Center
+            { x: centerX - headerRect.width * 0.3, y: centerY }, // Left
+            { x: centerX + headerRect.width * 0.3, y: centerY }, // Right
+            { x: centerX, y: centerY + headerRect.height * 0.3 }, // Bottom
+            { x: centerX - headerRect.width * 0.15, y: centerY - headerRect.height * 0.15 }, // Top-left
+            { x: centerX + headerRect.width * 0.15, y: centerY - headerRect.height * 0.15 }, // Top-right
+            { x: centerX - headerRect.width * 0.15, y: centerY + headerRect.height * 0.15 }, // Bottom-left
+            { x: centerX + headerRect.width * 0.15, y: centerY + headerRect.height * 0.15 }, // Bottom-right
         ];
 
         let totalBrightness = 0;
         let validSamples = 0;
+        let brightnessValues = [];
 
         samplePoints.forEach(point => {
             const brightness = this.samplePointBrightness(point.x, point.y);
             if (brightness !== null) {
                 totalBrightness += brightness;
+                brightnessValues.push(brightness);
                 validSamples++;
             }
         });
 
-        return validSamples > 0 ? totalBrightness / validSamples : 0.5;
+        if (validSamples === 0) return 0.5;
+
+        // Calculate average brightness
+        const averageBrightness = totalBrightness / validSamples;
+        
+        // Add some intelligence: if there's high variance, use median instead of average
+        if (brightnessValues.length > 3) {
+            brightnessValues.sort((a, b) => a - b);
+            const median = brightnessValues[Math.floor(brightnessValues.length / 2)];
+            
+            // Calculate variance
+            const variance = brightnessValues.reduce((acc, val) => acc + Math.pow(val - averageBrightness, 2), 0) / brightnessValues.length;
+            
+            // If high variance, prefer median for stability
+            if (variance > 0.1) {
+                return median;
+            }
+        }
+
+        return averageBrightness;
     }
 
     /**
@@ -435,22 +464,113 @@ class AdaptiveHeader {
      * Get brightness from background image
      */
     getImageBrightness(element, backgroundImage) {
-        // For images, we'll use a heuristic based on the image URL or return neutral
-        // In a real implementation, you might want to load and analyze the image
-        
-        // Check if it's a dark/light image based on filename
+        // Extract image URL
         const imageUrl = backgroundImage.match(/url\(['"]?([^'"]+)['"]?\)/);
-        if (imageUrl && imageUrl[1]) {
-            const filename = imageUrl[1].toLowerCase();
-            if (filename.includes('dark') || filename.includes('black')) {
-                return 0.2;
-            }
-            if (filename.includes('light') || filename.includes('white')) {
-                return 0.8;
-            }
+        if (!imageUrl || !imageUrl[1]) {
+            return 0.4; // Default for unknown images
         }
 
-        return 0.3; // Assume images are generally darker
+        const imageSrc = imageUrl[1];
+        
+        try {
+            // Create a temporary image element to analyze
+            const img = new Image();
+            img.crossOrigin = 'anonymous';
+            
+            // Return a promise-like approach using canvas sampling
+            return this.analyzeImageBrightness(imageSrc);
+        } catch (error) {
+            console.warn('Could not analyze image brightness:', error);
+            return this.getImageFallbackBrightness(imageSrc, element);
+        }
+    }
+
+    /**
+     * Analyze image brightness using canvas sampling
+     */
+    analyzeImageBrightness(imageSrc) {
+        // Check if image is already loaded in the DOM
+        const existingImg = document.querySelector(`img[src*="${imageSrc.split('/').pop()}"]`);
+        if (existingImg && existingImg.complete) {
+            return this.sampleImageBrightness(existingImg);
+        }
+
+        // Fallback to heuristic analysis
+        return this.getImageFallbackBrightness(imageSrc);
+    }
+
+    /**
+     * Sample brightness from an image element
+     */
+    sampleImageBrightness(img) {
+        try {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Scale down for performance
+            const maxSize = 100;
+            const scale = Math.min(maxSize / img.width, maxSize / img.height);
+            canvas.width = img.width * scale;
+            canvas.height = img.height * scale;
+            
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            
+            // Sample multiple points
+            const samplePoints = 9; // 3x3 grid
+            let totalBrightness = 0;
+            let validSamples = 0;
+            
+            for (let i = 0; i < 3; i++) {
+                for (let j = 0; j < 3; j++) {
+                    const x = (canvas.width / 3) * (i + 0.5);
+                    const y = (canvas.height / 3) * (j + 0.5);
+                    
+                    try {
+                        const imageData = ctx.getImageData(x, y, 1, 1);
+                        const [r, g, b] = imageData.data;
+                        const brightness = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+                        totalBrightness += brightness;
+                        validSamples++;
+                    } catch (e) {
+                        // Skip invalid samples
+                    }
+                }
+            }
+            
+            return validSamples > 0 ? totalBrightness / validSamples : 0.4;
+        } catch (error) {
+            return 0.4;
+        }
+    }
+
+    /**
+     * Fallback brightness detection for images
+     */
+    getImageFallbackBrightness(imageSrc, element = null) {
+        const filename = imageSrc.toLowerCase();
+        
+        // Heuristic based on filename
+        if (filename.includes('dark') || filename.includes('black') || filename.includes('night')) {
+            return 0.2;
+        }
+        if (filename.includes('light') || filename.includes('white') || filename.includes('bright')) {
+            return 0.8;
+        }
+        
+        // Check element context if available
+        if (element) {
+            const textElements = element.querySelectorAll('.color-white, [class*="white"], .text-white');
+            if (textElements.length > 0) {
+                return 0.2; // If there's white text, background is probably dark
+            }
+            
+            const darkTextElements = element.querySelectorAll('.color-black, [class*="black"], .text-black, .text-dark');
+            if (darkTextElements.length > 0) {
+                return 0.8; // If there's dark text, background is probably light
+            }
+        }
+        
+        return 0.4; // Neutral default for images
     }
 
     /**
@@ -469,33 +589,93 @@ class AdaptiveHeader {
     }
 
     /**
-     * Get brightness from video element
+     * Get brightness from video element using canvas sampling
      */
     getVideoBrightness(video) {
-        // For video backgrounds, we'll use heuristics based on the video source
-        // and assume most promotional videos are darker
-        
-        const videoSrc = video.src || (video.querySelector('source') && video.querySelector('source').src);
-        
-        if (videoSrc) {
-            const filename = videoSrc.toLowerCase();
+        try {
+            // Create a temporary canvas to sample video frame
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
             
-            // Check for specific video types that are typically dark
-            if (filename.includes('promo') || 
-                filename.includes('hero') || 
-                filename.includes('intro') ||
-                filename.includes('eminent')) {
-                return 0.2; // Dark video, needs light text
+            // Set canvas size to video dimensions or default
+            canvas.width = video.videoWidth || 320;
+            canvas.height = video.videoHeight || 240;
+            
+            // Draw current video frame to canvas
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            
+            // Sample multiple points from the video frame
+            const samplePoints = [
+                { x: canvas.width * 0.2, y: canvas.height * 0.2 },
+                { x: canvas.width * 0.5, y: canvas.height * 0.2 },
+                { x: canvas.width * 0.8, y: canvas.height * 0.2 },
+                { x: canvas.width * 0.2, y: canvas.height * 0.5 },
+                { x: canvas.width * 0.5, y: canvas.height * 0.5 },
+                { x: canvas.width * 0.8, y: canvas.height * 0.5 },
+                { x: canvas.width * 0.2, y: canvas.height * 0.8 },
+                { x: canvas.width * 0.5, y: canvas.height * 0.8 },
+                { x: canvas.width * 0.8, y: canvas.height * 0.8 }
+            ];
+            
+            let totalBrightness = 0;
+            let validSamples = 0;
+            
+            samplePoints.forEach(point => {
+                try {
+                    const imageData = ctx.getImageData(point.x, point.y, 1, 1);
+                    const [r, g, b] = imageData.data;
+                    
+                    // Calculate relative luminance
+                    const brightness = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+                    totalBrightness += brightness;
+                    validSamples++;
+                } catch (e) {
+                    // Skip invalid samples
+                }
+            });
+            
+            if (validSamples > 0) {
+                return totalBrightness / validSamples;
             }
+        } catch (error) {
+            console.warn('Could not sample video brightness:', error);
+        }
+        
+        // Fallback: analyze video element styles and context
+        return this.getVideoFallbackBrightness(video);
+    }
+    
+    /**
+     * Fallback brightness detection for videos
+     */
+    getVideoFallbackBrightness(video) {
+        // Check video container background
+        const container = video.closest('.page-teaser--video, .video-container, section');
+        if (container) {
+            const containerStyle = window.getComputedStyle(container);
+            const bgColor = containerStyle.backgroundColor;
             
-            // Check for light video indicators
-            if (filename.includes('light') || filename.includes('bright')) {
-                return 0.8; // Light video, needs dark text
+            if (bgColor && bgColor !== 'transparent' && bgColor !== 'rgba(0, 0, 0, 0)') {
+                return this.getColorBrightness(bgColor);
             }
         }
         
-        // Default assumption: most hero/background videos are dark
-        return 0.2; // Assume dark video background
+        // Check for overlay elements that might indicate video brightness
+        const overlay = video.parentElement.querySelector('.page-teaser--text, .overlay, [class*="overlay"]');
+        if (overlay) {
+            const overlayStyle = window.getComputedStyle(overlay);
+            const textColor = overlayStyle.color;
+            
+            // If overlay text is white/light, video is probably dark
+            if (textColor) {
+                const brightness = this.getColorBrightness(textColor);
+                // Invert the logic - if text is light, background is dark
+                return brightness > 0.5 ? 0.2 : 0.8;
+            }
+        }
+        
+        // Default to neutral and let other detection methods handle it
+        return 0.3; // Slightly dark assumption for videos
     }
 
     /**
