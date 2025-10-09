@@ -115,98 +115,49 @@ class ProjectResource extends Resource
 
                 Forms\Components\Section::make('Project Images Gallery')
                     ->schema([
-                        Forms\Components\FileUpload::make('bulk_images_temp')
-                            ->label('Bulk Upload Images')
-                            ->image()
-                            ->multiple()
-                            ->disk('public')
-                            ->directory('project-images')
-                            ->maxFiles(50)
-                            ->reorderable()
-                            ->panelLayout('grid')
-                            ->imagePreviewHeight('120')
-                            ->visibility('public')
-                            ->maxSize(10240) // 10MB per file
-                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
-                            ->helperText('Upload up to 50 images at once. Max size: 10MB per image.')
-                            ->dehydrated(false)
-                            ->columnSpanFull(),
-
-                        Forms\Components\Actions::make([
-                            Forms\Components\Actions\Action::make('process_bulk_upload')
-                                ->label('Add Bulk Images to Gallery')
-                                ->icon('heroicon-o-arrow-down')
-                                ->color('success')
-                                ->action(function ($livewire, $get, $set) {
-                                    $bulkImages = $get('bulk_images_temp');
-                                    if (!$bulkImages || !is_array($bulkImages)) {
-                                        \Filament\Notifications\Notification::make()
-                                            ->title('No images to process')
-                                            ->warning()
-                                            ->send();
-                                        return;
-                                    }
-                                    
-                                    $existingImages = $get('projectImages') ?? [];
-                                    $maxSortOrder = count($existingImages);
-                                    
-                                    foreach ($bulkImages as $imagePath) {
-                                        $existingImages[] = [
-                                            'image_path' => $imagePath,
-                                            'alt_text' => 'Project Image',
-                                            'sort_order' => ++$maxSortOrder,
-                                        ];
-                                    }
-                                    
-                                    $set('projectImages', $existingImages);
-                                    $set('bulk_images_temp', []);
-                                    
-                                    \Filament\Notifications\Notification::make()
-                                        ->title('Images added successfully')
-                                        ->body(count($bulkImages) . ' images added to gallery')
-                                        ->success()
-                                        ->send();
-                                })
-                                ->visible(fn ($get) => !empty($get('bulk_images_temp')))
-                        ])
-                        ->columnSpanFull(),
+                        Forms\Components\Placeholder::make('gallery_info')
+                            ->label('')
+                            ->content('Add and manage project images after creating the project. Use the "Add Images" button in the edit page for bulk uploads.')
+                            ->columnSpanFull()
+                            ->visible(fn ($context) => $context === 'create'),
 
                         Forms\Components\Repeater::make('projectImages')
                             ->relationship()
-                            ->label('Manage Uploaded Images')
+                            ->label('Project Images')
                             ->schema([
                                 Forms\Components\FileUpload::make('image_path')
-                                    ->label('')
+                                    ->label('Image')
                                     ->image()
-                                    ->required()
+                                    ->nullable()
                                     ->disk('public')
                                     ->directory('project-images')
-                                    ->imagePreviewHeight('120')
-                                    ->panelAspectRatio('1:1')
+                                    ->imagePreviewHeight('150')
                                     ->panelLayout('integrated')
                                     ->visibility('public')
                                     ->maxSize(10240) // 10MB
                                     ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
-                                    ->multiple(false) // Explicitly single file
-                                    ->nullable(),
+                                    ->multiple(false)
+                                    ->columnSpan(2),
+                                
+                                Forms\Components\TextInput::make('alt_text')
+                                    ->label('Alt Text')
+                                    ->default('Project Image')
+                                    ->maxLength(255)
+                                    ->columnSpan(1),
                             ])
                             ->orderColumn('sort_order')
                             ->reorderable()
-                            ->addActionLabel('Add Single Image')
+                            ->addActionLabel('Add Image')
                             ->deleteAction(
                                 fn (Forms\Components\Actions\Action $action) => $action
                                     ->requiresConfirmation()
                                     ->modalDescription('Delete this image?')
                             )
-                            ->collapsed()
+                            ->collapsed(false)
+                            ->itemLabel(fn (array $state): ?string => $state['alt_text'] ?? 'Project Image')
                             ->columnSpanFull()
-                            ->grid([
-                                'default' => 3,
-                                'sm' => 4,
-                                'md' => 5,
-                                'lg' => 6,
-                                'xl' => 8,
-                            ]),
+                            ->columns(3)
+                            ->visible(fn ($context) => $context === 'edit'),
                     ])
                     ->collapsible(),
 

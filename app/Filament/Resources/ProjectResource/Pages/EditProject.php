@@ -18,48 +18,36 @@ class EditProject extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\Action::make('bulk_upload_images')
-                ->label('Bulk Upload Images')
-                ->icon('heroicon-o-photo')
-                ->color('primary')
-                ->form([
-                    Forms\Components\FileUpload::make('images')
-                        ->label('Select Images')
-                        ->image()
-                        ->multiple(true) // Explicitly multiple files
-                        ->disk('public')
-                        ->directory('project-images')
-                        ->maxFiles(50)
-                        ->reorderable()
-                        ->panelLayout('grid')
-                        ->imagePreviewHeight('120')
-                        ->visibility('public')
-                        ->maxSize(10240) // 10MB per file
-                        ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
-                        ->helperText('Upload up to 50 images at once. Max size: 10MB per image.')
-                        ->required(),
-                ])
-                ->action(function (array $data) {
-                    if (!isset($data['images'])) {
-                        return;
-                    }
-                    
+            Actions\Action::make('add_images')
+                ->label('Add Images')
+                ->icon('heroicon-o-plus')
+                ->color('success')
+                ->action(function () {
+                    // Get current max sort order
                     $maxSortOrder = $this->record->projectImages()->max('sort_order') ?? 0;
                     
-                    foreach ($data['images'] as $imagePath) {
+                    // Add 5 empty image slots for easy upload
+                    for ($i = 1; $i <= 5; $i++) {
                         ProjectImage::create([
                             'project_id' => $this->record->id,
-                            'image_path' => $imagePath,
+                            'image_path' => '', // Empty path - user will upload
                             'alt_text' => 'Project Image',
-                            'sort_order' => ++$maxSortOrder,
+                            'sort_order' => $maxSortOrder + $i,
                         ]);
                     }
                     
                     $this->refreshFormData(['projectImages']);
+                    
+                    \Filament\Notifications\Notification::make()
+                        ->title('Image slots added')
+                        ->body('5 empty image slots added. Upload images in the gallery section below.')
+                        ->success()
+                        ->send();
                 })
-                ->modalDescription('Upload multiple images at once. You can reorder them in the gallery section below.')
-                ->modalSubmitActionLabel('Upload Images')
-                ->successNotificationTitle('Images uploaded successfully'),
+                ->requiresConfirmation()
+                ->modalHeading('Add Image Slots')
+                ->modalDescription('This will add 5 empty image slots that you can upload images to in the gallery section below.')
+                ->modalSubmitActionLabel('Add Slots'),
                 
             Actions\DeleteAction::make(),
         ];
