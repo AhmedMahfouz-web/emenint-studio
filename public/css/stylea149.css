@@ -690,7 +690,7 @@ a.noline::after {
 }
 @media (max-width: 768px) {
     .page-header #header-animation video {
-        height: 100%;
+        height: 100vh;
     }
 }
 .page-header #header-animation .grid-width {

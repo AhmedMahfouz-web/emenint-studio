@@ -60,13 +60,18 @@ class EditProject extends EditRecord
                         ->columnSpanFull(),
                 ])
                 ->action(function (array $data) {
+                    Log::info('Edit page - bulk upload action triggered.', ['data_keys' => array_keys($data)]);
+
                     if (!isset($data['bulk_images']) || empty($data['bulk_images'])) {
+                        Log::warning('Edit page - no bulk images found in modal data.');
                         \Filament\Notifications\Notification::make()
                             ->title('No images selected')
                             ->warning()
                             ->send();
                         return;
                     }
+
+                    Log::info('Edit page - processing bulk images.', ['count' => count($data['bulk_images'])]);
                     
                     // Get current max sort order
                     $maxSortOrder = $this->record->projectImages()->max('sort_order') ?? 0;
@@ -74,23 +79,40 @@ class EditProject extends EditRecord
                     
                     // Create ProjectImage records for each uploaded file
                     foreach ($data['bulk_images'] as $imagePath) {
-                        ProjectImage::create([
-                            'project_id' => $this->record->id,
-                            'image_path' => $imagePath,
-                            'alt_text' => 'Project Image',
-                            'sort_order' => ++$maxSortOrder,
-                        ]);
-                        $uploadedCount++;
+                        if (empty($imagePath) || !is_string($imagePath)) {
+                            Log::warning('Edit page - skipping invalid image path.', ['path' => $imagePath]);
+                            continue;
+                        }
+                        try {
+                            ProjectImage::create([
+                                'project_id' => $this->record->id,
+                                'image_path' => $imagePath,
+                                'alt_text' => 'Project Image',
+                                'sort_order' => ++$maxSortOrder,
+                            ]);
+                            $uploadedCount++;
+                            Log::info('Edit page - successfully created ProjectImage.', ['path' => $imagePath]);
+                        } catch (\Exception $e) {
+                            Log::error('Edit page - failed to create ProjectImage.', ['path' => $imagePath, 'error' => $e->getMessage()]);
+                        }
                     }
                     
                     // Refresh the form to show new images
-                    $this->refreshFormData(['projectImages']);
-                    
-                    \Filament\Notifications\Notification::make()
-                        ->title('Images uploaded successfully')
-                        ->body("{$uploadedCount} images added to the gallery. You can reorder them below.")
-                        ->success()
-                        ->send();
+                    if ($uploadedCount > 0) {
+                        $this->refreshFormData(['projectImages']);
+                        \Filament\Notifications\Notification::make()
+                            ->title('Images uploaded successfully')
+                            ->body("{$uploadedCount} images added to the gallery. You can reorder them below.")
+                            ->success()
+                            ->send();
+                    } else {
+                        Log::error('Edit page - no images were uploaded despite data being present.');
+                        \Filament\Notifications\Notification::make()
+                            ->title('Upload Failed')
+                            ->body('Could not upload the selected images. Please check the logs.')
+                            ->danger()
+                            ->send();
+                    }
                 })
                 ->modalHeading('Bulk Upload Images')
                 ->modalDescription('Select multiple images to upload at once. They will be added to the gallery where you can reorder and edit them.')
