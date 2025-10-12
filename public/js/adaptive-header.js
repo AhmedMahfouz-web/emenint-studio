@@ -73,9 +73,7 @@ class AdaptiveHeader {
             this.checkHeaderBackground();
             
             this.isInitialized = true;
-            console.log('Adaptive Header initialized successfully');
         } catch (error) {
-            console.error('Failed to initialize Adaptive Header:', error);
         }
     }
 
@@ -97,7 +95,6 @@ class AdaptiveHeader {
         // Ensure videos can play properly
         this.ensureVideoPlayback();
         
-        console.log(`Found ${this.textElements.length} text elements and ${this.sections.length} sections`);
     }
 
     /**
@@ -124,7 +121,6 @@ class AdaptiveHeader {
             // Force play if paused
             if (video.paused) {
                 video.play().catch(error => {
-                    console.warn('Video autoplay failed:', error);
                     // Try again after a short delay
                     setTimeout(() => {
                         video.play().catch(() => {});
@@ -178,7 +174,6 @@ class AdaptiveHeader {
      * Fallback for browsers without Intersection Observer
      */
     setupScrollFallback() {
-        console.warn('Intersection Observer not supported, using scroll fallback');
         window.addEventListener('scroll', () => this.throttledCheck(), { passive: true });
         window.addEventListener('resize', () => this.throttledCheck(), { passive: true });
     }
@@ -322,14 +317,12 @@ class AdaptiveHeader {
             const newMode = isDarkBackground ? 'dark' : 'light';
 
             // Add debugging information
-            console.log(`🎨 Header Adaptive: Brightness=${brightness.toFixed(3)}, Dark=${isDarkBackground}, Mode=${newMode} (${isDarkBackground ? 'WHITE text' : 'BLACK text'}), Threshold=${this.config.threshold}`);
 
             if (newMode !== this.currentMode) {
                 this.updateHeaderMode(newMode);
                 this.currentMode = newMode;
             }
         } catch (error) {
-            console.warn('Error checking header background:', error);
         }
     }
 
@@ -393,7 +386,6 @@ class AdaptiveHeader {
         if (video || element.classList.contains('page-teaser--video') || element.closest('.index-page-teaser')) {
             detectionMethod = 'video';
             brightness = 0.05; // Very dark video = needs white text
-            console.log(`📹 Video section detected: ${element.className || element.tagName}`);
             return brightness;
         }
 
@@ -404,7 +396,6 @@ class AdaptiveHeader {
             element.closest('.page-teaser')) {
             detectionMethod = 'home-video-section';
             brightness = 0.05; // Dark video background
-            console.log(`🏠 Home page video teaser detected`);
             return brightness;
         }
 
@@ -415,7 +406,6 @@ class AdaptiveHeader {
             element.closest('.cover-image')) {
             detectionMethod = 'project-showcase';
             brightness = 0.15; // Dark project images typically need white text
-            console.log(`🖼️ Project showcase with background image detected`);
             return brightness;
         }
 
@@ -425,7 +415,6 @@ class AdaptiveHeader {
             element.classList.contains('latest--big-one--text')) {
             detectionMethod = 'dark-class';
             brightness = 0.1; // Dark background = needs white text
-            console.log(`🌑 Dark class detected: ${element.className}`);
             return brightness;
         }
 
@@ -435,7 +424,6 @@ class AdaptiveHeader {
             element.querySelector('.color-black, .text-dark')) {
             detectionMethod = 'light-class';
             brightness = 0.9; // Light background = needs dark text
-            console.log(`☀️ Light class detected: ${element.className}`);
             return brightness;
         }
 
@@ -446,7 +434,6 @@ class AdaptiveHeader {
         if (backgroundColor && backgroundColor !== 'transparent' && backgroundColor !== 'rgba(0, 0, 0, 0)') {
             detectionMethod = 'bg-color';
             brightness = this.getColorBrightness(backgroundColor);
-            console.log(`🎨 Background color detected: ${backgroundColor} = ${brightness.toFixed(3)}`);
             return brightness;
         }
 
@@ -463,7 +450,6 @@ class AdaptiveHeader {
                 element.closest('.latest--big-one') ||
                 element.closest('.parallax-section')) {
                 brightness = 0.15; // Project images are typically dark
-                console.log(`🖼️ Project background image detected (dark)`);
                 return brightness;
             }
             
@@ -471,10 +457,8 @@ class AdaptiveHeader {
             const whiteTextElements = element.querySelectorAll('.color-white, [class*="white"]');
             if (whiteTextElements.length > 0) {
                 brightness = 0.1; // Dark image = needs white text
-                console.log(`🖼️ Dark background image detected (has white text)`);
             } else {
                 brightness = 0.6; // Default for images
-                console.log(`🖼️ Background image detected (neutral)`);
             }
             return brightness;
         }
@@ -487,7 +471,6 @@ class AdaptiveHeader {
             if (parentVideo) {
                 detectionMethod = 'parent-video';
                 brightness = 0.1; // Dark video background
-                console.log(`📹 Parent video detected`);
                 return brightness;
             }
 
@@ -497,7 +480,6 @@ class AdaptiveHeader {
             if (parentBg && parentBg !== 'transparent' && parentBg !== 'rgba(0, 0, 0, 0)') {
                 detectionMethod = 'parent-bg';
                 brightness = this.getColorBrightness(parentBg);
-                console.log(`🎨 Parent background color: ${parentBg} = ${brightness.toFixed(3)}`);
                 return brightness;
             }
             
@@ -507,7 +489,6 @@ class AdaptiveHeader {
 
         detectionMethod = 'default';
         brightness = 0.7; // Default to light background (needs dark text)
-        console.log(`⚪ Using default brightness (light background)`);
         return brightness;
     }
 
@@ -582,7 +563,6 @@ class AdaptiveHeader {
         });
         document.dispatchEvent(event);
         
-        console.log(`Header mode changed to: ${mode}`);
     }
 
     /**
@@ -590,7 +570,6 @@ class AdaptiveHeader {
      */
     enableFallbackMode() {
         document.body.classList.add('adaptive-header-fallback');
-        console.log('Adaptive Header fallback mode enabled');
     }
 
     /**
@@ -615,7 +594,6 @@ class AdaptiveHeader {
         this.textElements.forEach(el => el.classList.remove('adaptive-text'));
 
         this.isInitialized = false;
-        console.log('Adaptive Header destroyed');
     }
 }
 
