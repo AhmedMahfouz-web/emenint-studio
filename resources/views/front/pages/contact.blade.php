@@ -240,7 +240,7 @@
 
         <div id="map">
         </div>
-        <section class="awards">
+        {{-- <section class="awards">
             <div class="grid-width text-center">
                 <div class="h3 inview inview--up">
                     Synergetic Partners </div>
@@ -5346,12 +5346,11 @@
                     </div>
                 </div>
             </div>
-        </section>
+        </section> --}}
     </div><!-- /page -->
 @endsection
 
 @section('js')
-
     <script async defer src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&callback=initMap">
     </script>
     <script>

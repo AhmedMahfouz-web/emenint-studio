@@ -306,7 +306,7 @@
             </div>
         </section>
 
-        <section class="team" id="team-übersicht">
+        {{-- <section class="team" id="team-übersicht">
             <div class="grid-width">
                 <div class="team-wrapper">
                     <div class="profile">
@@ -340,7 +340,7 @@
                     </div>
                 </div>
             </div>
-        </section>
+        </section> --}}
 
         <section class="introtext">
             <div class="grid-width text-center">
