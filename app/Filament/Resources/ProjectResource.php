@@ -119,10 +119,10 @@ class ProjectResource extends Resource
                     ->schema([
                         Forms\Components\Placeholder::make('gallery_info')
                             ->label('')
-                            ->content('<strong>Upload project images.</strong> Use the "Bulk Upload Images" button below to upload multiple images at once, or add them individually below.')
+                            ->content('Upload project images. Use the "Bulk Upload Images" button below to upload multiple images at once, or add them individually below.')
                             ->columnSpanFull()
                             ->visible(fn($context) => $context === 'create'),
-                        
+
                         Forms\Components\Placeholder::make('gallery_info_edit')
                             ->label('')
                             ->content('<strong>Upload project images.</strong> Use the "Bulk Upload Images" button below to upload multiple images at once, or add them individually below.')
@@ -133,14 +133,12 @@ class ProjectResource extends Resource
                             Forms\Components\Actions\Action::make('bulk_upload')
                                 ->label('Bulk Upload Images')
                                 ->icon('heroicon-o-arrow-up-tray')
-                                ->color('success')
-                                ->action(function ($livewire) {
-                                    // Trigger the hidden bulk upload modal action
-                                    $livewire->mountAction('bulk_upload_modal');
-                                })
+                                ->color('primary')
+                                ->action('openBulkUploadModal')
                                 ->visible(fn($context) => in_array($context, ['create', 'edit'])),
                         ])->visible(fn($context) => in_array($context, ['create', 'edit']))
-                        ->columnSpanFull(),
+                            ->columnSpanFull()
+                            ->extraAttributes(['class' => 'mb-4']),
 
                         Forms\Components\Repeater::make('projectImages')
                             ->relationship()

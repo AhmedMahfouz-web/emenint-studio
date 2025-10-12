@@ -114,6 +114,22 @@ class CreateProject extends CreateRecord
         ];
     }
 
+    public function openBulkUploadModal(): void
+    {
+        // Check if we have a valid record
+        if ($this->record === null) {
+            \Filament\Notifications\Notification::make()
+                ->title('Project not created yet')
+                ->body('Please create the project first before uploading images.')
+                ->danger()
+                ->send();
+            return;
+        }
+        
+        // Mount the hidden bulk upload modal action
+        $this->mountAction('bulk_upload_modal');
+    }
+
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         // Debug: Log the form data before creation

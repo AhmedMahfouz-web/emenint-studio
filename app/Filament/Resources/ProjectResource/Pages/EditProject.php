@@ -98,6 +98,12 @@ class EditProject extends EditRecord
         ];
     }
 
+    public function openBulkUploadModal(): void
+    {
+        // Mount the hidden bulk upload modal action
+        $this->mountAction('bulk_upload_modal');
+    }
+
     protected function mutateFormDataBeforeSave(array $data): array
     {
         // Debug: Log the form data before saving
