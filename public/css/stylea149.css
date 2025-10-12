@@ -65,6 +65,10 @@ body {
     margin: 100px auto;
     padding: 0 2%;
 }
+
+.grid-width-video {
+    padding: 0;
+}
 @media (max-width: 768px) {
     .grid-width {
         padding: 0 40px;
