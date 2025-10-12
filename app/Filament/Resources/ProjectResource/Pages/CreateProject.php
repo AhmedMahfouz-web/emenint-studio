@@ -25,6 +25,7 @@ class CreateProject extends CreateRecord
     protected function getFormActions(): array
     {
         return [
+            $this->getCreateFormAction(),
             Actions\Action::make('bulk_upload_modal')
                 ->label('Bulk Upload Images')
                 ->icon('heroicon-o-arrow-up-tray')
@@ -40,9 +41,9 @@ class CreateProject extends CreateRecord
                         ->panelLayout('grid')
                         ->imagePreviewHeight('120')
                         ->visibility('public')
-                        ->maxSize(10240) // 10MB per file
+                        ->maxSize(20480) // 20MB per file
                         ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
-                        ->helperText('Select up to 50 images to upload at once. Images will be automatically optimized to WebP format.')
+                        ->helperText('Select up to 50 images to upload at once (max 20MB each). Images will be automatically optimized to WebP format.')
                         ->saveUploadedFileUsing(function (UploadedFile $file, $component) {
                             try {
                                 $optimizer = app(ImageOptimizationService::class);

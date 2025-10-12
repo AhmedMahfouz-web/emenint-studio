@@ -95,7 +95,7 @@ class ProjectResource extends Resource
                             ->disk('public')
                             ->directory('project-images')
                             ->visibility('public')
-                            ->maxSize(10240) // 10MB
+                            ->maxSize(20480) // 20MB
                             ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
                             ->helperText('Upload a featured image for this project. Will be automatically optimized to WebP format.')
                             ->multiple(false) // Explicitly single file
@@ -139,9 +139,9 @@ class ProjectResource extends Resource
                             ->panelLayout('grid')
                             ->imagePreviewHeight('120')
                             ->visibility('public')
-                            ->maxSize(10240) // 10MB per file
+                            ->maxSize(20480) // 20MB per file
                             ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
-                            ->helperText('Select up to 50 images to upload at once. Images will be automatically optimized to WebP format.')
+                            ->helperText('Select up to 50 images to upload at once (max 20MB each). Images will be automatically optimized to WebP format.')
                             ->saveUploadedFileUsing(function (UploadedFile $file, $component) {
                                 try {
                                     $optimizer = app(ImageOptimizationService::class);
@@ -182,7 +182,7 @@ class ProjectResource extends Resource
                                     ->panelAspectRatio('1:1')
                                     ->panelLayout('integrated')
                                     ->visibility('public')
-                                    ->maxSize(10240) // 10MB
+                                    ->maxSize(20480) // 20MB
                                     ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
                                     ->multiple(false)
                                     ->nullable()
