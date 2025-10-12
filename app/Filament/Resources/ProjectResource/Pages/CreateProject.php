@@ -128,16 +128,18 @@ class CreateProject extends CreateRecord
         // Debug: Log the form data before creation
         Log::info('Project creation data:', $data);
         
-        // Get bulk images from the form state directly
-        $formState = $this->form->getState();
-        if (isset($formState['bulk_images']) && is_array($formState['bulk_images'])) {
-            $this->bulkImages = array_filter($formState['bulk_images']); // Remove any null/empty values
-            Log::info('Bulk images found in form state:', ['count' => count($this->bulkImages), 'paths' => $this->bulkImages]);
-        }
-        
-        // Remove bulk_images from project data if it exists
-        if (isset($data['bulk_images'])) {
-            unset($data['bulk_images']);
+        // Get bulk images from the form data directly
+        if (isset($data['bulk_images']) && is_array($data['bulk_images'])) {
+            $this->bulkImages = array_filter($data['bulk_images']); // Remove any null/empty values
+            Log::info('Bulk images found in form data:', ['count' => count($this->bulkImages), 'paths' => $this->bulkImages]);
+            unset($data['bulk_images']); // Remove from project data
+        } else {
+            // Try to get from form state as fallback
+            $formState = $this->form->getState();
+            if (isset($formState['bulk_images']) && is_array($formState['bulk_images'])) {
+                $this->bulkImages = array_filter($formState['bulk_images']); // Remove any null/empty values
+                Log::info('Bulk images found in form state (fallback):', ['count' => count($this->bulkImages), 'paths' => $this->bulkImages]);
+            }
         }
         
         // Filter out empty projectImages (repeater items without image_path)
