@@ -830,7 +830,7 @@
                                 strategic positioning, captivating logo design, cohesive identity, and comprehensive
                                 guidelines for consistent, memorable, and impactful brand presence. </div>
                             <div class="magnet">
-                                <a class="btn" href="{{ route('branding') }}">
+                                <a class="btn" href="{{ route('services.category', 'branding') }}">
                                     <span>learn more</span>
                                 </a>
                             </div>
@@ -848,7 +848,7 @@
                                 endeavors, enhance brand visibility, and attain your business goals effectively.
                             </div>
                             <div class="magnet">
-                                <a class="btn" href="{{ route('consultant') }}">
+                                <a class="btn" href="{{ route('services.category', 'consultant') }}">
                                     <span>learn more</span>
                                 </a>
                             </div>
