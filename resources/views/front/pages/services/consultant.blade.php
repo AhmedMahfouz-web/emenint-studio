@@ -578,7 +578,7 @@
                                 strategic positioning, captivating logo design, cohesive identity, and comprehensive
                                 guidelines for consistent, memorable, and impactful brand presence. </div>
                             <div class="magnet">
-                                <a class="btn" href="{{ route('branding') }}">
+                                <a class="btn" href="{{ route('services.category','branding') }}">
                                     <span>learn more</span>
                                 </a>
                             </div>
@@ -595,7 +595,7 @@
                                 Comprehensive web & app solutions: user-friendly websites, custom mobile apps, UI/UX design,
                                 tech support, admin dashboards, and interactive training systems.</div>
                             <div class="magnet">
-                                <a class="btn" href="{{ route('development') }}">
+                                <a class="btn" href="{{ route('services.category','development') }}">
                                     <span>learn more</span>
                                 </a>
                             </div>
