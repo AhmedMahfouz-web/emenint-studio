@@ -296,7 +296,7 @@
             </div>
         </section>
 
-        <section class="introtext">
+        {{-- <section class="introtext">
             <div class="grid-width text-center">
                 <div class="subline inview inview--up">
                     (Team)
@@ -304,7 +304,7 @@
                 <h2 class="inview inview--up">
                     Who's behind eminent?</h2>
             </div>
-        </section>
+        </section> --}}
 
         {{-- <section class="team" id="team-übersicht">
             <div class="grid-width">
