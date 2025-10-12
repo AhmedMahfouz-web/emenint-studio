@@ -111,6 +111,14 @@ class EditProject extends EditRecord
         // Debug: Log the form data before saving
         Log::info('Project update data:', $data);
         
+        // Filter out empty projectImages (repeater items without image_path)
+        if (isset($data['projectImages']) && is_array($data['projectImages'])) {
+            $data['projectImages'] = array_filter($data['projectImages'], function($item) {
+                return !empty($item['image_path']);
+            });
+            Log::info('Filtered projectImages:', ['count' => count($data['projectImages'])]);
+        }
+        
         return $data;
     }
 

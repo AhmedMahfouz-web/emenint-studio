@@ -125,7 +125,7 @@ class ProjectResource extends Resource
 
                         Forms\Components\Placeholder::make('gallery_info_edit')
                             ->label('')
-                            ->content('<strong>Upload project images.</strong> Use the "Bulk Upload Images" button below to upload multiple images at once, or add them individually below.')
+                            ->content('Upload project images. Use the "Bulk Upload Images" button below to upload multiple images at once, or add them individually below.')
                             ->columnSpanFull()
                             ->visible(fn($context) => $context === 'edit'),
 
@@ -191,7 +191,6 @@ class ProjectResource extends Resource
                                     ->maxSize(20480) // 20MB
                                     ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
                                     ->multiple(false)
-                                    ->nullable()
                                     ->saveUploadedFileUsing(function (UploadedFile $file, $component) {
                                         try {
                                             $optimizer = app(ImageOptimizationService::class);

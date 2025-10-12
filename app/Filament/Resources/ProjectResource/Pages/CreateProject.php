@@ -140,6 +140,14 @@ class CreateProject extends CreateRecord
             unset($data['bulk_images']);
         }
         
+        // Filter out empty projectImages (repeater items without image_path)
+        if (isset($data['projectImages']) && is_array($data['projectImages'])) {
+            $data['projectImages'] = array_filter($data['projectImages'], function($item) {
+                return !empty($item['image_path']);
+            });
+            Log::info('Filtered projectImages:', ['count' => count($data['projectImages'])]);
+        }
+        
         return $data;
     }
 
