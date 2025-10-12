@@ -10,6 +10,7 @@
             height: 500px;
             width: 70%;
             margin: auto;
+            margin-bottom: 80px;
         }
 
         form {
