@@ -103,6 +103,7 @@ class ProjectResource extends Resource
                             ->saveUploadedFileUsing(function (UploadedFile $file, $component) {
                                 try {
                                     $optimizer = app(ImageOptimizationService::class);
+                                    // Optimize and convert to WebP format
                                     return $optimizer->optimizeAndConvert($file, 'project-images', 1920, 1080, 85);
                                 } catch (\Exception $e) {
                                     Log::error('Featured image optimization failed: ' . $e->getMessage());
@@ -112,29 +113,19 @@ class ProjectResource extends Resource
                                 }
                             }),
                         
-                        Forms\Components\FileUpload::make('gallery_images')
-                            ->label('Gallery Images (Legacy)')
-                            ->image()
-                            ->multiple()
-                            ->disk('public')
-                            ->directory('project-images')
-                            ->visibility('public')
-                            ->maxSize(10240) // 10MB per file
-                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
-                            ->helperText('Legacy field - use Project Images section below for sortable images'),
                     ])->columns(2),
 
-                Forms\Components\Section::make('Project Images Gallery')
+                Forms\Components\Section::make('Project Images')
                     ->schema([
                         Forms\Components\Placeholder::make('gallery_info')
                             ->label('')
-                            ->content('📸 **Project images can be added after creation.** Use the "Bulk Upload Images" button in the edit page to select and upload multiple images at once.')
+                            ->content('📸 **Upload project images.** You can select and upload multiple images at once.')
                             ->columnSpanFull()
-                            ->visible(fn ($context) => $context === 'create'),
+                            ->visible(fn ($context) => in_array($context, ['create', 'edit'])),
 
                         Forms\Components\Repeater::make('projectImages')
                             ->relationship()
-                            ->label('Manage Uploaded Images')
+                            ->label('Project Images')
                             ->schema([
                                 Forms\Components\FileUpload::make('image_path')
                                     ->label('')
@@ -153,6 +144,7 @@ class ProjectResource extends Resource
                                     ->saveUploadedFileUsing(function (UploadedFile $file, $component) {
                                         try {
                                             $optimizer = app(ImageOptimizationService::class);
+                                            // Optimize and convert to WebP format
                                             return $optimizer->optimizeAndConvert($file, 'project-images', 1920, 1920, 80);
                                         } catch (\Exception $e) {
                                             Log::error('Gallery image optimization failed: ' . $e->getMessage());
@@ -160,11 +152,12 @@ class ProjectResource extends Resource
                                             $filename = time() . '_' . $file->hashName();
                                             return $file->storeAs('project-images', $filename, 'public');
                                         }
-                                    }),
+                                    })
+                                    ->uploadButtonLabel('Upload Image') // Custom label for upload button
                             ])
                             ->orderColumn('sort_order')
                             ->reorderable()
-                            ->addActionLabel('Add Single Image')
+                            ->addActionLabel('Add Another Image')
                             ->deleteAction(
                                 fn (Forms\Components\Actions\Action $action) => $action
                                     ->requiresConfirmation()
@@ -184,9 +177,9 @@ class ProjectResource extends Resource
                                 'lg' => 6,
                                 'xl' => 8,
                             ])
-                            ->defaultItems(0)
+                            ->defaultItems(1)
                             ->cloneable(false)
-                            ->visible(fn ($context) => $context === 'edit'),
+                            ->visible(fn ($context) => in_array($context, ['create', 'edit'])),
                     ])
                     ->collapsible(),
 
@@ -203,78 +196,6 @@ class ProjectResource extends Resource
                     ->columns(1)
                     ->collapsible(),
 
-                Forms\Components\Section::make('Content Blocks')
-                    ->schema([
-                        Forms\Components\Repeater::make('blockContents')
-                            ->relationship()
-                            ->label('Project Content Blocks')
-                            ->schema([
-                                Forms\Components\Select::make('template_block_id')
-                                    ->label('Block Type')
-                                    ->options(\App\Models\TemplateBlock::pluck('block_name', 'id'))
-                                    ->required()
-                                    ->live()
-                                    ->afterStateUpdated(fn (callable $set) => $set('content_data', [])),
-
-                                Forms\Components\Grid::make(1)
-                                    ->schema(function (callable $get) {
-                                        $templateBlockId = $get('template_block_id');
-                                        if (!$templateBlockId) {
-                                            return [];
-                                        }
-
-                                        $templateBlock = \App\Models\TemplateBlock::find($templateBlockId);
-                                        if (!$templateBlock || !is_array($templateBlock->content_schema)) {
-                                            return [];
-                                        }
-
-                                        $fields = [];
-                                        foreach ($templateBlock->content_schema as $fieldName => $fieldConfig) {
-                                            $field = null;
-                                            $type = $fieldConfig['type'] ?? 'text';
-                                            $label = $fieldConfig['label'] ?? ucfirst(str_replace('_', ' ', $fieldName));
-                                            $required = $fieldConfig['required'] ?? false;
-
-                                            switch ($type) {
-                                                case 'textarea':
-                                                    $field = Forms\Components\Textarea::make('content_data.' . $fieldName)->label($label);
-                                                    break;
-                                                case 'rich_editor':
-                                                    $field = Forms\Components\RichEditor::make('content_data.' . $fieldName)->label($label);
-                                                    break;
-                                                case 'file_upload':
-                                                    $field = Forms\Components\FileUpload::make('content_data.' . $fieldName)
-                                                        ->label($label)
-                                                        ->image()
-                                                        ->disk('public')
-                                                        ->directory('project-images/blocks')
-                                                        ->visibility('public')
-                                                        ->maxSize(10240) // 10MB
-                                                        ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
-                                                        ->multiple(false) // Explicitly single file
-                                                        ->nullable();
-                                                    break;
-                                                case 'toggle':
-                                                    $field = Forms\Components\Toggle::make('content_data.' . $fieldName)->label($label);
-                                                    break;
-                                                default:
-                                                    $field = Forms\Components\TextInput::make('content_data.' . $fieldName)->label($label);
-                                            }
-
-                                            if ($required) {
-                                                $field->required();
-                                            }
-                                            $fields[] = $field;
-                                        }
-                                        return $fields;
-                                    }),
-
-                                Forms\Components\Textarea::make('custom_css')->rows(3)->columnSpanFull(),
-                                Forms\Components\Toggle::make('is_visible')->default(true)->columnSpanFull(),
-                            ])
-                            ->orderColumn('sort_order')
-                            ->columnSpanFull(),
-                    ]),
             ]);
     }
 
@@ -309,10 +230,6 @@ class ProjectResource extends Resource
                 Tables\Columns\IconColumn::make('is_featured')
                     ->boolean()
                     ->label('Featured'),
-                
-                Tables\Columns\TextColumn::make('blockContents_count')
-                    ->counts('blockContents')
-                    ->label('Blocks'),
                 
                 Tables\Columns\TextColumn::make('project_date')
                     ->date()
