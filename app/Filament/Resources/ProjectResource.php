@@ -161,7 +161,7 @@ class ProjectResource extends Resource
                             ->visible(fn($context) => $context === 'create')
                             ->columnSpanFull()
                             ->extraAttributes(['class' => 'mb-4'])
-                            ->live(),
+                            ->dehydrated(false), // Don't include in model data
 
                         Forms\Components\Actions::make([
                             Forms\Components\Actions\Action::make('bulk_upload')

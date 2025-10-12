@@ -128,10 +128,15 @@ class CreateProject extends CreateRecord
         // Debug: Log the form data before creation
         Log::info('Project creation data:', $data);
         
-        // Store bulk images separately and remove from project data
-        if (isset($data['bulk_images']) && is_array($data['bulk_images'])) {
-            $this->bulkImages = array_filter($data['bulk_images']); // Remove any null/empty values
-            Log::info('Bulk images found:', ['count' => count($this->bulkImages), 'paths' => $this->bulkImages]);
+        // Get bulk images from the form state directly
+        $formState = $this->form->getState();
+        if (isset($formState['bulk_images']) && is_array($formState['bulk_images'])) {
+            $this->bulkImages = array_filter($formState['bulk_images']); // Remove any null/empty values
+            Log::info('Bulk images found in form state:', ['count' => count($this->bulkImages), 'paths' => $this->bulkImages]);
+        }
+        
+        // Remove bulk_images from project data if it exists
+        if (isset($data['bulk_images'])) {
             unset($data['bulk_images']);
         }
         
@@ -141,14 +146,16 @@ class CreateProject extends CreateRecord
     protected function afterCreate(): void
     {
         // Handle bulk images if any were uploaded
+        Log::info('After create - checking bulk images:', ['count' => count($this->bulkImages), 'images' => $this->bulkImages]);
+        
         if (!empty($this->bulkImages)) {
             $uploadedCount = 0;
             $sortOrder = 0;
             
             // Create ProjectImage records for each uploaded file
             foreach ($this->bulkImages as $imagePath) {
-                Log::info('Processing bulk image:', ['path' => $imagePath, 'empty' => empty($imagePath)]);
-                if (!empty($imagePath)) { // Make sure the path is not null or empty
+                Log::info('Processing bulk image:', ['path' => $imagePath, 'empty' => empty($imagePath), 'type' => gettype($imagePath)]);
+                if (!empty($imagePath) && is_string($imagePath)) { // Make sure the path is not null or empty and is a string
                     try {
                         \App\Models\ProjectImage::create([
                             'project_id' => $this->record->id,
@@ -161,6 +168,8 @@ class CreateProject extends CreateRecord
                     } catch (\Exception $e) {
                         Log::error('Failed to create ProjectImage:', ['path' => $imagePath, 'error' => $e->getMessage()]);
                     }
+                } else {
+                    Log::warning('Skipping invalid image path:', ['path' => $imagePath, 'type' => gettype($imagePath)]);
                 }
             }
             
@@ -170,7 +179,11 @@ class CreateProject extends CreateRecord
                     ->body("{$uploadedCount} images added to the gallery.")
                     ->success()
                     ->send();
+            } else {
+                Log::warning('No valid image paths found for bulk upload');
             }
+        } else {
+            Log::info('No bulk images to process');
         }
         
         // Debug: Log the created project data
