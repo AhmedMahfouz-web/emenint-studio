@@ -153,7 +153,6 @@ class ProjectResource extends Resource
                                             return $file->storeAs('project-images', $filename, 'public');
                                         }
                                     })
-                                    ->uploadButtonLabel('Upload Image') // Custom label for upload button
                             ])
                             ->orderColumn('sort_order')
                             ->reorderable()
@@ -161,7 +160,6 @@ class ProjectResource extends Resource
                             ->deleteAction(
                                 fn (Forms\Components\Actions\Action $action) => $action
                                     ->requiresConfirmation()
-                                    ->modalHeading('Delete Image')
                                     ->modalDescription('Delete this image?')
                                     ->modalSubmitActionLabel('Delete')
                                     ->color('danger')
