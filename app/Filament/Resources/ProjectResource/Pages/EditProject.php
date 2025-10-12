@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Log;
 
 class EditProject extends EditRecord
 {
+    public array $bulkImages = [];
     protected static string $resource = ProjectResource::class;
 
     protected function getHeaderActions(): array
@@ -140,17 +141,53 @@ class EditProject extends EditRecord
             });
             Log::info('Filtered projectImages:', ['count' => count($data['projectImages'])]);
         }
+
+        // Handle bulk images
+        if (isset($data['bulk_images']) && is_array($data['bulk_images'])) {
+            $this->bulkImages = array_filter($data['bulk_images']);
+            unset($data['bulk_images']);
+        }
         
         return $data;
     }
 
     protected function afterSave(): void
     {
+        // Handle bulk images if any were uploaded
+        if (!empty($this->bulkImages)) {
+            $uploadedCount = 0;
+            $maxSortOrder = $this->record->projectImages()->max('sort_order') ?? 0;
+
+            foreach ($this->bulkImages as $imagePath) {
+                if (!empty($imagePath) && is_string($imagePath)) {
+                    try {
+                        ProjectImage::create([
+                            'project_id' => $this->record->id,
+                            'image_path' => $imagePath,
+                            'alt_text' => 'Project Image',
+                            'sort_order' => ++$maxSortOrder,
+                        ]);
+                        $uploadedCount++;
+                        Log::info('Edit page - successfully created ProjectImage.', ['path' => $imagePath]);
+                    } catch (\Exception $e) {
+                        Log::error('Edit page - failed to create ProjectImage.', ['path' => $imagePath, 'error' => $e->getMessage()]);
+                    }
+                }
+            }
+
+            if ($uploadedCount > 0) {
+                \Filament\Notifications\Notification::make()
+                    ->title('Images uploaded successfully')
+                    ->body("{$uploadedCount} new images added to the gallery.")
+                    ->success()
+                    ->send();
+            }
+        }
+
         // Debug: Log the updated project data
         Log::info('Project updated successfully:', [
             'id' => $this->record->id,
             'title' => $this->record->title,
-            'featured_image' => $this->record->featured_image,
         ]);
     }
 }

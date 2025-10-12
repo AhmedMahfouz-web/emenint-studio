@@ -158,21 +158,10 @@ class ProjectResource extends Resource
                                     return $path;
                                 }
                             })
-                            ->visible(fn($context) => $context === 'create')
+                            ->visible(fn($context) => in_array($context, ['create', 'edit']))
                             ->columnSpanFull()
                             ->extraAttributes(['class' => 'mb-4'])
                             ->dehydrated(true), // Include in form data
-
-                        Forms\Components\Actions::make([
-                            Forms\Components\Actions\Action::make('bulk_upload')
-                                ->label('Bulk Upload Images')
-                                ->icon('heroicon-o-arrow-up-tray')
-                                ->color('primary')
-                                ->action('openBulkUploadModal')
-                                ->visible(fn($context) => $context === 'edit'),
-                        ])->visible(fn($context) => $context === 'edit')
-                            ->columnSpanFull()
-                            ->extraAttributes(['class' => 'mb-4']),
 
                         Forms\Components\Repeater::make('projectImages')
                             ->relationship()
