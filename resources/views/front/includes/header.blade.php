@@ -114,9 +114,10 @@
                                     <li class="links"><a
                                             href="{{ route('services.category', 'advertising') }}">Advertising</a></li>
                                     <li class="links"><a
-                                            href="{{ route('services.category', 'development') }}">Development</a></li>
+                                            href="{{ route('services.category', 'web-development') }}">Development</a>
+                                    </li>
                                     <li class="links"><a
-                                            href="{{ route('services.category', 'ecommerce') }}">E-commerce</a></li>
+                                            href="{{ route('services.category', 'e-commerce') }}">E-commerce</a></li>
                                     <li class="links"><a
                                             href="{{ route('services.category', 'consultant') }}">Consultant</a></li>
                                 </ul>
