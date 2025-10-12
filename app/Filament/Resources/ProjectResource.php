@@ -142,9 +142,26 @@ class ProjectResource extends Resource
                             ->maxSize(20480) // 20MB per file
                             ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
                             ->helperText('Select up to 50 images to upload at once (max 20MB each). Images will be automatically optimized to WebP format.')
+                            ->saveUploadedFileUsing(function (UploadedFile $file, $component) {
+                                Log::info('Processing bulk upload file:', ['name' => $file->getClientOriginalName(), 'size' => $file->getSize()]);
+                                try {
+                                    $optimizer = app(ImageOptimizationService::class);
+                                    $path = $optimizer->optimizeAndConvert($file, 'project-images', 1920, 1920, 80);
+                                    Log::info('Bulk file optimized successfully:', ['path' => $path]);
+                                    return $path;
+                                } catch (\Exception $e) {
+                                    Log::error('Bulk image optimization failed: ' . $e->getMessage());
+                                    // Fallback to normal upload
+                                    $filename = time() . '_' . $file->hashName();
+                                    $path = $file->storeAs('project-images', $filename, 'public');
+                                    Log::info('Bulk file stored as fallback:', ['path' => $path]);
+                                    return $path;
+                                }
+                            })
                             ->visible(fn($context) => $context === 'create')
                             ->columnSpanFull()
-                            ->extraAttributes(['class' => 'mb-4']),
+                            ->extraAttributes(['class' => 'mb-4'])
+                            ->live(),
 
                         Forms\Components\Actions::make([
                             Forms\Components\Actions\Action::make('bulk_upload')

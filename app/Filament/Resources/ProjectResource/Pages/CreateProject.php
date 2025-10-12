@@ -130,29 +130,8 @@ class CreateProject extends CreateRecord
         
         // Store bulk images separately and remove from project data
         if (isset($data['bulk_images']) && is_array($data['bulk_images'])) {
-            // Process the uploaded files manually
-            $processedImages = [];
-            foreach ($data['bulk_images'] as $uploadedFile) {
-                if ($uploadedFile instanceof \Illuminate\Http\UploadedFile) {
-                    try {
-                        $optimizer = app(ImageOptimizationService::class);
-                        $processedPath = $optimizer->optimizeAndConvert($uploadedFile, 'project-images', 1920, 1920, 80);
-                        $processedImages[] = $processedPath;
-                        Log::info('Processed bulk image:', ['original' => $uploadedFile->getClientOriginalName(), 'path' => $processedPath]);
-                    } catch (\Exception $e) {
-                        Log::error('Bulk image optimization failed: ' . $e->getMessage());
-                        // Fallback to normal upload
-                        $filename = time() . '_' . $uploadedFile->hashName();
-                        $processedPath = $uploadedFile->storeAs('project-images', $filename, 'public');
-                        $processedImages[] = $processedPath;
-                    }
-                } else {
-                    // If it's already a string path, use it as is
-                    $processedImages[] = $uploadedFile;
-                }
-            }
-            $this->bulkImages = $processedImages;
-            Log::info('Bulk images processed:', ['count' => count($this->bulkImages), 'paths' => $this->bulkImages]);
+            $this->bulkImages = array_filter($data['bulk_images']); // Remove any null/empty values
+            Log::info('Bulk images found:', ['count' => count($this->bulkImages), 'paths' => $this->bulkImages]);
             unset($data['bulk_images']);
         }
         
