@@ -17,7 +17,7 @@ class AdaptiveHeader {
         this.config = {
             headerSelector: '#header',
             textElements: '#header #logo .cls-2, #header .main-menu a, #header .burger-inner span',
-            sectionSelector: 'section, div[class*="block"], .index-page-teaser, .introtext',
+            sectionSelector: 'section, div[class*="block"], .index-page-teaser, .introtext, .latest, .brand-links, .page-teaser, .latest--big-one, .cover-image',
             threshold: 0.4, // Brightness threshold (0-1) - slightly lower for better detection
             transitionDuration: 200, // CSS transition duration in ms - faster for smoothness
             throttleDelay: 32, // ~30fps for better performance
@@ -195,17 +195,32 @@ class AdaptiveHeader {
             setTimeout(() => this.throttledCheck(), 100);
         });
 
-        // Handle dynamic content changes
+        // Handle dynamic content changes and lazy loading
         if (window.MutationObserver) {
-            const observer = new MutationObserver(() => {
-                this.throttledCheck();
-                this.ensureVideoPlayback(); // Re-check videos on DOM changes
+            const observer = new MutationObserver((mutations) => {
+                let shouldRecheck = false;
+                mutations.forEach(mutation => {
+                    // Check for lazy-loaded images (data-bg to background-image)
+                    if (mutation.type === 'attributes' && 
+                        (mutation.attributeName === 'style' || mutation.attributeName === 'class')) {
+                        shouldRecheck = true;
+                    }
+                    // Check for new elements being added
+                    if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+                        shouldRecheck = true;
+                    }
+                });
+                
+                if (shouldRecheck) {
+                    this.throttledCheck();
+                    this.ensureVideoPlayback(); // Re-check videos on DOM changes
+                }
             });
             observer.observe(document.body, {
                 childList: true,
                 subtree: true,
                 attributes: true,
-                attributeFilter: ['style', 'class']
+                attributeFilter: ['style', 'class', 'data-bg']
             });
         }
     }
@@ -367,25 +382,47 @@ class AdaptiveHeader {
     }
 
     /**
-     * Calculate brightness of an element (simplified and more reliable)
+     * Calculate brightness of an element (enhanced for home page)
      */
     calculateElementBrightness(element, x, y) {
         let detectionMethod = 'unknown';
         let brightness = 0.7;
 
-        // Priority 1: Check for video elements
-        const video = element.querySelector('video');
-        if (video) {
+        // Priority 1: Check for video elements (enhanced detection)
+        const video = element.querySelector('video') || element.closest('.page-teaser--video')?.querySelector('video');
+        if (video || element.classList.contains('page-teaser--video') || element.closest('.index-page-teaser')) {
             detectionMethod = 'video';
-            brightness = 0.1; // Very dark = needs white text
-            console.log(`📹 Video detected in ${element.className || element.tagName}`);
+            brightness = 0.05; // Very dark video = needs white text
+            console.log(`📹 Video section detected: ${element.className || element.tagName}`);
             return brightness;
         }
 
-        // Priority 2: Check for specific classes that indicate dark/light content
+        // Priority 2: Home page specific sections
+        if (element.classList.contains('index-page-teaser') || 
+            element.closest('.index-page-teaser') ||
+            element.classList.contains('page-teaser') ||
+            element.closest('.page-teaser')) {
+            detectionMethod = 'home-video-section';
+            brightness = 0.05; // Dark video background
+            console.log(`🏠 Home page video teaser detected`);
+            return brightness;
+        }
+
+        // Check for project showcase with background images
+        if (element.classList.contains('latest--big-one') || 
+            element.closest('.latest--big-one') ||
+            element.classList.contains('cover-image') ||
+            element.closest('.cover-image')) {
+            detectionMethod = 'project-showcase';
+            brightness = 0.15; // Dark project images typically need white text
+            console.log(`🖼️ Project showcase with background image detected`);
+            return brightness;
+        }
+
+        // Priority 3: Check for specific classes that indicate dark/light content
         if (element.classList.contains('dark-bg') || 
-            element.classList.contains('index-page-teaser') ||
-            element.querySelector('.color-white')) {
+            element.querySelector('.color-white') ||
+            element.classList.contains('latest--big-one--text')) {
             detectionMethod = 'dark-class';
             brightness = 0.1; // Dark background = needs white text
             console.log(`🌑 Dark class detected: ${element.className}`);
@@ -394,6 +431,7 @@ class AdaptiveHeader {
 
         if (element.classList.contains('light-bg') || 
             element.classList.contains('introtext') ||
+            element.classList.contains('brand-links') ||
             element.querySelector('.color-black, .text-dark')) {
             detectionMethod = 'light-class';
             brightness = 0.9; // Light background = needs dark text
@@ -412,10 +450,23 @@ class AdaptiveHeader {
             return brightness;
         }
 
-        // Priority 4: Check background image
+        // Priority 4: Check background image (including data-bg attribute)
         const backgroundImage = computedStyle.backgroundImage;
-        if (backgroundImage && backgroundImage !== 'none' && !backgroundImage.includes('gradient')) {
+        const dataBg = element.getAttribute('data-bg') || element.querySelector('[data-bg]')?.getAttribute('data-bg');
+        
+        if ((backgroundImage && backgroundImage !== 'none' && !backgroundImage.includes('gradient')) || dataBg) {
             detectionMethod = 'bg-image';
+            
+            // Enhanced detection for project images and hero sections
+            if (element.classList.contains('cover-image') || 
+                element.classList.contains('parallax-section--image') ||
+                element.closest('.latest--big-one') ||
+                element.closest('.parallax-section')) {
+                brightness = 0.15; // Project images are typically dark
+                console.log(`🖼️ Project background image detected (dark)`);
+                return brightness;
+            }
+            
             // For background images, check if there are white text elements (indicates dark image)
             const whiteTextElements = element.querySelectorAll('.color-white, [class*="white"]');
             if (whiteTextElements.length > 0) {
