@@ -129,14 +129,42 @@ class ProjectResource extends Resource
                             ->columnSpanFull()
                             ->visible(fn($context) => $context === 'edit'),
 
+                        Forms\Components\FileUpload::make('bulk_images')
+                            ->label('Bulk Upload Images')
+                            ->image()
+                            ->multiple()
+                            ->disk('public')
+                            ->directory('project-images')
+                            ->maxFiles(50)
+                            ->panelLayout('grid')
+                            ->imagePreviewHeight('120')
+                            ->visibility('public')
+                            ->maxSize(10240) // 10MB per file
+                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
+                            ->helperText('Select up to 50 images to upload at once. Images will be automatically optimized to WebP format.')
+                            ->saveUploadedFileUsing(function (UploadedFile $file, $component) {
+                                try {
+                                    $optimizer = app(ImageOptimizationService::class);
+                                    return $optimizer->optimizeAndConvert($file, 'project-images', 1920, 1920, 80);
+                                } catch (\Exception $e) {
+                                    Log::error('Bulk image optimization failed: ' . $e->getMessage());
+                                    // Fallback to normal upload
+                                    $filename = time() . '_' . $file->hashName();
+                                    return $file->storeAs('project-images', $filename, 'public');
+                                }
+                            })
+                            ->visible(fn($context) => $context === 'create')
+                            ->columnSpanFull()
+                            ->extraAttributes(['class' => 'mb-4']),
+
                         Forms\Components\Actions::make([
                             Forms\Components\Actions\Action::make('bulk_upload')
                                 ->label('Bulk Upload Images')
                                 ->icon('heroicon-o-arrow-up-tray')
                                 ->color('primary')
                                 ->action('openBulkUploadModal')
-                                ->visible(fn($context) => in_array($context, ['create', 'edit'])),
-                        ])->visible(fn($context) => in_array($context, ['create', 'edit']))
+                                ->visible(fn($context) => $context === 'edit'),
+                        ])->visible(fn($context) => $context === 'edit')
                             ->columnSpanFull()
                             ->extraAttributes(['class' => 'mb-4']),
 

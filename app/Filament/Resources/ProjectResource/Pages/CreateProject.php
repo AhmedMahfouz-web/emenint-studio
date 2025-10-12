@@ -116,16 +116,6 @@ class CreateProject extends CreateRecord
 
     public function openBulkUploadModal(): void
     {
-        // Check if we have a valid record
-        if ($this->record === null) {
-            \Filament\Notifications\Notification::make()
-                ->title('Project not created yet')
-                ->body('Please create the project first before uploading images.')
-                ->danger()
-                ->send();
-            return;
-        }
-        
         // Mount the hidden bulk upload modal action
         $this->mountAction('bulk_upload_modal');
     }
@@ -140,6 +130,31 @@ class CreateProject extends CreateRecord
 
     protected function afterCreate(): void
     {
+        // Handle bulk images if any were uploaded
+        $formData = $this->form->getState();
+        
+        if (isset($formData['bulk_images']) && !empty($formData['bulk_images'])) {
+            $uploadedCount = 0;
+            $sortOrder = 0;
+            
+            // Create ProjectImage records for each uploaded file
+            foreach ($formData['bulk_images'] as $imagePath) {
+                \App\Models\ProjectImage::create([
+                    'project_id' => $this->record->id,
+                    'image_path' => $imagePath,
+                    'alt_text' => 'Project Image',
+                    'sort_order' => $sortOrder++,
+                ]);
+                $uploadedCount++;
+            }
+            
+            \Filament\Notifications\Notification::make()
+                ->title('Images uploaded successfully')
+                ->body("{$uploadedCount} images added to the gallery.")
+                ->success()
+                ->send();
+        }
+        
         // Debug: Log the created project data
         Log::info('Project created successfully:', [
             'id' => $this->record->id,
@@ -150,7 +165,7 @@ class CreateProject extends CreateRecord
         // Notify user about bulk upload feature
         \Filament\Notifications\Notification::make()
             ->title('Project created successfully!')
-            ->body('You can now use the "Bulk Upload Images" button in the header to upload multiple images at once.')
+            ->body('You can now use the "Bulk Upload Images" button to upload more images if needed.')
             ->success()
             ->send();
     }
