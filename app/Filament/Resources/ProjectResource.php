@@ -119,15 +119,28 @@ class ProjectResource extends Resource
                     ->schema([
                         Forms\Components\Placeholder::make('gallery_info')
                             ->label('')
-                            ->content('<strong>Upload project images.</strong> After creating the project, use the "Bulk Upload Images" button in the header to upload multiple images at once, or add them individually below.')
+                            ->content('<strong>Upload project images.</strong> Use the "Bulk Upload Images" button below to upload multiple images at once, or add them individually below.')
                             ->columnSpanFull()
                             ->visible(fn($context) => $context === 'create'),
                         
                         Forms\Components\Placeholder::make('gallery_info_edit')
                             ->label('')
-                            ->content('<strong>Upload project images.</strong> Use the "Bulk Upload Images" button in the header to upload multiple images at once, or add them individually below.')
+                            ->content('<strong>Upload project images.</strong> Use the "Bulk Upload Images" button below to upload multiple images at once, or add them individually below.')
                             ->columnSpanFull()
                             ->visible(fn($context) => $context === 'edit'),
+
+                        Forms\Components\Actions::make([
+                            Forms\Components\Actions\Action::make('bulk_upload')
+                                ->label('Bulk Upload Images')
+                                ->icon('heroicon-o-arrow-up-tray')
+                                ->color('success')
+                                ->action(function ($livewire) {
+                                    // Trigger the hidden bulk upload modal action
+                                    $livewire->mountAction('bulk_upload_modal');
+                                })
+                                ->visible(fn($context) => in_array($context, ['create', 'edit'])),
+                        ])->visible(fn($context) => in_array($context, ['create', 'edit']))
+                        ->columnSpanFull(),
 
                         Forms\Components\Repeater::make('projectImages')
                             ->relationship()

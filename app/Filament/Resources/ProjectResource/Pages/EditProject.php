@@ -18,9 +18,16 @@ class EditProject extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\Action::make('bulk_upload')
+            Actions\DeleteAction::make(),
+        ];
+    }
+
+    protected function getFormActions(): array
+    {
+        return [
+            Actions\Action::make('bulk_upload_modal')
                 ->label('Bulk Upload Images')
-                ->icon('heroicon-o-photo')
+                ->icon('heroicon-o-arrow-up-tray')
                 ->color('success')
                 ->form([
                     Forms\Components\FileUpload::make('bulk_images')
@@ -87,10 +94,7 @@ class EditProject extends EditRecord
                 ->modalDescription('Select multiple images to upload at once. They will be added to the gallery where you can reorder and edit them.')
                 ->modalSubmitActionLabel('Upload Images')
                 ->modalWidth('2xl')
-                ->visible(true)
-                ->disabled(false),
-                
-            Actions\DeleteAction::make(),
+                ->visible(false), // Hidden action that can be triggered from form
         ];
     }
 
