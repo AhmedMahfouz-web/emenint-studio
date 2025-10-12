@@ -86,7 +86,9 @@ class EditProject extends EditRecord
                 ->modalHeading('Bulk Upload Images')
                 ->modalDescription('Select multiple images to upload at once. They will be added to the gallery where you can reorder and edit them.')
                 ->modalSubmitActionLabel('Upload Images')
-                ->modalWidth('2xl'),
+                ->modalWidth('2xl')
+                ->visible(true)
+                ->disabled(false),
                 
             Actions\DeleteAction::make(),
         ];

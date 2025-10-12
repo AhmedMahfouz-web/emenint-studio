@@ -36,28 +36,28 @@ class ProjectResource extends Resource
                             ->options(ServiceCategory::where('is_active', true)->pluck('name', 'id'))
                             ->required()
                             ->searchable(),
-                        
+
                         Forms\Components\TextInput::make('title')
                             ->required()
                             ->maxLength(255)
                             ->live(onBlur: true)
-                            ->afterStateUpdated(fn (string $context, $state, callable $set) => $context === 'create' ? $set('slug', \Illuminate\Support\Str::slug($state)) : null),
-                        
+                            ->afterStateUpdated(fn(string $context, $state, callable $set) => $context === 'create' ? $set('slug', \Illuminate\Support\Str::slug($state)) : null),
+
                         Forms\Components\TextInput::make('slug')
                             ->required()
                             ->maxLength(255)
                             ->unique(Project::class, 'slug', ignoreRecord: true),
-                        
+
                         Forms\Components\Textarea::make('short_description')
                             ->label('Short Description')
                             ->columnSpanFull()
                             ->rows(2),
-                        
+
                         Forms\Components\TextInput::make('client_name')
                             ->maxLength(255),
-                        
+
                         Forms\Components\DatePicker::make('project_date'),
-                        
+
                         Forms\Components\Select::make('status')
                             ->options([
                                 'draft' => 'Draft',
@@ -66,17 +66,17 @@ class ProjectResource extends Resource
                             ])
                             ->default('draft')
                             ->required(),
-                        
+
                         Forms\Components\Toggle::make('is_featured')
                             ->label('Featured Project'),
-                        
+
                         Forms\Components\TextInput::make('sort_order')
                             ->numeric()
                             ->default(0)
                             ->label('Sort Order'),
                     ])
                     ->columns(2),
-                
+
                 Forms\Components\Section::make('Project Details')
                     ->schema([
                         Forms\Components\RichEditor::make('project_summary')->columnSpanFull(),
@@ -112,16 +112,22 @@ class ProjectResource extends Resource
                                     return $file->storeAs('project-images', $filename, 'public');
                                 }
                             }),
-                        
+
                     ])->columns(2),
 
                 Forms\Components\Section::make('Project Images')
                     ->schema([
                         Forms\Components\Placeholder::make('gallery_info')
                             ->label('')
-                            ->content('📸 **Upload project images.** You can select and upload multiple images at once.')
+                            ->content('<strong>Upload project images.</strong> After creating the project, use the "Bulk Upload Images" button in the header to upload multiple images at once, or add them individually below.')
                             ->columnSpanFull()
-                            ->visible(fn ($context) => in_array($context, ['create', 'edit'])),
+                            ->visible(fn($context) => $context === 'create'),
+                        
+                        Forms\Components\Placeholder::make('gallery_info_edit')
+                            ->label('')
+                            ->content('<strong>Upload project images.</strong> Use the "Bulk Upload Images" button in the header to upload multiple images at once, or add them individually below.')
+                            ->columnSpanFull()
+                            ->visible(fn($context) => $context === 'edit'),
 
                         Forms\Components\Repeater::make('projectImages')
                             ->relationship()
@@ -158,7 +164,7 @@ class ProjectResource extends Resource
                             ->reorderable()
                             ->addActionLabel('Add Another Image')
                             ->deleteAction(
-                                fn (Forms\Components\Actions\Action $action) => $action
+                                fn(Forms\Components\Actions\Action $action) => $action
                                     ->requiresConfirmation()
                                     ->modalDescription('Delete this image?')
                                     ->modalSubmitActionLabel('Delete')
@@ -177,7 +183,7 @@ class ProjectResource extends Resource
                             ])
                             ->defaultItems(1)
                             ->cloneable(false)
-                            ->visible(fn ($context) => in_array($context, ['create', 'edit'])),
+                            ->visible(fn($context) => in_array($context, ['create', 'edit'])),
                     ])
                     ->collapsible(),
 
@@ -186,7 +192,7 @@ class ProjectResource extends Resource
                         Forms\Components\TextInput::make('meta_title')
                             ->label('Meta Title')
                             ->maxLength(255),
-                        
+
                         Forms\Components\Textarea::make('meta_description')
                             ->label('Meta Description')
                             ->rows(3),
@@ -209,30 +215,30 @@ class ProjectResource extends Resource
                 Tables\Columns\TextColumn::make('title')
                     ->searchable()
                     ->sortable(),
-                
+
                 Tables\Columns\TextColumn::make('serviceCategory.name')
                     ->label('Category')
                     ->sortable(),
-                
+
                 Tables\Columns\TextColumn::make('client_name')
                     ->searchable()
                     ->sortable(),
-                
+
                 Tables\Columns\BadgeColumn::make('status')
                     ->colors([
                         'secondary' => 'draft',
                         'success' => 'active',
                         'warning' => 'archived',
                     ]),
-                
+
                 Tables\Columns\IconColumn::make('is_featured')
                     ->boolean()
                     ->label('Featured'),
-                
+
                 Tables\Columns\TextColumn::make('project_date')
                     ->date()
                     ->sortable(),
-                
+
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -242,14 +248,14 @@ class ProjectResource extends Resource
                 Tables\Filters\SelectFilter::make('service_category_id')
                     ->label('Service Category')
                     ->options(ServiceCategory::pluck('name', 'id')),
-                
+
                 Tables\Filters\SelectFilter::make('status')
                     ->options([
                         'draft' => 'Draft',
                         'active' => 'Active',
                         'archived' => 'Archived',
                     ]),
-                
+
                 Tables\Filters\TernaryFilter::make('is_featured'),
             ])
             ->actions([
