@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Log;
 class CreateProject extends CreateRecord
 {
     protected static string $resource = ProjectResource::class;
+    
+    protected array $bulkImages = [];
 
     protected function getHeaderActions(): array
     {
@@ -126,34 +128,70 @@ class CreateProject extends CreateRecord
         // Debug: Log the form data before creation
         Log::info('Project creation data:', $data);
         
+        // Store bulk images separately and remove from project data
+        if (isset($data['bulk_images']) && is_array($data['bulk_images'])) {
+            // Process the uploaded files manually
+            $processedImages = [];
+            foreach ($data['bulk_images'] as $uploadedFile) {
+                if ($uploadedFile instanceof \Illuminate\Http\UploadedFile) {
+                    try {
+                        $optimizer = app(ImageOptimizationService::class);
+                        $processedPath = $optimizer->optimizeAndConvert($uploadedFile, 'project-images', 1920, 1920, 80);
+                        $processedImages[] = $processedPath;
+                        Log::info('Processed bulk image:', ['original' => $uploadedFile->getClientOriginalName(), 'path' => $processedPath]);
+                    } catch (\Exception $e) {
+                        Log::error('Bulk image optimization failed: ' . $e->getMessage());
+                        // Fallback to normal upload
+                        $filename = time() . '_' . $uploadedFile->hashName();
+                        $processedPath = $uploadedFile->storeAs('project-images', $filename, 'public');
+                        $processedImages[] = $processedPath;
+                    }
+                } else {
+                    // If it's already a string path, use it as is
+                    $processedImages[] = $uploadedFile;
+                }
+            }
+            $this->bulkImages = $processedImages;
+            Log::info('Bulk images processed:', ['count' => count($this->bulkImages), 'paths' => $this->bulkImages]);
+            unset($data['bulk_images']);
+        }
+        
         return $data;
     }
 
     protected function afterCreate(): void
     {
         // Handle bulk images if any were uploaded
-        $formData = $this->form->getState();
-        
-        if (isset($formData['bulk_images']) && !empty($formData['bulk_images'])) {
+        if (!empty($this->bulkImages)) {
             $uploadedCount = 0;
             $sortOrder = 0;
             
             // Create ProjectImage records for each uploaded file
-            foreach ($formData['bulk_images'] as $imagePath) {
-                \App\Models\ProjectImage::create([
-                    'project_id' => $this->record->id,
-                    'image_path' => $imagePath,
-                    'alt_text' => 'Project Image',
-                    'sort_order' => $sortOrder++,
-                ]);
-                $uploadedCount++;
+            foreach ($this->bulkImages as $imagePath) {
+                Log::info('Processing bulk image:', ['path' => $imagePath, 'empty' => empty($imagePath)]);
+                if (!empty($imagePath)) { // Make sure the path is not null or empty
+                    try {
+                        \App\Models\ProjectImage::create([
+                            'project_id' => $this->record->id,
+                            'image_path' => $imagePath,
+                            'alt_text' => 'Project Image',
+                            'sort_order' => $sortOrder++,
+                        ]);
+                        $uploadedCount++;
+                        Log::info('Successfully created ProjectImage:', ['path' => $imagePath]);
+                    } catch (\Exception $e) {
+                        Log::error('Failed to create ProjectImage:', ['path' => $imagePath, 'error' => $e->getMessage()]);
+                    }
+                }
             }
             
-            \Filament\Notifications\Notification::make()
-                ->title('Images uploaded successfully')
-                ->body("{$uploadedCount} images added to the gallery.")
-                ->success()
-                ->send();
+            if ($uploadedCount > 0) {
+                \Filament\Notifications\Notification::make()
+                    ->title('Images uploaded successfully')
+                    ->body("{$uploadedCount} images added to the gallery.")
+                    ->success()
+                    ->send();
+            }
         }
         
         // Debug: Log the created project data
@@ -161,9 +199,10 @@ class CreateProject extends CreateRecord
             'id' => $this->record->id,
             'title' => $this->record->title,
             'featured_image' => $this->record->featured_image,
+            'bulk_images_count' => count($this->bulkImages),
         ]);
         
-        // Notify user about bulk upload feature
+        // Notify user about project creation
         \Filament\Notifications\Notification::make()
             ->title('Project created successfully!')
             ->body('You can now use the "Bulk Upload Images" button to upload more images if needed.')
