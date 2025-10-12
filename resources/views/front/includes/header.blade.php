@@ -79,8 +79,8 @@
                             <li><a href="{{ route('services.category', 'branding') }}">Branding</a></li>
                             <li><a href="{{ route('services.category', 'marketing') }}">Marketing</a></li>
                             <li><a href="{{ route('services.category', 'advertising') }}">Advertising</a></li>
-                            <li><a href="{{ route('services.category', 'development') }}">Development</a></li>
-                            <li><a href="{{ route('services.category', 'ecommerce') }}">E-commerce</a></li>
+                            <li><a href="{{ route('services.category', 'web-development') }}">Development</a></li>
+                            <li><a href="{{ route('services.category', 'e-commerce') }}">E-commerce</a></li>
                             <li><a href="{{ route('services.category', 'consultant') }}">Consultant</a></li>
                         </ul>
                     </li>
