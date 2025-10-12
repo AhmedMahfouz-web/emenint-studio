@@ -42,7 +42,7 @@ class EditProject extends EditRecord
                         ->panelLayout('grid')
                         ->imagePreviewHeight('120')
                         ->visibility('public')
-                        ->maxSize(20480) // 20MB per file
+                        ->maxSize(25600) // 25MB per file
                         ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
                         ->helperText('Select up to 50 images to upload at once (max 20MB each). Images will be automatically optimized to WebP format.')
                         ->saveUploadedFileUsing(function (UploadedFile $file, $component) {
