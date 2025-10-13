@@ -1,10 +1,6 @@
 @extends('layouts.front')
 
 @section('css')
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <style>
         #map {
             height: 500px;
@@ -112,6 +108,7 @@
             float: right;
             padding: 0;
             transition: all 0.2s ease-in;
+            background: unset;
         }
 
         .message-send svg {
@@ -131,8 +128,8 @@
             <div class="svgh-bh">
                 <div id="svg-animaiotn" class="inview flex flex--bottom">
                     <div class="js-parallaxheader">
-                        <svg class="deaw studio contact" id="Layer_1" data-name="Layer 1"
-                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 383.19 391.63">
+                        <svg class="deaw studio contact" id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 383.19 391.63">
                             <defs>
                                 <style>
                                     .cls-1 {
