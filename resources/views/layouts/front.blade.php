@@ -53,7 +53,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('icon.svg') }}">
     <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('icon.svg') }}">
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('icon.svg') }}">
-    
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ url()->current() }}">
@@ -63,18 +63,18 @@
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:site_name" content="Eminent Studio">
-    
+
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="{{ url()->current() }}">
     <meta property="twitter:title" content="@yield('title', 'Eminent Studio')">
     <meta property="twitter:description" content="@yield('description', 'Professional design and development studio creating exceptional digital experiences.')">
     <meta property="twitter:image" content="{{ asset('images/Logo-top.png') }}">
-    
+
     <!-- Theme Color -->
     <meta name="theme-color" content="#003bf4">
     <meta name="msapplication-TileColor" content="#003bf4">
-    
+
     @yield('css')
     <style>
         body #page {
