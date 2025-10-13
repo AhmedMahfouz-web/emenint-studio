@@ -9,7 +9,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Eminent Studio</title>
+    <meta name="description" content="@yield('description', 'Professional design and development studio creating exceptional digital experiences.')">
+    <title>@yield('title', 'Eminent Studio')</title>
 
     <link rel='stylesheet' id='styles-normalize-css' href='{{ asset('css/normalizea149.css?ver=6.4') }}' type='text/css'
         media='all' />
@@ -46,7 +47,34 @@
         type='text/css' media='all' />
     <script src="{{ asset('js/jquery-3.7.1.min.js') }}"></script>
 
-    <link rel="icon" href="{{ asset('icon.svg') }}">
+    <!-- Favicon and App Icons -->
+    <link rel="icon" type="image/svg+xml" href="{{ asset('icon.svg') }}">
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('icon.svg') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('icon.svg') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('icon.svg') }}">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:title" content="@yield('title', 'Eminent Studio')">
+    <meta property="og:description" content="@yield('description', 'Professional design and development studio creating exceptional digital experiences.')">
+    <meta property="og:image" content="{{ asset('images/Logo-top.png') }}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="Eminent Studio">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="{{ url()->current() }}">
+    <meta property="twitter:title" content="@yield('title', 'Eminent Studio')">
+    <meta property="twitter:description" content="@yield('description', 'Professional design and development studio creating exceptional digital experiences.')">
+    <meta property="twitter:image" content="{{ asset('images/Logo-top.png') }}">
+    
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#003bf4">
+    <meta name="msapplication-TileColor" content="#003bf4">
+    
     @yield('css')
     <style>
         body #page {
