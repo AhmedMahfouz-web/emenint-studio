@@ -172,7 +172,7 @@
 }
 @media (max-width: 768px) {
     #header #header-inner {
-        padding: 0 20px;
+        padding: 0;
     }
 }
 #header #header-inner #logo {
@@ -184,7 +184,7 @@
 }
 @media (max-width: 768px) {
     #header #header-inner #logo svg {
-        width: 90px;
+        width: 124px;
     }
 }
 #header #header-inner #logo::before,
@@ -311,12 +311,12 @@ body.mega-menu--open #header.nav-up {
         mix-blend-mode: difference;
         fill: #ffffff;
     }
-    
+
     .adaptive-header-fallback #header .main-menu a span {
         mix-blend-mode: difference;
         color: #ffffff;
     }
-    
+
     .adaptive-header-fallback #header .burger-inner span {
         mix-blend-mode: difference;
         background-color: #ffffff;
