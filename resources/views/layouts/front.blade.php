@@ -59,7 +59,7 @@
     <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:title" content="@yield('title', 'Eminent Studio')">
     <meta property="og:description" content="@yield('description', 'Professional design and development studio creating exceptional digital experiences.')">
-    <meta property="og:image" content="{{ asset('images/Logo-top.png') }}">
+    <meta property="og:image" content="{{ asset('icon.svg') }}">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:site_name" content="Eminent Studio">
@@ -69,7 +69,7 @@
     <meta property="twitter:url" content="{{ url()->current() }}">
     <meta property="twitter:title" content="@yield('title', 'Eminent Studio')">
     <meta property="twitter:description" content="@yield('description', 'Professional design and development studio creating exceptional digital experiences.')">
-    <meta property="twitter:image" content="{{ asset('images/Logo-top.png') }}">
+    <meta property="twitter:image" content="{{ asset('icon.svg') }}">
 
     <!-- Theme Color -->
     <meta name="theme-color" content="#003bf4">
