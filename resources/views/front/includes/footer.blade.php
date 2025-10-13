@@ -97,7 +97,7 @@
                     <div class="menu">
                         <a class="nopagechange" target="_blank" href="https://maps.app.goo.gl/2Xa9at38bsPmXdWC9">33
                             Mohamed Bek Ramzy
-                            Street – Triumph Square – Heliopolis, Cairo Governorate 11757</a><br />
+                            Street – Triumph Square – <br />Heliopolis, Cairo Governorate 11757</a><br />
                         <a class="nopagechange" href="tel:+20 10 313 75 777">+20 10 313 75 777</a><br />
                         <a class="nopagechange"
                             href="mailto:hello(at)eminent-studio(dot)com">hello(at)eminent-studio(dot)com</a><br />
