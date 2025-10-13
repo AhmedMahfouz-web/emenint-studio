@@ -119,6 +119,10 @@
         .message-send:hover svg {
             transform: translateX(2px);
         }
+
+        .cls-1 {
+            stroke: unset;
+        }
     </style>
 @endsection
 
