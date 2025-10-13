@@ -138,6 +138,9 @@
                                 <style>
                                     .cls-1 {
                                         fill: none;
+                                        stroke: #212120;
+                                        stroke-miterlimit: 10;
+                                        stroke-width: 2px;
                                     }
                                 </style>
                             </defs>
