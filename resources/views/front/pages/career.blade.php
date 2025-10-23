@@ -359,31 +359,52 @@
 
 @section('js')
     <script>
-        // Initialize has-value class on page load
+        // Initialize has-value class on page load for all fields
         document.addEventListener('DOMContentLoaded', function() {
-            const jobSelect = document.getElementById('job_id');
-            if (jobSelect) {
-                jobSelect.classList.toggle('has-value', jobSelect.value !== '');
-            }
+            document.querySelectorAll('input, textarea, select').forEach(field => {
+                // Skip file inputs
+                if (field.type !== 'file') {
+                    if (field.value.trim() !== '') {
+                        field.classList.add('has-value');
+                    }
+                }
+            });
         });
 
         // Clear error messages on input and handle label transformation
         document.querySelectorAll('input, textarea, select').forEach(field => {
-            field.addEventListener('input', function() {
-                const errorDiv = document.getElementById(this.name + '-error');
-                if (errorDiv) {
-                    errorDiv.classList.remove('active');
-                    errorDiv.textContent = '';
-                }
-                this.closest('.input-group').classList.remove('error');
-                
-                // Add has-value class when input has content
-                if (this.value.trim() !== '') {
-                    this.classList.add('has-value');
-                } else {
-                    this.classList.remove('has-value');
-                }
-            });
+            // Skip file inputs
+            if (field.type !== 'file') {
+                field.addEventListener('input', function() {
+                    const errorDiv = document.getElementById(this.name + '-error');
+                    if (errorDiv) {
+                        errorDiv.classList.remove('active');
+                        errorDiv.textContent = '';
+                    }
+                    this.closest('.input-group').classList.remove('error');
+                    
+                    // Add has-value class when input has content
+                    if (this.value.trim() !== '') {
+                        this.classList.add('has-value');
+                    } else {
+                        this.classList.remove('has-value');
+                    }
+                });
+
+                // Also handle focus and blur events
+                field.addEventListener('focus', function() {
+                    this.classList.add('active');
+                });
+
+                field.addEventListener('blur', function() {
+                    this.classList.remove('active');
+                    if (this.value.trim() !== '') {
+                        this.classList.add('has-value');
+                    } else {
+                        this.classList.remove('has-value');
+                    }
+                });
+            }
         });
 
         // Handle form submission
