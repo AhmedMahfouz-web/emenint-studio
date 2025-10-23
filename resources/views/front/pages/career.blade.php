@@ -123,6 +123,120 @@
         .cls-1 {
             stroke: unset;
         }
+
+        /* Confirmation Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            animation: slideIn 0.3s ease;
+        }
+
+        .modal-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-icon.success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .modal-icon.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .modal-message {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .modal-button {
+            background: #003bf4;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .modal-button:hover {
+            background: #0031cc;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .error-message {
+            color: #721c24;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .error-message.active {
+            display: block;
+        }
+
+        .input-group.error input,
+        .input-group.error textarea,
+        .input-group.error select {
+            border-bottom-color: #dc3545;
+        }
+
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
     </style>
 @endsection
 
@@ -159,47 +273,76 @@
         </section>
 
         <section class="contact-form">
-            <form action="{{ route('jobs apply') }}" method="POST">
+            <form id="careerForm" action="{{ route('jobs apply') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="input-group">
-                    <select name="job_id" id="job_id" onchange="this.classList.toggle('has-value', this.value !== '')">
+                    <select name="job_id" id="job_id" onchange="this.classList.toggle('has-value', this.value !== '')" required>
                         <option value=""></option>
                         @foreach ($jobs as $job)
                             <option value="{{ $job->id }}">{{ $job->title }}</option>
                         @endforeach
                     </select>
-                    <label for="job_id">Job</label>
+                    <label for="job_id">Job *</label>
+                    <div class="error-message" id="job_id-error"></div>
                 </div>
                 <div class="input-group">
-                    <input type="text" id="name" name="full_name" onblur="checkInput(this)">
-                    <label for="name">Name</label>
+                    <input type="text" id="name" name="full_name" onblur="checkInput(this)" required>
+                    <label for="name">Name *</label>
+                    <div class="error-message" id="full_name-error"></div>
                 </div>
                 <div class="input-group">
-                    <input type="mobile" name="phone" id="text" onblur="checkInput(this)">
-                    <label for="mobile">Phone</label>
+                    <input type="tel" name="phone" id="phone" onblur="checkInput(this)">
+                    <label for="phone">Phone</label>
+                    <div class="error-message" id="phone-error"></div>
                 </div>
                 <div class="input-group">
-                    <input type="email" name="email" id="email" onblur="checkInput(this)">
-                    <label for="email">Email</label>
+                    <input type="email" name="email" id="email" onblur="checkInput(this)" required>
+                    <label for="email">Email *</label>
+                    <div class="error-message" id="email-error"></div>
                 </div>
                 <div class="input-group">
-                    <textarea name="cover_letter" id="cover_letter" onblur="checkInput(this)"></textarea>
-                    <label for="cover_letter">Cover Letter</label>
+                    <textarea name="cover_letter" id="cover_letter" onblur="checkInput(this)" required></textarea>
+                    <label for="cover_letter">Cover Letter *</label>
+                    <div class="error-message" id="cover_letter-error"></div>
                 </div>
                 <div class="input-group">
-                    <label id="resume-label" for="resume">Resume</label>
-                    <input type="file" name="resume" id="resume" onblur="checkInput(this)">
+                    <label id="resume-label" for="resume">Resume * (PDF, DOC, DOCX - Max 2MB)</label>
+                    <input type="file" name="resume" id="resume" accept=".pdf,.doc,.docx" required>
+                    <div class="error-message" id="resume-error"></div>
                 </div>
-                <button type="submit" class="message-send">Send Message <svg style="margin-top: -3px; margin-left:5px"
-                        xmlns="http://www.w3.org/2000/svg" width="24" height="24">
+                <button type="submit" class="message-send" id="submitBtn">
+                    <span id="btnText">Send Message</span>
+                    <span id="btnLoader" style="display: none;">Sending...</span>
+                    <svg id="btnIcon" style="margin-top: -3px; margin-left:5px" xmlns="http://www.w3.org/2000/svg" width="24" height="24">
                         <path d="M7.293 4.707 14.586 12l-7.293 7.293 1.414 1.414L17.414 12 8.707 3.293 7.293 4.707z" />
-                    </svg></button>
+                    </svg>
+                </button>
             </form>
 
         </section>
+
+        <!-- Confirmation Modal -->
+        <div class="modal-overlay" id="confirmationModal">
+            <div class="modal-content">
+                <div class="modal-icon" id="modalIcon">
+                    <svg id="successIcon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    <svg id="errorIcon" style="display: none;" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="15" y1="9" x2="9" y2="15"></line>
+                        <line x1="9" y1="9" x2="15" y2="15"></line>
+                    </svg>
+                </div>
+                <h3 class="modal-title" id="modalTitle">Success!</h3>
+                <p class="modal-message" id="modalMessage">Your application has been submitted successfully!</p>
+                <button class="modal-button" onclick="closeModal()">Close</button>
+            </div>
+        </div>
     </div>
 @endsection
 
+@section('js')
 <script>
     // Initialize has-value class on page load
     document.addEventListener('DOMContentLoaded', function() {
@@ -208,4 +351,132 @@
             jobSelect.classList.toggle('has-value', jobSelect.value !== '');
         }
     });
+
+    // Clear error messages on input
+    document.querySelectorAll('input, textarea, select').forEach(field => {
+        field.addEventListener('input', function() {
+            const errorDiv = document.getElementById(this.name + '-error');
+            if (errorDiv) {
+                errorDiv.classList.remove('active');
+                errorDiv.textContent = '';
+            }
+            this.closest('.input-group').classList.remove('error');
+        });
+    });
+
+    // Handle form submission
+    document.getElementById('careerForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Clear previous errors
+        document.querySelectorAll('.error-message').forEach(error => {
+            error.classList.remove('active');
+            error.textContent = '';
+        });
+        document.querySelectorAll('.input-group').forEach(group => {
+            group.classList.remove('error');
+        });
+
+        // Show loading state
+        const form = this;
+        const submitBtn = document.getElementById('submitBtn');
+        const btnText = document.getElementById('btnText');
+        const btnLoader = document.getElementById('btnLoader');
+        const btnIcon = document.getElementById('btnIcon');
+        
+        submitBtn.disabled = true;
+        form.classList.add('loading');
+        btnText.style.display = 'none';
+        btnLoader.style.display = 'inline';
+        btnIcon.style.display = 'none';
+
+        // Prepare form data
+        const formData = new FormData(form);
+
+        // Send AJAX request
+        fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Show success modal
+                showModal('success', 'Application Submitted!', data.message);
+                // Reset form
+                form.reset();
+                // Reset select has-value class
+                const jobSelect = document.getElementById('job_id');
+                if (jobSelect) {
+                    jobSelect.classList.remove('has-value');
+                }
+            } else if (data.errors) {
+                // Show validation errors
+                Object.keys(data.errors).forEach(key => {
+                    const errorDiv = document.getElementById(key + '-error');
+                    if (errorDiv) {
+                        errorDiv.textContent = data.errors[key][0];
+                        errorDiv.classList.add('active');
+                        errorDiv.closest('.input-group').classList.add('error');
+                    }
+                });
+                showModal('error', 'Validation Error', 'Please check the form and try again.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showModal('error', 'Error', 'An error occurred. Please try again later.');
+        })
+        .finally(() => {
+            // Reset button state
+            submitBtn.disabled = false;
+            form.classList.remove('loading');
+            btnText.style.display = 'inline';
+            btnLoader.style.display = 'none';
+            btnIcon.style.display = 'inline';
+        });
+    });
+
+    function showModal(type, title, message) {
+        const modal = document.getElementById('confirmationModal');
+        const modalIcon = document.getElementById('modalIcon');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalMessage = document.getElementById('modalMessage');
+        const successIcon = document.getElementById('successIcon');
+        const errorIcon = document.getElementById('errorIcon');
+
+        modalTitle.textContent = title;
+        modalMessage.textContent = message;
+
+        if (type === 'success') {
+            modalIcon.classList.remove('error');
+            modalIcon.classList.add('success');
+            successIcon.style.display = 'block';
+            errorIcon.style.display = 'none';
+        } else {
+            modalIcon.classList.remove('success');
+            modalIcon.classList.add('error');
+            successIcon.style.display = 'none';
+            errorIcon.style.display = 'block';
+        }
+
+        modal.classList.add('active');
+    }
+
+    function closeModal() {
+        const modal = document.getElementById('confirmationModal');
+        modal.classList.remove('active');
+    }
+
+    // Close modal on overlay click
+    document.getElementById('confirmationModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeModal();
+        }
+    });
 </script>
+@endsection
