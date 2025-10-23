@@ -367,7 +367,7 @@
             }
         });
 
-        // Clear error messages on input
+        // Clear error messages on input and handle label transformation
         document.querySelectorAll('input, textarea, select').forEach(field => {
             field.addEventListener('input', function() {
                 const errorDiv = document.getElementById(this.name + '-error');
@@ -376,6 +376,13 @@
                     errorDiv.textContent = '';
                 }
                 this.closest('.input-group').classList.remove('error');
+                
+                // Add has-value class when input has content
+                if (this.value.trim() !== '') {
+                    this.classList.add('has-value');
+                } else {
+                    this.classList.remove('has-value');
+                }
             });
         });
 
