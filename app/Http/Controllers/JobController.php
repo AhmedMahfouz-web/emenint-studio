@@ -30,8 +30,9 @@ class JobController extends Controller
                 'full_name' => 'required|string|max:255',
                 'email' => 'required|email|max:255',
                 'phone' => 'nullable|string|max:20',
+                'portfolio_link' => 'nullable|url|max:255',
                 'cover_letter' => 'required|string',
-                'resume' => 'required|file|mimes:pdf,doc,docx|max:2048',
+                'resume' => 'required|file|mimes:pdf,doc,docx|max:20480',
             ]);
 
             $resumePath = $request->file('resume')->store('resumes', 'public');
@@ -41,6 +42,7 @@ class JobController extends Controller
                 'full_name' => $request->full_name,
                 'email' => $request->email,
                 'phone' => $request->phone,
+                'portfolio_link' => $request->portfolio_link,
                 'cover_letter' => $request->cover_letter,
                 'resume_path' => $resumePath,
                 'status' => 'pending',

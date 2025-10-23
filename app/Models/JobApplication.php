@@ -14,6 +14,7 @@ class JobApplication extends Model
         'full_name',
         'email',
         'phone',
+        'portfolio_link',
         'cover_letter',
         'resume_path',
         'status',

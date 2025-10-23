@@ -201,8 +201,13 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
 
         @keyframes slideIn {
@@ -210,6 +215,7 @@
                 transform: translateY(-50px);
                 opacity: 0;
             }
+
             to {
                 transform: translateY(0);
                 opacity: 1;
@@ -276,7 +282,8 @@
             <form id="careerForm" action="{{ route('jobs apply') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="input-group">
-                    <select name="job_id" id="job_id" onchange="this.classList.toggle('has-value', this.value !== '')" required>
+                    <select name="job_id" id="job_id" onchange="this.classList.toggle('has-value', this.value !== '')"
+                        required>
                         <option value=""></option>
                         @foreach ($jobs as $job)
                             <option value="{{ $job->id }}">{{ $job->title }}</option>
@@ -301,19 +308,25 @@
                     <div class="error-message" id="email-error"></div>
                 </div>
                 <div class="input-group">
+                    <input type="url" name="portfolio_link" id="portfolio_link" onblur="checkInput(this)">
+                    <label for="portfolio_link">Portfolio Link</label>
+                    <div class="error-message" id="portfolio_link-error"></div>
+                </div>
+                <div class="input-group">
                     <textarea name="cover_letter" id="cover_letter" onblur="checkInput(this)" required></textarea>
                     <label for="cover_letter">Cover Letter *</label>
                     <div class="error-message" id="cover_letter-error"></div>
                 </div>
                 <div class="input-group">
-                    <label id="resume-label" for="resume">Resume * (PDF, DOC, DOCX - Max 2MB)</label>
+                    <label id="resume-label" for="resume">Resume * (PDF, DOC, DOCX - Max 20MB)</label>
                     <input type="file" name="resume" id="resume" accept=".pdf,.doc,.docx" required>
                     <div class="error-message" id="resume-error"></div>
                 </div>
                 <button type="submit" class="message-send" id="submitBtn">
                     <span id="btnText">Send Message</span>
                     <span id="btnLoader" style="display: none;">Sending...</span>
-                    <svg id="btnIcon" style="margin-top: -3px; margin-left:5px" xmlns="http://www.w3.org/2000/svg" width="24" height="24">
+                    <svg id="btnIcon" style="margin-top: -3px; margin-left:5px" xmlns="http://www.w3.org/2000/svg"
+                        width="24" height="24">
                         <path d="M7.293 4.707 14.586 12l-7.293 7.293 1.414 1.414L17.414 12 8.707 3.293 7.293 4.707z" />
                     </svg>
                 </button>
@@ -325,10 +338,12 @@
         <div class="modal-overlay" id="confirmationModal">
             <div class="modal-content">
                 <div class="modal-icon" id="modalIcon">
-                    <svg id="successIcon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <svg id="successIcon" xmlns="http://www.w3.org/2000/svg" width="32" height="32"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polyline points="20 6 9 17 4 12"></polyline>
                     </svg>
-                    <svg id="errorIcon" style="display: none;" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <svg id="errorIcon" style="display: none;" xmlns="http://www.w3.org/2000/svg" width="32"
+                        height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="12" cy="12" r="10"></circle>
                         <line x1="15" y1="9" x2="9" y2="15"></line>
                         <line x1="9" y1="9" x2="15" y2="15"></line>
@@ -343,140 +358,140 @@
 @endsection
 
 @section('js')
-<script>
-    // Initialize has-value class on page load
-    document.addEventListener('DOMContentLoaded', function() {
-        const jobSelect = document.getElementById('job_id');
-        if (jobSelect) {
-            jobSelect.classList.toggle('has-value', jobSelect.value !== '');
-        }
-    });
-
-    // Clear error messages on input
-    document.querySelectorAll('input, textarea, select').forEach(field => {
-        field.addEventListener('input', function() {
-            const errorDiv = document.getElementById(this.name + '-error');
-            if (errorDiv) {
-                errorDiv.classList.remove('active');
-                errorDiv.textContent = '';
+    <script>
+        // Initialize has-value class on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const jobSelect = document.getElementById('job_id');
+            if (jobSelect) {
+                jobSelect.classList.toggle('has-value', jobSelect.value !== '');
             }
-            this.closest('.input-group').classList.remove('error');
-        });
-    });
-
-    // Handle form submission
-    document.getElementById('careerForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        // Clear previous errors
-        document.querySelectorAll('.error-message').forEach(error => {
-            error.classList.remove('active');
-            error.textContent = '';
-        });
-        document.querySelectorAll('.input-group').forEach(group => {
-            group.classList.remove('error');
         });
 
-        // Show loading state
-        const form = this;
-        const submitBtn = document.getElementById('submitBtn');
-        const btnText = document.getElementById('btnText');
-        const btnLoader = document.getElementById('btnLoader');
-        const btnIcon = document.getElementById('btnIcon');
-        
-        submitBtn.disabled = true;
-        form.classList.add('loading');
-        btnText.style.display = 'none';
-        btnLoader.style.display = 'inline';
-        btnIcon.style.display = 'none';
-
-        // Prepare form data
-        const formData = new FormData(form);
-
-        // Send AJAX request
-        fetch(form.action, {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest',
-                'Accept': 'application/json'
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Show success modal
-                showModal('success', 'Application Submitted!', data.message);
-                // Reset form
-                form.reset();
-                // Reset select has-value class
-                const jobSelect = document.getElementById('job_id');
-                if (jobSelect) {
-                    jobSelect.classList.remove('has-value');
+        // Clear error messages on input
+        document.querySelectorAll('input, textarea, select').forEach(field => {
+            field.addEventListener('input', function() {
+                const errorDiv = document.getElementById(this.name + '-error');
+                if (errorDiv) {
+                    errorDiv.classList.remove('active');
+                    errorDiv.textContent = '';
                 }
-            } else if (data.errors) {
-                // Show validation errors
-                Object.keys(data.errors).forEach(key => {
-                    const errorDiv = document.getElementById(key + '-error');
-                    if (errorDiv) {
-                        errorDiv.textContent = data.errors[key][0];
-                        errorDiv.classList.add('active');
-                        errorDiv.closest('.input-group').classList.add('error');
-                    }
-                });
-                showModal('error', 'Validation Error', 'Please check the form and try again.');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            showModal('error', 'Error', 'An error occurred. Please try again later.');
-        })
-        .finally(() => {
-            // Reset button state
-            submitBtn.disabled = false;
-            form.classList.remove('loading');
-            btnText.style.display = 'inline';
-            btnLoader.style.display = 'none';
-            btnIcon.style.display = 'inline';
+                this.closest('.input-group').classList.remove('error');
+            });
         });
-    });
 
-    function showModal(type, title, message) {
-        const modal = document.getElementById('confirmationModal');
-        const modalIcon = document.getElementById('modalIcon');
-        const modalTitle = document.getElementById('modalTitle');
-        const modalMessage = document.getElementById('modalMessage');
-        const successIcon = document.getElementById('successIcon');
-        const errorIcon = document.getElementById('errorIcon');
+        // Handle form submission
+        document.getElementById('careerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
 
-        modalTitle.textContent = title;
-        modalMessage.textContent = message;
+            // Clear previous errors
+            document.querySelectorAll('.error-message').forEach(error => {
+                error.classList.remove('active');
+                error.textContent = '';
+            });
+            document.querySelectorAll('.input-group').forEach(group => {
+                group.classList.remove('error');
+            });
 
-        if (type === 'success') {
-            modalIcon.classList.remove('error');
-            modalIcon.classList.add('success');
-            successIcon.style.display = 'block';
-            errorIcon.style.display = 'none';
-        } else {
-            modalIcon.classList.remove('success');
-            modalIcon.classList.add('error');
-            successIcon.style.display = 'none';
-            errorIcon.style.display = 'block';
+            // Show loading state
+            const form = this;
+            const submitBtn = document.getElementById('submitBtn');
+            const btnText = document.getElementById('btnText');
+            const btnLoader = document.getElementById('btnLoader');
+            const btnIcon = document.getElementById('btnIcon');
+
+            submitBtn.disabled = true;
+            form.classList.add('loading');
+            btnText.style.display = 'none';
+            btnLoader.style.display = 'inline';
+            btnIcon.style.display = 'none';
+
+            // Prepare form data
+            const formData = new FormData(form);
+
+            // Send AJAX request
+            fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Show success modal
+                        showModal('success', 'Application Submitted!', data.message);
+                        // Reset form
+                        form.reset();
+                        // Reset select has-value class
+                        const jobSelect = document.getElementById('job_id');
+                        if (jobSelect) {
+                            jobSelect.classList.remove('has-value');
+                        }
+                    } else if (data.errors) {
+                        // Show validation errors
+                        Object.keys(data.errors).forEach(key => {
+                            const errorDiv = document.getElementById(key + '-error');
+                            if (errorDiv) {
+                                errorDiv.textContent = data.errors[key][0];
+                                errorDiv.classList.add('active');
+                                errorDiv.closest('.input-group').classList.add('error');
+                            }
+                        });
+                        showModal('error', 'Validation Error', 'Please check the form and try again.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showModal('error', 'Error', 'An error occurred. Please try again later.');
+                })
+                .finally(() => {
+                    // Reset button state
+                    submitBtn.disabled = false;
+                    form.classList.remove('loading');
+                    btnText.style.display = 'inline';
+                    btnLoader.style.display = 'none';
+                    btnIcon.style.display = 'inline';
+                });
+        });
+
+        function showModal(type, title, message) {
+            const modal = document.getElementById('confirmationModal');
+            const modalIcon = document.getElementById('modalIcon');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalMessage = document.getElementById('modalMessage');
+            const successIcon = document.getElementById('successIcon');
+            const errorIcon = document.getElementById('errorIcon');
+
+            modalTitle.textContent = title;
+            modalMessage.textContent = message;
+
+            if (type === 'success') {
+                modalIcon.classList.remove('error');
+                modalIcon.classList.add('success');
+                successIcon.style.display = 'block';
+                errorIcon.style.display = 'none';
+            } else {
+                modalIcon.classList.remove('success');
+                modalIcon.classList.add('error');
+                successIcon.style.display = 'none';
+                errorIcon.style.display = 'block';
+            }
+
+            modal.classList.add('active');
         }
 
-        modal.classList.add('active');
-    }
-
-    function closeModal() {
-        const modal = document.getElementById('confirmationModal');
-        modal.classList.remove('active');
-    }
-
-    // Close modal on overlay click
-    document.getElementById('confirmationModal').addEventListener('click', function(e) {
-        if (e.target === this) {
-            closeModal();
+        function closeModal() {
+            const modal = document.getElementById('confirmationModal');
+            modal.classList.remove('active');
         }
-    });
-</script>
+
+        // Close modal on overlay click
+        document.getElementById('confirmationModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+    </script>
 @endsection

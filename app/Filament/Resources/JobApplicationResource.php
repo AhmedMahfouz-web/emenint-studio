@@ -34,6 +34,11 @@ class JobApplicationResource extends Resource
                             ->disabled(),
                         Forms\Components\TextInput::make('phone')
                             ->disabled(),
+                        Forms\Components\TextInput::make('portfolio_link')
+                            ->label('Portfolio Link')
+                            ->url()
+                            ->disabled()
+                            ->columnSpanFull(),
                         Forms\Components\Textarea::make('cover_letter')
                             ->columnSpanFull()
                             ->disabled(),
