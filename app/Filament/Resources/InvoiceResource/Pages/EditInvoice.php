@@ -18,6 +18,33 @@ class EditInvoice extends EditRecord
         ];
     }
 
+    protected function mutateFormDataBeforeFill(array $data): array
+    {
+        // Calculate totals when loading the form
+        $subtotal = 0;
+        if (isset($data['items']) && is_array($data['items'])) {
+            foreach ($data['items'] as &$item) {
+                if (isset($item['quantity']) && isset($item['price'])) {
+                    $item['total'] = $item['quantity'] * $item['price'];
+                    $subtotal += $item['total'];
+                }
+            }
+        }
+
+        $discount = $data['discount'] ?? 0;
+        $taxPercentage = $data['tax_percentage'] ?? 0;
+
+        $afterDiscount = $subtotal - $discount;
+        $taxAmount = ($afterDiscount * $taxPercentage) / 100;
+        $total = $afterDiscount + $taxAmount;
+
+        $data['subtotal'] = $subtotal;
+        $data['tax_amount'] = $taxAmount;
+        $data['total'] = $total;
+
+        return $data;
+    }
+
     protected function mutateFormDataBeforeSave(array $data): array
     {
         // Calculate totals

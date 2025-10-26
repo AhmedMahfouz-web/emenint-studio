@@ -220,8 +220,9 @@ class InvoiceResource extends Resource
                     ->date()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('total')
-                    ->money()
-                    ->sortable(),
+                    ->numeric(decimalPlaces: 2)
+                    ->sortable()
+                    ->suffix(fn($record) => ' ' . ($record->currency->symbol ?? '')),
                 Tables\Columns\TextColumn::make('currency.symbol')
                     ->label('Currency'),
                 Tables\Columns\TextColumn::make('status')
