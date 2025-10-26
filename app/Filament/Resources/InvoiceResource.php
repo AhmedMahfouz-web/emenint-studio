@@ -344,16 +344,28 @@ class InvoiceResource extends Resource
     public static function updateTotals(Get $get, Set $set): void
     {
         // Get all items and calculate subtotal
-        $items = $get('items') ?? [];
+        $items = $get('items');
+        
+        // Ensure items is an array
+        if (!is_array($items)) {
+            $items = [];
+        }
+        
         $subtotal = 0;
 
         // Calculate subtotal from items
         foreach ($items as $index => $item) {
-            if (isset($item['total'])) {
-                $item['total'] = ((float) ($item['quantity'] ?? 0) * (float) ($item['price'] ?? 0));
-                $subtotal += (float) $item['total'];
+            // Ensure item is an array
+            if (!is_array($item)) {
+                continue;
             }
-            $set("items.{$index}.total", round($item['total'], 2));
+            
+            $quantity = (float) ($item['quantity'] ?? 0);
+            $price = (float) ($item['price'] ?? 0);
+            $itemTotal = $quantity * $price;
+            
+            $subtotal += $itemTotal;
+            $set("items.{$index}.total", round($itemTotal, 2));
         }
 
         // Get discount and tax percentage
