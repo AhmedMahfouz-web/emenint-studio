@@ -197,3 +197,16 @@ Route::group(['prefix' => 'invoice', 'middleware' => 'auth'], function () {
 
     Route::post('logout', [UserController::class, 'logout'])->name('logout');
 });
+
+// Job Application Status Update (for Filament modal)
+Route::post('/admin/job-applications/{id}/update-status', function($id) {
+    $application = \App\Models\JobApplication::findOrFail($id);
+    $application->update(['status' => request('status')]);
+    return response()->json(['success' => true, 'message' => 'Status updated successfully']);
+})->middleware('auth');
+
+// Get Job Application Data (for navigation)
+Route::get('/admin/job-applications/{id}/data', function($id) {
+    $application = \App\Models\JobApplication::with('job')->findOrFail($id);
+    return response()->json(['application' => $application]);
+})->middleware('auth');

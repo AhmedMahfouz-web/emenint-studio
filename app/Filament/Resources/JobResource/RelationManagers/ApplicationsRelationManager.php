@@ -32,10 +32,9 @@ class ApplicationsRelationManager extends RelationManager
                 Forms\Components\Select::make('status')
                     ->options([
                         'new' => 'New',
-                        'reviewed' => 'Reviewed',
-                        'shortlisted' => 'Shortlisted',
+                        'pending' => 'Pending',
                         'rejected' => 'Rejected',
-                        'hired' => 'Hired',
+                        'accepted' => 'Accepted',
                     ])
                     ->required(),
                 Forms\Components\Placeholder::make('resume_path')
@@ -57,10 +56,10 @@ class ApplicationsRelationManager extends RelationManager
                     ->searchable(),
                 Tables\Columns\BadgeColumn::make('status')
                     ->colors([
-                        'primary' => 'new',
-                        'warning' => 'reviewed',
-                        'success' => 'shortlisted',
+                        'info' => 'new',
+                        'primary' => 'pending',
                         'danger' => 'rejected',
+                        'success' => 'accepted',
                     ]),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
@@ -70,16 +69,27 @@ class ApplicationsRelationManager extends RelationManager
                 Tables\Filters\SelectFilter::make('status')
                     ->options([
                         'new' => 'New',
-                        'reviewed' => 'Reviewed',
-                        'shortlisted' => 'Shortlisted',
+                        'pending' => 'Pending',
                         'rejected' => 'Rejected',
-                        'hired' => 'Hired',
+                        'accepted' => 'Accepted',
                     ]),
             ])
             ->headerActions([
                 // No create action needed here, applications come from the frontend
             ])
             ->actions([
+                Tables\Actions\Action::make('view_details')
+                    ->label('View Details')
+                    ->icon('heroicon-o-eye')
+                    ->color('primary')
+                    ->modalHeading(fn ($record) => 'Application Details - ' . $record->full_name)
+                    ->modalWidth('7xl')
+                    ->modalContent(fn ($record) => view('filament.modals.job-application-details', [
+                        'record' => $record->fresh(['job']),
+                        'allApplicationIds' => \App\Models\JobApplication::orderBy('created_at', 'desc')->pluck('id')->toArray()
+                    ]))
+                    ->modalCloseButton(true)
+                    ->closeModalByClickingAway(false),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])

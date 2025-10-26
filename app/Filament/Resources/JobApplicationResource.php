@@ -64,13 +64,47 @@ class JobApplicationResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('job.title')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->action(
+                        Tables\Actions\Action::make('view_details_from_title')
+                            ->modalHeading(fn ($record) => 'Application Details - ' . $record->full_name)
+                            ->modalWidth('7xl')
+                            ->modalContent(fn ($record) => view('filament.modals.job-application-details', [
+                                'record' => $record->fresh(['job']),
+                                'allApplicationIds' => \App\Models\JobApplication::orderBy('created_at', 'desc')->pluck('id')->toArray()
+                            ]))
+                            ->modalCloseButton(true)
+                            ->closeModalByClickingAway(false)
+                    ),
                 Tables\Columns\TextColumn::make('full_name')
-                    ->searchable(),
+                    ->searchable()
+                    ->action(
+                        Tables\Actions\Action::make('view_details_from_name')
+                            ->modalHeading(fn ($record) => 'Application Details - ' . $record->full_name)
+                            ->modalWidth('7xl')
+                            ->modalContent(fn ($record) => view('filament.modals.job-application-details', [
+                                'record' => $record->fresh(['job']),
+                                'allApplicationIds' => \App\Models\JobApplication::orderBy('created_at', 'desc')->pluck('id')->toArray()
+                            ]))
+                            ->modalCloseButton(true)
+                            ->closeModalByClickingAway(false)
+                    ),
                 Tables\Columns\TextColumn::make('email')
-                    ->searchable(),
+                    ->searchable()
+                    ->action(
+                        Tables\Actions\Action::make('view_details_from_email')
+                            ->modalHeading(fn ($record) => 'Application Details - ' . $record->full_name)
+                            ->modalWidth('7xl')
+                            ->modalContent(fn ($record) => view('filament.modals.job-application-details', [
+                                'record' => $record->fresh(['job']),
+                                'allApplicationIds' => \App\Models\JobApplication::orderBy('created_at', 'desc')->pluck('id')->toArray()
+                            ]))
+                            ->modalCloseButton(true)
+                            ->closeModalByClickingAway(false)
+                    ),
                 Tables\Columns\BadgeColumn::make('status')
                     ->colors([
+                        'info' => 'new',
                         'primary' => 'pending',
                         'danger' => 'rejected',
                         'success' => 'accepted',
@@ -82,6 +116,7 @@ class JobApplicationResource extends Resource
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
                     ->options([
+                        'new' => 'New',
                         'pending' => 'Pending',
                         'rejected' => 'Rejected',
                         'accepted' => 'Accepted',
@@ -90,13 +125,28 @@ class JobApplicationResource extends Resource
                     ->relationship('job', 'title'),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->label('Update Status')
+                    ->form([
+                        \Filament\Forms\Components\Select::make('status')
+                            ->options([
+                                'new' => 'New',
+                                'pending' => 'Pending',
+                                'rejected' => 'Rejected',
+                                'accepted' => 'Accepted',
+                            ])
+                            ->required(),
+                    ])
+                    ->mutateFormDataUsing(function (array $data): array {
+                        return ['status' => $data['status']];
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->recordUrl(null);
     }
 
     public static function getRelations(): array
@@ -108,7 +158,6 @@ class JobApplicationResource extends Resource
     {
         return [
             'index' => Pages\ListJobApplications::route('/'),
-            'view' => Pages\ViewJobApplication::route('/{record}'),
         ];
     }
 
