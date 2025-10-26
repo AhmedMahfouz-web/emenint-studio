@@ -10,6 +10,7 @@ class JobApplicationModal extends Component
 {
     public $applicationId;
     public $application;
+    public $status;
     public $allApplicationIds = [];
     public $currentIndex = 0;
 
@@ -24,6 +25,7 @@ class JobApplicationModal extends Component
     public function loadApplication()
     {
         $this->application = JobApplication::with('job')->findOrFail($this->applicationId);
+        $this->status = $this->application->status;
     }
 
     public function previousApplication()
@@ -47,6 +49,7 @@ class JobApplicationModal extends Component
     public function updateStatus()
     {
         try {
+            $this->application->status = $this->status;
             $this->application->save();
 
             Notification::make()
