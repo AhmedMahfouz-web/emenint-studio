@@ -152,10 +152,7 @@ class QuotationResource extends Resource
                             ->step(0.01)
                             ->disabled()
                             ->dehydrated()
-                            ->live()
-                            ->afterStateHydrated(function (Forms\Get $get, Forms\Set $set) {
-                                self::updateTotals($get, $set);
-                            }),
+                            ->live(),
                         Forms\Components\TextInput::make('discount')
                             ->numeric()
                             ->step(0.01)
