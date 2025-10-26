@@ -25,4 +25,13 @@ class Client extends Model
     {
         return $this->hasMany(Invoice::class);
     }
+
+     protected static function booted()
+    {
+        static::creating(function ($client) {
+            if (empty($client->code)) {
+                $client->code = 'CL-' . strtoupper(Str::random(4));
+            }
+        });
+    }
 }
