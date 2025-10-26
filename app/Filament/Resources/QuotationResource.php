@@ -75,6 +75,9 @@ class QuotationResource extends Resource
                         Forms\Components\Repeater::make('items')
                             ->relationship()
                             ->live()
+                            ->afterStateHydrated(function (Forms\Get $get, Forms\Set $set) {
+                                self::updateTotals($get, $set);
+                            })
                             ->afterStateUpdated(function (Forms\Get $get, Forms\Set $set) {
                                 self::updateTotals($get, $set);
                             })
