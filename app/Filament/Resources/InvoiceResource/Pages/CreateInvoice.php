@@ -27,4 +27,28 @@ class CreateInvoice extends CreateRecord
 
         return $data;
     }
+
+    protected function afterCreate(): void
+    {
+        // Recalculate totals from saved items
+        $invoice = $this->record->fresh(['items']);
+        
+        $subtotal = $invoice->items->sum(function ($item) {
+            return $item->quantity * $item->price;
+        });
+
+        $discount = $invoice->discount ?? 0;
+        $taxPercentage = $invoice->tax_percentage ?? 0;
+
+        $afterDiscount = $subtotal - $discount;
+        $taxAmount = ($afterDiscount * $taxPercentage) / 100;
+        $total = $afterDiscount + $taxAmount;
+
+        // Update invoice with correct totals
+        $invoice->updateQuietly([
+            'subtotal' => $subtotal,
+            'tax_amount' => $taxAmount,
+            'total' => $total,
+        ]);
+    }
 }

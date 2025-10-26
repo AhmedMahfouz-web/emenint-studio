@@ -45,4 +45,28 @@ class CreateQuotation extends CreateRecord
 
         return $data;
     }
+
+    protected function afterCreate(): void
+    {
+        // Recalculate totals from saved items
+        $quotation = $this->record->fresh(['items']);
+        
+        $subtotal = $quotation->items->sum(function ($item) {
+            return $item->quantity * $item->unit_price;
+        });
+
+        $discount = $quotation->discount ?? 0;
+        $taxPercentage = $quotation->tax_percentage ?? 0;
+
+        $afterDiscount = $subtotal - $discount;
+        $taxAmount = ($afterDiscount * $taxPercentage) / 100;
+        $total = $afterDiscount + $taxAmount;
+
+        // Update quotation with correct totals
+        $quotation->updateQuietly([
+            'subtotal' => $subtotal,
+            'tax_amount' => $taxAmount,
+            'total' => $total,
+        ]);
+    }
 }
