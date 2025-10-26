@@ -43,7 +43,10 @@ class InvoiceResource extends Resource
                                 Forms\Components\TextInput::make('email')->email(),
                                 Forms\Components\TextInput::make('phone'),
                                 Forms\Components\TextInput::make('company'),
-                            ]),
+                            ])
+    ->createOptionUsing(function (array $data) {
+        return \App\Models\Client::create($data)->getKey();
+    }),
                         Forms\Components\TextInput::make('invoice_number')
                             ->required()
                             ->unique(ignoreRecord: true)
