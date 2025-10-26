@@ -101,7 +101,7 @@ class InvoiceResource extends Resource
                                     ->afterStateUpdated(function ($state, Set $set) {
                                         $product = Product::find($state);
                                         if ($product) {
-                                            $set('unit_price', $product->price);
+                                            $set('price', $product->price);
                                             $set('description', $product->description);
                                         }
                                     }),
@@ -114,12 +114,13 @@ class InvoiceResource extends Resource
                                     ->live(onBlur: true)
                                     ->afterStateUpdated(function ($state, Get $get, Set $set) {
                                         $quantity = (float) ($state ?? 0);
-                                        $unitPrice = (float) ($get('unit_price') ?? 0);
+                                        $unitPrice = (float) ($get('price') ?? 0);
                                         $total = $quantity * $unitPrice;
                                         $set('total', $total);
                                         self::updateTotals($get, $set);
                                     }),
-                                Forms\Components\TextInput::make('unit_price')
+                                Forms\Components\TextInput::make('price')
+                                    ->label('Unit Price')
                                     ->required()
                                     ->numeric()
                                     ->default(0)
@@ -255,6 +256,55 @@ class InvoiceResource extends Resource
                 Tables\Actions\Action::make('download')
                     ->icon('heroicon-o-arrow-down-tray')
                     ->url(fn(Invoice $record): string => route('invoices.download', $record)),
+                Tables\Actions\Action::make('convertToQuotation')
+                    ->label('Convert to Quotation')
+                    ->icon('heroicon-o-document-duplicate')
+                    ->color('info')
+                    ->requiresConfirmation()
+                    ->modalHeading('Convert Invoice to Quotation')
+                    ->modalDescription('This will create a new quotation with all the details from this invoice.')
+                    ->modalSubmitActionLabel('Convert')
+                    ->action(function (Invoice $record) {
+                        // Load items relationship
+                        $record->load('items');
+                        
+                        // Create new quotation from invoice
+                        $quotation = \App\Models\Quotation::create([
+                            'client_id' => $record->client_id,
+                            'quotation_number' => 'QUO-' . str_pad((\App\Models\Quotation::max('id') ?? 0) + 1, 6, '0', STR_PAD_LEFT),
+                            'quotation_date' => now(),
+                            'subtotal' => $record->subtotal,
+                            'discount' => $record->discount,
+                            'tax_percentage' => $record->tax_percentage,
+                            'tax_amount' => $record->tax_amount,
+                            'total' => $record->total,
+                            'signature' => $record->signature,
+                            'first_note' => $record->first_note,
+                            'second_note' => $record->second_note,
+                            'status' => 'pending',
+                            'currency_id' => $record->currency_id,
+                        ]);
+
+                        // Copy invoice items to quotation items
+                        foreach ($record->items as $item) {
+                            \App\Models\QuotationItem::create([
+                                'quotation_id' => $quotation->id,
+                                'product_id' => $item->product_id ?? null,
+                                'description' => $item->description ?? '',
+                                'quantity' => $item->quantity ?? 1,
+                                'unit_price' => $item->price ?? 0,
+                                'total' => $item->total ?? 0,
+                            ]);
+                        }
+
+                        \Filament\Notifications\Notification::make()
+                            ->title('Quotation Created')
+                            ->success()
+                            ->body("Quotation {$quotation->quotation_number} has been created from invoice {$record->invoice_number}.")
+                            ->send();
+
+                        return redirect()->route('filament.admin.resources.quotations.edit', ['record' => $quotation->id]);
+                    }),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
@@ -300,7 +350,7 @@ class InvoiceResource extends Resource
         // Calculate subtotal from items
         foreach ($items as $index => $item) {
             if (isset($item['total'])) {
-                $item['total'] = ((float) $item['quantity'] * (float) $item['unit_price']);
+                $item['total'] = ((float) ($item['quantity'] ?? 0) * (float) ($item['price'] ?? 0));
                 $subtotal += (float) $item['total'];
             }
             $set("items.{$index}.total", round($item['total'], 2));

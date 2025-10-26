@@ -249,6 +249,56 @@ class QuotationResource extends Resource
                 Tables\Actions\Action::make('download')
                     ->icon('heroicon-o-arrow-down-tray')
                     ->url(fn(Quotation $record): string => route('quotations.download', $record)),
+                Tables\Actions\Action::make('convertToInvoice')
+                    ->label('Convert to Invoice')
+                    ->icon('heroicon-o-document-text')
+                    ->color('success')
+                    ->requiresConfirmation()
+                    ->modalHeading('Convert Quotation to Invoice')
+                    ->modalDescription('This will create a new invoice with all the details from this quotation.')
+                    ->modalSubmitActionLabel('Convert')
+                    ->action(function (Quotation $record) {
+                        // Load items relationship
+                        $record->load('items');
+                        
+                        // Create new invoice from quotation
+                        $invoice = \App\Models\Invoice::create([
+                            'client_id' => $record->client_id,
+                            'invoice_number' => 'INV-' . str_pad((\App\Models\Invoice::max('id') ?? 0) + 1, 6, '0', STR_PAD_LEFT),
+                            'invoice_date' => now(),
+                            'payment_method' => 'cash',
+                            'subtotal' => $record->subtotal,
+                            'discount' => $record->discount,
+                            'tax_percentage' => $record->tax_percentage,
+                            'tax_amount' => $record->tax_amount,
+                            'total' => $record->total,
+                            'signature' => $record->signature,
+                            'first_note' => $record->first_note,
+                            'second_note' => $record->second_note,
+                            'status' => 'pending',
+                            'currency_id' => $record->currency_id,
+                        ]);
+
+                        // Copy quotation items to invoice items
+                        foreach ($record->items as $item) {
+                            \App\Models\InvoiceItem::create([
+                                'invoice_id' => $invoice->id,
+                                'product_id' => $item->product_id ?? null,
+                                'description' => $item->description ?? '',
+                                'quantity' => $item->quantity ?? 1,
+                                'price' => $item->unit_price ?? 0,
+                                'total' => $item->total ?? 0,
+                            ]);
+                        }
+
+                        \Filament\Notifications\Notification::make()
+                            ->title('Invoice Created')
+                            ->success()
+                            ->body("Invoice {$invoice->invoice_number} has been created from quotation {$record->quotation_number}.")
+                            ->send();
+
+                        return redirect()->route('filament.admin.resources.invoices.edit', ['record' => $invoice->id]);
+                    }),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([

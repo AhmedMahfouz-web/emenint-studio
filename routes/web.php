@@ -199,11 +199,10 @@ Route::group(['prefix' => 'invoice', 'middleware' => 'auth'], function () {
 });
 
 // Job Application Status Update (for Filament modal)
-Route::post('/admin/job-applications/{id}/update-status', function($id) {
-    $application = \App\Models\JobApplication::findOrFail($id);
-    $application->update(['status' => request('status')]);
-    return response()->json(['success' => true, 'message' => 'Status updated successfully']);
-})->middleware('auth');
+Route::patch('/admin/job-applications/{id}', [App\Http\Controllers\JobApplicationController::class, 'update'])->middleware('auth');
+
+// Get Job Application Modal Content (for navigation)
+Route::get('/admin/job-applications/{id}/modal-content', [App\Http\Controllers\JobApplicationController::class, 'getModalContent'])->middleware('auth');
 
 // Get Job Application Data (for navigation)
 Route::get('/admin/job-applications/{id}/data', function($id) {

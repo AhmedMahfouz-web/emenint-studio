@@ -84,12 +84,11 @@ class ApplicationsRelationManager extends RelationManager
                     ->color('primary')
                     ->modalHeading(fn ($record) => 'Application Details - ' . $record->full_name)
                     ->modalWidth('7xl')
-                    ->modalContent(fn ($record) => view('filament.modals.job-application-details', [
-                        'record' => $record->fresh(['job']),
-                        'allApplicationIds' => \App\Models\JobApplication::orderBy('created_at', 'desc')->pluck('id')->toArray()
+                    ->modalContent(fn ($record) => view('filament.modals.job-application-wrapper', [
+                        'applicationId' => $record->id
                     ]))
                     ->modalCloseButton(true)
-                    ->closeModalByClickingAway(false),
+                    ->closeModalByClickingAway(true),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])

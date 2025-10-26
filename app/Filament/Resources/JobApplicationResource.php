@@ -69,12 +69,11 @@ class JobApplicationResource extends Resource
                         Tables\Actions\Action::make('view_details_from_title')
                             ->modalHeading(fn ($record) => 'Application Details - ' . $record->full_name)
                             ->modalWidth('7xl')
-                            ->modalContent(fn ($record) => view('filament.modals.job-application-details', [
-                                'record' => $record->fresh(['job']),
-                                'allApplicationIds' => \App\Models\JobApplication::orderBy('created_at', 'desc')->pluck('id')->toArray()
+                            ->modalContent(fn ($record) => view('filament.modals.job-application-wrapper', [
+                                'applicationId' => $record->id
                             ]))
                             ->modalCloseButton(true)
-                            ->closeModalByClickingAway(false)
+                            ->closeModalByClickingAway(true)
                     ),
                 Tables\Columns\TextColumn::make('full_name')
                     ->searchable()
@@ -82,12 +81,11 @@ class JobApplicationResource extends Resource
                         Tables\Actions\Action::make('view_details_from_name')
                             ->modalHeading(fn ($record) => 'Application Details - ' . $record->full_name)
                             ->modalWidth('7xl')
-                            ->modalContent(fn ($record) => view('filament.modals.job-application-details', [
-                                'record' => $record->fresh(['job']),
-                                'allApplicationIds' => \App\Models\JobApplication::orderBy('created_at', 'desc')->pluck('id')->toArray()
+                            ->modalContent(fn ($record) => view('filament.modals.job-application-wrapper', [
+                                'applicationId' => $record->id
                             ]))
                             ->modalCloseButton(true)
-                            ->closeModalByClickingAway(false)
+                            ->closeModalByClickingAway(true)
                     ),
                 Tables\Columns\TextColumn::make('email')
                     ->searchable()
@@ -95,12 +93,11 @@ class JobApplicationResource extends Resource
                         Tables\Actions\Action::make('view_details_from_email')
                             ->modalHeading(fn ($record) => 'Application Details - ' . $record->full_name)
                             ->modalWidth('7xl')
-                            ->modalContent(fn ($record) => view('filament.modals.job-application-details', [
-                                'record' => $record->fresh(['job']),
-                                'allApplicationIds' => \App\Models\JobApplication::orderBy('created_at', 'desc')->pluck('id')->toArray()
+                            ->modalContent(fn ($record) => view('filament.modals.job-application-wrapper', [
+                                'applicationId' => $record->id
                             ]))
                             ->modalCloseButton(true)
-                            ->closeModalByClickingAway(false)
+                            ->closeModalByClickingAway(true)
                     ),
                 Tables\Columns\BadgeColumn::make('status')
                     ->colors([

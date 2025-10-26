@@ -1,258 +1,429 @@
-<div class="p-4" id="modal-content-{{ $record->id }}" data-current-id="{{ $record->id }}"
+<style>
+    /* External Navigation Arrows */
+    .external-nav-arrow {
+        position: fixed;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 9999;
+        width: 3rem;
+        height: 3rem;
+        border-radius: 50%;
+        background: white;
+        border: 2px solid #e5e7eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s;
+        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+    }
+    
+    .external-nav-arrow:hover:not(:disabled) {
+        background: #f9fafb;
+        border-color: #d1d5db;
+        box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+    }
+    
+    .external-nav-arrow:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+    }
+    
+    .external-nav-arrow.left {
+        left: 1rem;
+    }
+    
+    .external-nav-arrow.right {
+        right: 1rem;
+    }
+    
+    /* Professional Status Select */
+    .app-status-select {
+        padding: 0.5rem 1rem;
+        border-radius: 0.375rem;
+        border: 1px solid #d1d5db;
+        font-weight: 500;
+        font-size: 0.875rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        background: white;
+        color: #374151;
+    }
+    
+    .app-status-select:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    
+    .app-status-select:hover {
+        border-color: #9ca3af;
+    }
+    
+    /* Professional Card Styles */
+    .app-card {
+        background: white;
+        border-radius: 0.5rem;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        border: 1px solid #e5e7eb;
+    }
+    
+    .app-card-header {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: #111827;
+        margin-bottom: 1rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid #e5e7eb;
+    }
+    
+    .app-info-row {
+        display: flex;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #f3f4f6;
+    }
+    
+    .app-info-row:last-child {
+        border-bottom: none;
+    }
+    
+    .app-info-label {
+        font-weight: 500;
+        color: #6b7280;
+        width: 150px;
+        flex-shrink: 0;
+    }
+    
+    .app-info-value {
+        color: #111827;
+        flex: 1;
+    }
+</style>
+
+<!-- External Navigation Arrows -->
+<button id="prev-application" class="external-nav-arrow left">
+    <svg style="width: 1.25rem; height: 1.25rem; color: #374151;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+    </svg>
+</button>
+
+<button id="next-application" class="external-nav-arrow right">
+    <svg style="width: 1.25rem; height: 1.25rem; color: #374151;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+    </svg>
+</button>
+
+<div id="modal-content-{{ $record->id }}" data-current-id="{{ $record->id }}"
     data-all-ids="{{ json_encode($allApplicationIds) }}">
-    <!-- Navigation and Status Section -->
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 p-4 mb-6">
-        <div class="flex items-center justify-between mb-4">
-            <!-- Navigation Arrows -->
-            <div class="flex items-center gap-2">
-                <button id="prev-application"
-                    class="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition-all disabled:bg-gray-300 disabled:cursor-not-allowed"
-                    style="background-color: #2563eb !important;">
-                    <i class="fas fa-chevron-left"></i>
-                </button>
-                <span class="text-sm font-semibold text-gray-700 dark:text-gray-300 px-3">
-                    <span id="current-position"></span>
-                </span>
-                <button id="next-application"
-                    class="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition-all disabled:bg-gray-300 disabled:cursor-not-allowed"
-                    style="background-color: #2563eb !important;">
-                    <i class="fas fa-chevron-right"></i>
-                </button>
-            </div>
-
-            <span class="text-sm text-gray-500 dark:text-gray-400">
-                <i class="fas fa-calendar-alt mr-1"></i>Applied {{ $record->created_at->format('M d, Y') }}
-            </span>
-        </div>
-
-        <div class="flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <span class="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                    <i class="fas fa-tasks mr-2"></i>Application Status:
+    
+    <!-- Status and Info Section -->
+    <div class="app-card">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <span style="font-size: 0.875rem; font-weight: 500; color: #6b7280;">
+                    Application Status:
                 </span>
                 <select id="status-selector-{{ $record->id }}" data-record-id="{{ $record->id }}"
-                    class="status-selector px-4 py-2 rounded-lg border-2 font-medium text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all cursor-pointer
-                        @if ($record->status === 'new') bg-blue-50 border-blue-300 text-blue-800 dark:bg-blue-900/30 dark:border-blue-600 dark:text-blue-200
-                        @elseif($record->status === 'pending') bg-yellow-50 border-yellow-300 text-yellow-800 dark:bg-yellow-900/30 dark:border-yellow-600 dark:text-yellow-200
-                        @elseif($record->status === 'accepted') bg-green-50 border-green-300 text-green-800 dark:bg-green-900/30 dark:border-green-600 dark:text-green-200
-                        @else bg-red-50 border-red-300 text-red-800 dark:bg-red-900/30 dark:border-red-600 dark:text-red-200 @endif">
+                    class="app-status-select">
                     <option value="new" {{ $record->status === 'new' ? 'selected' : '' }}>New</option>
                     <option value="pending" {{ $record->status === 'pending' ? 'selected' : '' }}>Pending</option>
                     <option value="accepted" {{ $record->status === 'accepted' ? 'selected' : '' }}>Accepted</option>
                     <option value="rejected" {{ $record->status === 'rejected' ? 'selected' : '' }}>Rejected</option>
                 </select>
             </div>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span style="font-size: 0.875rem; color: #6b7280;">
+                    <span id="current-position"></span>
+                </span>
+                <span style="font-size: 0.875rem; color: #9ca3af;">•</span>
+                <span style="font-size: 0.875rem; color: #6b7280;">
+                    Applied {{ $record->created_at->format('M d, Y') }}
+                </span>
+            </div>
         </div>
     </div>
 
     <!-- Job Information Card -->
-    <div class="bg-blue-600 rounded-lg shadow-lg p-6 mb-10" ">
-        <h3 class="text-2xl font-bold mb-3" style="color: black !important;">{{ $record->job->title }}</h3>
-        <div class="flex flex-wrap gap-4" style="color: black !important;">
-            <div class="flex items-center">
-                <i class="fas fa-map-marker-alt mr-2"></i>
-                <span>{{ $record->job->location }}</span>
-            </div>
-            <div class="flex items-center">
-                <i class="fas fa-briefcase mr-2"></i>
-                <span>{{ ucfirst(str_replace('-', ' ', $record->job->type)) }}</span>
-            </div>
-             @if ($record->job->salary_range)
-        <div class="flex items-center">
-            <i class="fas fa-dollar-sign mr-2"></i>
-            <span>{{ $record->job->salary_range }}</span>
-        </div>
-        @endif
-    </div>
-</div>
-
-<!-- Personal Information Card -->
-<div class="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 p-6 mb-10">
-    <div class="flex items-center mb-8">
-        <div
-            class="w-20 h-20 bg-blue-600 dark:bg-blue-700 rounded-full flex items-center justify-center text-white text-3xl font-bold mr-5 shadow-lg">
-            {{ substr($record->full_name, 0, 1) }}
-        </div>
-        <div>
-            <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-1">{{ $record->full_name }}</h2>
-            <p class="text-gray-600 dark:text-gray-400 text-lg">Job Applicant</p>
-        </div>
-    </div>
-
-    <!-- Contact Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-        <!-- Email Card -->
-        <div
-            class="bg-blue-50 dark:bg-blue-900/30 rounded-lg p-5 border-2 border-blue-300 dark:border-blue-600 hover:shadow-md transition-shadow">
-            <div class="flex items-center mb-2">
-                <i class="fas fa-envelope text-blue-600 dark:text-blue-400 mr-2 text-lg"></i>
-                <p class="text-xs font-bold text-blue-700 dark:text-blue-300 uppercase">Email</p>
-            </div>
-            <p class="text-sm font-semibold text-gray-900 dark:text-white break-all">{{ $record->email }}</p>
-        </div>
-
-        @if ($record->phone)
-            <!-- Phone Card -->
-            <div
-                class="bg-green-50 dark:bg-green-900/30 rounded-lg p-5 border-2 border-green-300 dark:border-green-600 hover:shadow-md transition-shadow">
-                <div class="flex items-center mb-2">
-                    <i class="fas fa-phone text-green-600 dark:text-green-400 mr-2 text-lg"></i>
-                    <p class="text-xs font-bold text-green-700 dark:text-green-300 uppercase">Phone</p>
+    <div class="app-card">
+        <div class="app-card-header">Job Details</div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+            <div style="padding: 1rem; border: 1px solid #e5e7eb; border-radius: 0.375rem;">
+                <div style="display: flex; align-items: center; margin-bottom: 0.5rem;">
+                    <svg style="width: 1.25rem; height: 1.25rem; color: #6b7280; margin-right: 0.5rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                    </svg>
+                    <span style="font-size: 0.75rem; font-weight: 600; color: #6b7280; text-transform: uppercase;">Position</span>
                 </div>
-                <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ $record->phone }}</p>
+                <p style="font-size: 0.875rem; font-weight: 600; color: #111827;">{{ $record->job->title }}</p>
             </div>
-        @endif
-
-        @if ($record->portfolio_link)
-            <!-- Portfolio Card -->
-            <div
-                class="bg-purple-50 dark:bg-purple-900/30 rounded-lg p-5 border-2 border-purple-300 dark:border-purple-600 hover:shadow-md transition-shadow">
-                <div class="flex items-center mb-2">
-                    <i class="fas fa-globe text-purple-600 dark:text-purple-400 mr-2 text-lg"></i>
-                    <p class="text-xs font-bold text-purple-700 dark:text-purple-300 uppercase">Portfolio</p>
+            
+            <div style="padding: 1rem; border: 1px solid #e5e7eb; border-radius: 0.375rem;">
+                <div style="display: flex; align-items: center; margin-bottom: 0.5rem;">
+                    <svg style="width: 1.25rem; height: 1.25rem; color: #6b7280; margin-right: 0.5rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                    <span style="font-size: 0.75rem; font-weight: 600; color: #6b7280; text-transform: uppercase;">Location</span>
                 </div>
-                <a href="{{ $record->portfolio_link }}" target="_blank"
-                    class="text-sm font-semibold text-purple-600 dark:text-purple-400 hover:underline flex items-center">
-                    View Portfolio <i class="fas fa-external-link-alt ml-2 text-xs"></i>
+                <p style="font-size: 0.875rem; font-weight: 600; color: #111827;">{{ $record->job->location }}</p>
+            </div>
+            
+            <div style="padding: 1rem; border: 1px solid #e5e7eb; border-radius: 0.375rem;">
+                <div style="display: flex; align-items: center; margin-bottom: 0.5rem;">
+                    <svg style="width: 1.25rem; height: 1.25rem; color: #6b7280; margin-right: 0.5rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <span style="font-size: 0.75rem; font-weight: 600; color: #6b7280; text-transform: uppercase;">Type</span>
+                </div>
+                <p style="font-size: 0.875rem; font-weight: 600; color: #111827;">{{ ucfirst(str_replace('-', ' ', $record->job->type)) }}</p>
+            </div>
+            
+            @if ($record->job->salary_range)
+            <div style="padding: 1rem; border: 1px solid #e5e7eb; border-radius: 0.375rem;">
+                <div style="display: flex; align-items: center; margin-bottom: 0.5rem;">
+                    <svg style="width: 1.25rem; height: 1.25rem; color: #6b7280; margin-right: 0.5rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <span style="font-size: 0.75rem; font-weight: 600; color: #6b7280; text-transform: uppercase;">Salary</span>
+                </div>
+                <p style="font-size: 0.875rem; font-weight: 600; color: #111827;">{{ $record->job->salary_range }}</p>
+            </div>
+            @endif
+        </div>
+    </div>
+
+    <!-- Personal Information Card -->
+    <div class="app-card">
+        <div class="app-card-header">Applicant Information</div>
+        
+        <!-- Name with Avatar -->
+        <div style="display: flex; align-items: center; margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid #e5e7eb;">
+            <div style="width: 4rem; height: 4rem; background: #f3f4f6; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 1rem;">
+                <span style="font-size: 1.5rem; font-weight: 700; color: #6b7280;">{{ substr($record->full_name, 0, 1) }}</span>
+            </div>
+            <div>
+                <h3 style="font-size: 1.25rem; font-weight: 600; color: #111827; margin-bottom: 0.25rem;">{{ $record->full_name }}</h3>
+                <p style="font-size: 0.875rem; color: #6b7280;">Job Applicant</p>
+            </div>
+        </div>
+        
+        <!-- Contact Grid -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+            <div style="padding: 1rem; border: 1px solid #e5e7eb; border-radius: 0.375rem;">
+                <div style="display: flex; align-items: center; margin-bottom: 0.5rem;">
+                    <svg style="width: 1.25rem; height: 1.25rem; color: #6b7280; margin-right: 0.5rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                    </svg>
+                    <span style="font-size: 0.75rem; font-weight: 600; color: #6b7280; text-transform: uppercase;">Email</span>
+                </div>
+                <p style="font-size: 0.875rem; font-weight: 500; color: #111827; word-break: break-all;">{{ $record->email }}</p>
+            </div>
+            
+            @if ($record->phone)
+            <div style="padding: 1rem; border: 1px solid #e5e7eb; border-radius: 0.375rem;">
+                <div style="display: flex; align-items: center; margin-bottom: 0.5rem;">
+                    <svg style="width: 1.25rem; height: 1.25rem; color: #6b7280; margin-right: 0.5rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                    </svg>
+                    <span style="font-size: 0.75rem; font-weight: 600; color: #6b7280; text-transform: uppercase;">Phone</span>
+                </div>
+                <p style="font-size: 0.875rem; font-weight: 500; color: #111827;">{{ $record->phone }}</p>
+            </div>
+            @endif
+            
+            @if ($record->portfolio_link)
+            <div style="padding: 1rem; border: 1px solid #e5e7eb; border-radius: 0.375rem;">
+                <div style="display: flex; align-items: center; margin-bottom: 0.5rem;">
+                    <svg style="width: 1.25rem; height: 1.25rem; color: #6b7280; margin-right: 0.5rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
+                    </svg>
+                    <span style="font-size: 0.75rem; font-weight: 600; color: #6b7280; text-transform: uppercase;">Portfolio</span>
+                </div>
+                <a href="{{ $record->portfolio_link }}" target="_blank" style="font-size: 0.875rem; font-weight: 500; color: #3b82f6; text-decoration: none; display: flex; align-items: center;">
+                    View Portfolio
+                    <svg style="width: 0.875rem; height: 0.875rem; margin-left: 0.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                    </svg>
                 </a>
             </div>
-        @endif
-    </div>
-</div>
-
-
-
-<!-- Cover Letter Card -->
-@if ($record->cover_letter)
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 p-6 mb-10">
-        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-5 flex items-center">
-            <i class="fas fa-file-alt mr-3 text-indigo-600 dark:text-indigo-400 text-2xl"></i>
-            Cover Letter
-        </h3>
-        <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-6 border-l-4 border-indigo-500 dark:border-indigo-400">
-            <p class="text-gray-800 dark:text-gray-200 leading-relaxed whitespace-pre-wrap text-base">
-                {{ $record->cover_letter }}</p>
+            @endif
         </div>
     </div>
-@endif
 
-<!-- Resume Card -->
-@if ($record->resume_path)
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 p-6 mb-10">
-        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-5 flex items-center">
-            <i class="fas fa-file-pdf mr-3 text-blue-600 dark:text-blue-400 text-2xl"></i>
-            Resume & Documents
-        </h3>
 
+
+    <!-- Cover Letter Card -->
+    @if ($record->cover_letter)
+    <div class="app-card">
+        <div style="display: flex; align-items: center; margin-bottom: 1rem;">
+            <svg style="width: 1.5rem; height: 1.5rem; color: #6b7280; margin-right: 0.75rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+            <h3 style="font-size: 1.125rem; font-weight: 600; color: #111827;">Cover Letter</h3>
+        </div>
+        <div style="padding: 1rem; background: #f9fafb; border-radius: 0.375rem; border: 1px solid #e5e7eb;">
+            <p style="color: #374151; line-height: 1.625; white-space: pre-wrap; margin: 0;">{{ $record->cover_letter }}</p>
+        </div>
+    </div>
+    @endif
+
+    <!-- Resume Card -->
+    @if ($record->resume_path)
+    <div class="app-card">
+        <div style="display: flex; align-items: center; margin-bottom: 1rem;">
+            <svg style="width: 1.5rem; height: 1.5rem; color: #6b7280; margin-right: 0.75rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+            </svg>
+            <h3 style="font-size: 1.125rem; font-weight: 600; color: #111827;">Resume & Documents</h3>
+        </div>
         <a href="{{ asset('storage/' . $record->resume_path) }}" target="_blank"
-            class="inline-flex items-center px-8 py-4 rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5"
-            style="background-color: #2563eb !important; color: white !important; font-weight: bold;">
-            <i class="fas fa-download mr-3 text-xl" style="color: white !important;"></i>
+            style="display: inline-flex; align-items: center; padding: 0.75rem 1.5rem; border-radius: 0.375rem; background: #111827; color: white; font-weight: 500; text-decoration: none; transition: all 0.2s; font-size: 0.875rem; border: 1px solid #111827;" 
+            onmouseover="this.style.background='#374151';" 
+            onmouseout="this.style.background='#111827';">
+            <svg style="width: 1.125rem; height: 1.125rem; margin-right: 0.5rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+            </svg>
             Download Resume
         </a>
     </div>
-@endif
+    @endif
 </div>
 
 <script>
     (function() {
-        // Navigation functionality
-        let currentId = parseInt(document.querySelector('[data-current-id]')?.getAttribute('data-current-id'));
-        let allIds = JSON.parse(document.querySelector('[data-all-ids]')?.getAttribute('data-all-ids') || '[]');
-        let currentIndex = allIds.indexOf(currentId);
+        function initializeModal() {
+            const container = document.querySelector('[data-current-id]');
+            if (!container) return;
 
-        function updateNavigationButtons() {
+            let currentId = parseInt(container.getAttribute('data-current-id'));
+            const allIds = JSON.parse(container.getAttribute('data-all-ids') || '[]');
+            let currentIndex = allIds.indexOf(currentId);
+
             const prevBtn = document.getElementById('prev-application');
             const nextBtn = document.getElementById('next-application');
             const positionSpan = document.getElementById('current-position');
 
-            if (prevBtn && nextBtn && positionSpan) {
-                prevBtn.disabled = currentIndex <= 0;
-                nextBtn.disabled = currentIndex >= allIds.length - 1;
-                positionSpan.textContent = `${currentIndex + 1} / ${allIds.length}`;
+            function updateNavigationButtons() {
+                if (prevBtn) prevBtn.disabled = currentIndex <= 0;
+                if (nextBtn) nextBtn.disabled = currentIndex >= allIds.length - 1;
+                if (positionSpan) positionSpan.textContent = `${currentIndex + 1} / ${allIds.length}`;
             }
-        }
 
-        function loadApplication(id) {
-            window.location.reload();
-        }
+            function loadApplication(id) {
+                // Find the modal container
+                const modalContainer = document.querySelector('.fi-modal-content') || container.closest('[x-data]');
+                if (!modalContainer) return;
 
-        // Initialize navigation
-        updateNavigationButtons();
+                // Show loading state
+                const originalContent = modalContainer.innerHTML;
+                modalContainer.style.opacity = '0.6';
+                modalContainer.style.pointerEvents = 'none';
 
-        // Previous button
-        document.getElementById('prev-application')?.addEventListener('click', function() {
-            if (currentIndex > 0) {
-                currentIndex--;
-                currentId = allIds[currentIndex];
-                loadApplication(currentId);
+                fetch(`/admin/job-applications/${id}/modal-content`)
+                    .then(response => {
+                        if (!response.ok) throw new Error('Failed to load');
+                        return response.text();
+                    })
+                    .then(html => {
+                        modalContainer.innerHTML = html;
+                        modalContainer.style.opacity = '1';
+                        modalContainer.style.pointerEvents = 'auto';
+                        // Re-initialize for new content
+                        initializeModal();
+                    })
+                    .catch(error => {
+                        console.error('Error loading application:', error);
+                        modalContainer.innerHTML = originalContent;
+                        modalContainer.style.opacity = '1';
+                        modalContainer.style.pointerEvents = 'auto';
+                        alert('Failed to load application. Please try again.');
+                    });
             }
-        });
 
-        // Next button
-        document.getElementById('next-application')?.addEventListener('click', function() {
-            if (currentIndex < allIds.length - 1) {
-                currentIndex++;
-                currentId = allIds[currentIndex];
-                loadApplication(currentId);
+            // Navigation button handlers
+            if (prevBtn) {
+                prevBtn.onclick = (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (currentIndex > 0) {
+                        currentIndex--;
+                        loadApplication(allIds[currentIndex]);
+                    }
+                };
             }
-        });
 
-        // Use event delegation to handle status changes
-        document.addEventListener('change', function(e) {
-            if (e.target && e.target.classList.contains('status-selector')) {
-                const newStatus = e.target.value;
-                const recordId = e.target.getAttribute('data-record-id');
+            if (nextBtn) {
+                nextBtn.onclick = (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (currentIndex < allIds.length - 1) {
+                        currentIndex++;
+                        loadApplication(allIds[currentIndex]);
+                    }
+                };
+            }
 
-                // Update the selector colors based on status
-                e.target.className =
-                    'status-selector px-4 py-2 rounded-lg border-2 font-medium text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all cursor-pointer';
+            // Status change handler
+            const statusSelector = document.querySelector('.app-status-select');
+            if (statusSelector) {
+                const originalStatus = statusSelector.value;
+                statusSelector.setAttribute('data-original-status', originalStatus);
 
-                if (newStatus === 'new') {
-                    e.target.className +=
-                        ' bg-blue-50 border-blue-300 text-blue-800 dark:bg-blue-900/30 dark:border-blue-600 dark:text-blue-200';
-                } else if (newStatus === 'pending') {
-                    e.target.className +=
-                        ' bg-yellow-50 border-yellow-300 text-yellow-800 dark:bg-yellow-900/30 dark:border-yellow-600 dark:text-yellow-200';
-                } else if (newStatus === 'accepted') {
-                    e.target.className +=
-                        ' bg-green-50 border-green-300 text-green-800 dark:bg-green-900/30 dark:border-green-600 dark:text-green-200';
-                } else {
-                    e.target.className +=
-                        ' bg-red-50 border-red-300 text-red-800 dark:bg-red-900/30 dark:border-red-600 dark:text-red-200';
-                }
+                statusSelector.onchange = function(e) {
+                    const newStatus = e.target.value;
+                    const recordId = e.target.getAttribute('data-record-id');
+                    const originalValue = e.target.getAttribute('data-original-status');
 
-                // Update status in database via AJAX
-                fetch('/admin/job-applications/' + recordId + '/update-status', {
-                        method: 'POST',
+                    fetch(`/admin/job-applications/${recordId}`, {
+                        method: 'PATCH',
                         headers: {
                             'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                            'Accept': 'application/json'
                         },
-                        body: JSON.stringify({
-                            status: newStatus
-                        })
+                        body: JSON.stringify({ status: newStatus })
                     })
-                    .then(response => response.json())
+                    .then(response => {
+                        if (!response.ok) throw new Error('Update failed');
+                        return response.json();
+                    })
                     .then(data => {
-                        // Show success notification using Filament notification
-                        new FilamentNotification()
-                            .title('Status Updated Successfully')
-                            .success()
-                            .send();
-
-                        console.log('Status updated successfully in database');
+                        console.log('Status updated successfully:', data);
+                        // Update original status
+                        e.target.setAttribute('data-original-status', newStatus);
+                        
+                        // Show success notification
+                        if (window.FilamentNotification) {
+                            new FilamentNotification()
+                                .title('Status Updated')
+                                .success()
+                                .send();
+                        }
                     })
                     .catch(error => {
                         console.error('Error updating status:', error);
+                        // Revert to original value
+                        e.target.value = originalValue;
+                        
                         // Show error notification
-                        new FilamentNotification()
-                            .title('Failed to Update Status')
-                            .danger()
-                            .body('Please try again.')
-                            .send();
+                        if (window.FilamentNotification) {
+                            new FilamentNotification()
+                                .title('Update Failed')
+                                .body('Could not update the status. Please try again.')
+                                .danger()
+                                .send();
+                        } else {
+                            alert('Failed to update status. Please try again.');
+                        }
                     });
+                };
             }
-        });
+
+            updateNavigationButtons();
+        }
+
+        // Initialize on load
+        initializeModal();
     })();
 </script>
